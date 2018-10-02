@@ -4,6 +4,8 @@ A simple utility to manage environment configs in Java-based projects by merging
 
 [![CircleCI](https://circleci.com/gh/sitture/env-config.svg?style=shield)](https://circleci.com/gh/sitture/env-config) [![Maintainability](https://api.codeclimate.com/v1/badges/338645e6d3c853fcb93e/maintainability)](https://codeclimate.com/github/sitture/env-config/maintainability) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)](https://opensource.org/licenses/MIT) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](../../issues)
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.sitture/env-config.svg)](https://img.shields.io/maven-central/v/com.sitture/env-config.svg)
+
 All notable changes to this project are documented in [CHANGELOG.md](CHANGELOG.md).
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
