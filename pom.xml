@@ -4,15 +4,15 @@
 	<groupId>com.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>1.3.2</version>
+	<version>0.1.0</version>
 	<name>env-config</name>
-	<url>http://maven.apache.org</url>
+	<url>https://github.com/sitture/env-config</url>
 
 	<developers>
 		<developer>
 			<name>Haroon Sheikh</name>
-			<email>haroon.sheikh@sky.uk</email>
-			<organization>Sky UK</organization>
+			<email>haroon@sitture.com</email>
+			<organization>Sitture</organization>
 		</developer>
 	</developers>
 
