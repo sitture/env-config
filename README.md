@@ -33,28 +33,28 @@ To start using this:
 To get current environment:
 
 ```java
-Config.getEnvironment();
+EnvConfig.getEnvironment();
 ```
 
 To get a property set either in the properties file, system property or environment variable:
 
 ```java
-Config.get("my.property");
-Config.getInt("my.property");
-Config.getBool("my.property");
+EnvConfig.get("my.property");
+EnvConfig.getInt("my.property");
+EnvConfig.getBool("my.property");
 // when a property is required to continue
-Config.get("my.property", true);
+EnvConfig.get("my.property", true);
 // return a default value when a property isn't found
-Config.get("my.property", "defaultValue");
+EnvConfig.get("my.property", "defaultValue");
 ```
 
 ### Default Configuration Examples
 
 ```java
 // driver specific properties,
-Config.driver().getEnvironment();
+EnvConfig.driver().getEnvironment();
 // browser specific
-Config.browser().getName();
+EnvConfig.browser().getName();
 // appium specific
-Config.appium().getPlatform();
+EnvConfig.appium().getPlatform();
 ```
