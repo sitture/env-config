@@ -1,0 +1,18 @@
+image: maven:3-jdk-8-alpine
+
+stages:
+  - test
+  - deploy
+
+Test:
+  stage: test
+  script:
+  - mvn -q --settings settings.xml clean install
+
+Deploy:
+  stage: deploy
+  only:
+    - tags
+  script:
+  - mvn -q --settings settings.xml org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=$CI_BUILD_REF_NAME
+  - mvn -q --settings settings.xml -DskipTests=true -B -U clean deploy
