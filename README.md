@@ -70,15 +70,19 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 │       └── integration.properties
 ```
 
-### environment priority
+### Environment priority
 
 The `EnvConfig` will go through properties set under your environment and then load properties from default environment ignoring the ones already set. You can keep the shared properties under your `default` environment without having to repeat them in every other environment.
 
-To get current environment:
+### Current environment
+
+You can get the current environment by:
 
 ```java
 EnvConfig.getEnvironment();
 ```
+
+### Get property `EnvConfig.get("...")`
 
 To get a property set either in the properties file, system property or environment variable:
 
@@ -92,13 +96,18 @@ EnvConfig.get("my.property", true);
 EnvConfig.get("my.property", "defaultValue");
 ```
 
-### Default Configuration Examples
+>__Note:__ All the environment variable names are set to properties naming convention. E.g. MY_ENV_VAR can be accessed by `EnvConfig.get("my.env.var");`.
 
-```java
-// driver specific properties,
-EnvConfig.driver().getEnvironment();
-// browser specific
-EnvConfig.browser().getName();
-// appium specific
-EnvConfig.appium().getPlatform();
-```
+### Overrides
+
+You can override any property set in the environment properties file by setting an system environment variable.
+
+E.g. `my.env.property` can be overridden by `MY_ENV_PROPERTY` environment variable.
+
+## Issues & Contributions
+
+Please [open an issue here](../../issues) on GitHub if you have a problem, suggestion, or other comment.
+
+Pull requests are welcome and encouraged! Any contributions should include new or updated unit tests as necessary to maintain thorough test coverage.
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
