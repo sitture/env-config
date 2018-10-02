@@ -31,16 +31,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>${maven-checkstyle-plugin.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.sitture</groupId>
-						<artifactId>sdc-qa-buildtools</artifactId>
-						<version>${sdc-qa-buildtools.version}</version>
-					</dependency>
-				</dependencies>
 				<configuration>
 					<logViolationsToConsole>false</logViolationsToConsole>
-					<configLocation>/config/checkstyle/checkstyle.xml</configLocation>
+					<configLocation>src/main/resources/config/checkstyle/checkstyle.xml</configLocation>
 					<consoleOutput>true</consoleOutput>
 					<!--<excludes>**/gauge/messages/**/*</excludes> -->
 					<includeTestResources>true</includeTestResources>
@@ -64,19 +57,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.8</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.sitture</groupId>
-						<artifactId>sdc-qa-buildtools</artifactId>
-						<version>${sdc-qa-buildtools.version}</version>
-					</dependency>
-				</dependencies>
 				<configuration>
 					<failOnViolation>true</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
 					<includeTests>true</includeTests>
 					<rulesets>
-						<ruleset>/config/pmd/rulesets.xml</ruleset>
+						<ruleset>src/main/resources/config/pmd/rulesets.xml</ruleset>
 					</rulesets>
 					<linkXRef>false</linkXRef>
 				</configuration>
@@ -100,7 +86,6 @@
 		<slf4j.version>1.7.22</slf4j.version>
 		<owner.version>1.0.9</owner.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-		<sdc-qa-buildtools.version>[2,)</sdc-qa-buildtools.version>
 		<system-rules.version>1.17.2</system-rules.version>
 	</properties>
 
