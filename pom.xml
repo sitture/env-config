@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.sky.sdc.qa</groupId>
-	<artifactId>sdc-qa-config</artifactId>
+	<groupId>com.sitture</groupId>
+	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
 	<version>1.3.2</version>
-	<name>sdc-qa-config</name>
+	<name>env-config</name>
 	<url>http://maven.apache.org</url>
 
 	<developers>
@@ -33,7 +33,7 @@
 				<version>${maven-checkstyle-plugin.version}</version>
 				<dependencies>
 					<dependency>
-						<groupId>com.sky.sdc.qa</groupId>
+						<groupId>com.sitture</groupId>
 						<artifactId>sdc-qa-buildtools</artifactId>
 						<version>${sdc-qa-buildtools.version}</version>
 					</dependency>
@@ -66,7 +66,7 @@
 				<version>3.8</version>
 				<dependencies>
 					<dependency>
-						<groupId>com.sky.sdc.qa</groupId>
+						<groupId>com.sitture</groupId>
 						<artifactId>sdc-qa-buildtools</artifactId>
 						<version>${sdc-qa-buildtools.version}</version>
 					</dependency>

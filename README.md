@@ -1,4 +1,6 @@
-# sdc-qa-config
+# env-config
+
+A simple utility to manage environment configs in Java-based projects by merging `*.properties` files and environment variables overrides.
 
 This project adheres to [Semantic Versioning](https://semver.org). Given a version number __MAJOR.MINOR.PATCH__, increment the:
 
@@ -12,14 +14,14 @@ Add the following dependency to use this package:
 
 ```bash
 <dependency>
-    <groupId>com.sky.sdc.qa</groupId>
-    <artifactId>sdc-qa-config</artifactId>
+    <groupId>com.sitture</groupId>
+    <artifactId>env-config</artifactId>
     <version>${version}</version>
 </dependency>
 ```
 
 ```bash
-com.sky.sdc.qa:sdc-qa-config:${version}'
+com.sitture:env-config:${version}'
 ```
 
 To start using this:
@@ -55,6 +57,6 @@ Config.get("my.property", "defaultValue");
 Config.driver().getEnvironment();
 // browser specific
 Config.browser().getName();
-// appium specific 
+// appium specific
 Config.appium().getPlatform();
 ```
