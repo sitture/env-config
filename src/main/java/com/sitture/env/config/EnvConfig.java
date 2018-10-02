@@ -4,17 +4,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class Config extends ConfigLoader {
+public final class EnvConfig extends ConfigLoader {
 
-	private static final Logger LOG = LoggerFactory.getLogger(Config.class);
-	protected static Config config;
+	private static final Logger LOG = LoggerFactory.getLogger(EnvConfig.class);
+	protected static EnvConfig envConfig;
 
-	private Config() {
+	private EnvConfig() {
 		loadConfigurations();
 	}
 
@@ -23,26 +22,11 @@ public final class Config extends ConfigLoader {
 	 *
 	 * @return instance of Config
 	 */
-	public static synchronized Config getConfig() {
-		if (config == null) {
-			config = new Config();
+	public static synchronized EnvConfig getConfig() {
+		if (envConfig == null) {
+			envConfig = new EnvConfig();
 		}
-		return config;
-	}
-
-	public static DriverConfiguration driver() {
-		getConfig();
-		return ConfigFactory.create(DriverConfiguration.class, System.getProperties(), EnvironmentVariables.getEnvMap());
-	}
-
-	public static BrowserConfiguration browser() {
-		getConfig();
-		return ConfigFactory.create(BrowserConfiguration.class, System.getProperties(), EnvironmentVariables.getEnvMap());
-	}
-
-	public static AppiumConfiguration appium() {
-		getConfig();
-		return ConfigFactory.create(AppiumConfiguration.class, System.getProperties(), EnvironmentVariables.getEnvMap());
+		return envConfig;
 	}
 
 	/**
