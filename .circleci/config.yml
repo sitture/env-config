@@ -29,6 +29,8 @@ jobs:
 
       # run tests!
       - run: mvn clean test -Dmaven.javadoc.skip=true -Dgpg.skip
+      - store_test_results:
+          path: target/surefire-reports/
 
   deploy:
     docker:
