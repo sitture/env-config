@@ -118,7 +118,7 @@ public final class EnvConfig extends ConfigLoader {
 	 * @return env property value.
 	 */
 	public static String getEnvironment() {
-		return getConfig().getProperty(ENV_KEY);
+		return getConfig().getProperty(CONFIG_ENV_KEY);
 	}
 
 	private CompositeConfiguration getCompositeConfig() {
