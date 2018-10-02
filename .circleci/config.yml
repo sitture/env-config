@@ -28,7 +28,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn clean test
+      - run: mvn clean test -Dmaven.javadoc.skip=true -Dgpg.skip
 
   deploy:
     docker:
@@ -39,6 +39,8 @@ jobs:
           name: Push To Maven
           command: |
             echo "on a tag -> set pom.xml <version> to $CIRCLE_TAG"
+            echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
+            echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
             mvn -q --settings .circleci/settings.xml org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=$CIRCLE_TAG
             mvn -Prelease clean deploy --settings .circleci/settings.xml -DskipTests=true -B -U
 
