@@ -13,18 +13,18 @@ public class EnvConfigTest {
 
 	@Before
 	public void setup() {
-		environmentVariables.clear("ENV", "ENV_DIR");
+		environmentVariables.clear("CONFIG_ENV", "CONFIG_DIR");
 	}
 
 	@Test
 	public void testCanGetDefaultEnvironment() {
-		System.setProperty("env", "default");
+		System.setProperty("config.env", "default");
 		Assert.assertEquals("default", EnvConfig.getEnvironment());
 	}
 
 	@Test
 	public void testCanGetEnvironment() {
-		System.setProperty("env", "ios");
+		System.setProperty("config.env", "ios");
 		Assert.assertEquals("ios", EnvConfig.getEnvironment());
 	}
 

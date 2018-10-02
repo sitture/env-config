@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 abstract class ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
-	protected static final String ENV_KEY = "env";
+	protected static final String ENV_KEY = "config.env";
 	protected static final String DEFAULT_ENVIRONMENT = "default";
-	private static final String ENV_DIR = "env.dir";
+	private static final String ENV_DIR = "config.dir";
 	private static final String DEFAULT_ENV_DIRECTORY = "config";
 	protected static CompositeConfiguration configuration;
 
