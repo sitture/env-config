@@ -1,20 +1,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<groupId>com.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1.0</version>
+
 	<name>env-config</name>
+	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
 	<url>https://github.com/sitture/env-config</url>
 
 	<developers>
 		<developer>
 			<name>Haroon Sheikh</name>
-			<email>haroon@sitture.com</email>
-			<organization>Sitture</organization>
+			<id>haroon-sheikh</id>
+			<url>https://github.com/haroon-sheikh</url>
+			<roles>
+				<role>Owner</role>
+			</roles>
 		</developer>
 	</developers>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<url>https://github.com/sitture/env-config/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:git:git://github.com/sitture/env-config.git</connection>
+		<url>https://github.com/sitture/env-config</url>
+		<developerConnection>scm:git:https://github.com/sitture/env-config.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<commons-beanutils.version>1.9.3</commons-beanutils.version>
+		<commons-configuration2.version>2.2</commons-configuration2.version>
+		<slf4j.version>1.7.22</slf4j.version>
+		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+		<system-rules.version>1.17.2</system-rules.version>
+		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+        <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+	</properties>
 
 	<build>
 		<plugins>
@@ -78,17 +118,6 @@
 		</plugins>
 	</build>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<commons-beanutils.version>1.9.3</commons-beanutils.version>
-		<commons-configuration2.version>2.2</commons-configuration2.version>
-		<slf4j.version>1.7.22</slf4j.version>
-		<owner.version>1.0.9</owner.version>
-		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-		<system-rules.version>1.17.2</system-rules.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.github.stefanbirkner</groupId>
@@ -124,37 +153,80 @@
 			<version>${slf4j.version}</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>org.aeonbits.owner</groupId>
-			<artifactId>owner</artifactId>
-			<version>${owner.version}</version>
-		</dependency>
 	</dependencies>
 
-	<pluginRepositories>
-		<pluginRepository>
- 			<id>central</id>
- 			<url>https://repo1.maven.org/maven2</url>
- 			<releases>
- 				<enabled>true</enabled>
- 			</releases>
- 		</pluginRepository>
-		<pluginRepository>
-			<id>sky-artifactory</id>
-			<url>https://sky.jfrog.io/sky/maven-releases</url>
-		</pluginRepository>
-	</pluginRepositories>
-
 	<distributionManagement>
-		<repository>
-			<id>sky-artifactory</id>
-			<name>sky-releases</name>
-			<url>https://sky.jfrog.io/sky/maven-releases-local</url>
-		</repository>
 		<snapshotRepository>
-			<id>sky-artifactory</id>
-			<name>sky-snapshots</name>
-			<url>https://sky.jfrog.io/sky/maven-snapshots-local</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
 	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>${nexus-staging-maven-plugin.version}</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>${maven-source-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${maven-javadoc-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>${maven-gpg-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

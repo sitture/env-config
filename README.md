@@ -1,6 +1,6 @@
 # env-config
 
-A simple utility to manage environment configs in Java-based projects by merging `*.properties` files and environment variables overrides.
+A simple utility to manage environment configs in Java-based projects by merging `*.properties` files with environment variables overrides.
 
 [![CircleCI](https://circleci.com/gh/sitture/env-config.svg?style=shield)](https://circleci.com/gh/sitture/env-config) [![Maintainability](https://api.codeclimate.com/v1/badges/338645e6d3c853fcb93e/maintainability)](https://codeclimate.com/github/sitture/env-config/maintainability) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)](https://opensource.org/licenses/MIT) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](../../issues)
 

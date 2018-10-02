@@ -30,8 +30,26 @@ jobs:
       # run tests!
       - run: mvn clean test
 
+  deploy:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    steps:
+      - checkout
+      - run:
+          name: Push To Maven
+          command: |
+            echo "on a tag -> set pom.xml <version> to $CIRCLE_TAG"
+            mvn -q --settings .circleci/settings.xml org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=$CIRCLE_TAG
+            mvn -Prelease clean deploy --settings .circleci/settings.xml -DskipTests=true -B -U
+
 workflows:
   version: 2
-  build:
+  build_and_deploy:
     jobs:
       - build
+      - deploy:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
