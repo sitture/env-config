@@ -1,4 +1,4 @@
-package com.sky.sdc.qa.config;
+package com.sitture.env.config;
 
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Config.Sources;

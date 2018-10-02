@@ -1,4 +1,4 @@
-package com.sky.sdc.qa.config;
+package com.sitture.env.config;
 
 import java.util.HashMap;
 import java.util.Map;
