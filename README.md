@@ -106,6 +106,10 @@ You can override any property set in the environment properties file by setting 
 
 E.g. `my.env.property` can be overridden by `MY_ENV_PROPERTY` environment variable.
 
+### Get all `EnvConfig.getConfig()`
+
+You can get a full list of available properties with `EnvConfig..getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
+
 ## Issues & Contributions
 
 Please [open an issue here](../../issues) on GitHub if you have a problem, suggestion, or other comment.
