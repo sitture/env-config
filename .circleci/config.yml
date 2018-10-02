@@ -44,7 +44,9 @@ jobs:
             echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
             echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
             mvn -q --settings .circleci/settings.xml org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=$CIRCLE_TAG
-            mvn -Prelease clean deploy --settings .circleci/settings.xml -DskipTests=true -B -U
+            mvn -Prelease clean deploy --settings .circleci/settings.xml -B
+      - store_test_results:
+          path: target/surefire-reports/
 
 workflows:
   version: 2
