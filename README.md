@@ -2,11 +2,9 @@
 
 A simple utility to manage environment configs in Java-based projects by merging `*.properties` files and environment variables overrides.
 
-This project adheres to [Semantic Versioning](https://semver.org). Given a version number __MAJOR.MINOR.PATCH__, increment the:
-
-* __MAJOR__ version when you make incompatible API changes,
-* __MINOR__ version when you add functionality in a backwards-compatible manner, and
-* __PATCH__ version when you make backwards-compatible bug fixes.
+All notable changes to this project are documented in [CHANGELOG.md](CHANGELOG.md).
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Usage
 
