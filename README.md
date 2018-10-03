@@ -105,7 +105,7 @@ EnvConfig.get("my.property", true);
 
 If the property isn't set then a `ConfigException` is thrown.
 
-### Get property with default
+### Get property with `defaultValue`
 
 ```java
 // return a default value when a property isn't found
