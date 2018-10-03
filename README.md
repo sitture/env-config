@@ -94,8 +94,20 @@ To get a property set either in the properties file, system property or environm
 EnvConfig.get("my.property");
 EnvConfig.getInt("my.property");
 EnvConfig.getBool("my.property");
+```
+
+### Get `required` property
+
+```java
 // when a property is required to continue
 EnvConfig.get("my.property", true);
+```
+
+If the property isn't set then a `ConfigException` is thrown.
+
+### Get property with default
+
+```java
 // return a default value when a property isn't found
 EnvConfig.get("my.property", "defaultValue");
 ```
