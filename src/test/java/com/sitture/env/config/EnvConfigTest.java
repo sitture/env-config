@@ -24,8 +24,8 @@ public class EnvConfigTest {
 
 	@Test
 	public void testCanGetEnvironment() {
-		System.setProperty("config.env", "ios");
-		Assert.assertEquals("ios", EnvConfig.getEnvironment());
+		System.setProperty("config.env", "test");
+		Assert.assertEquals("test", EnvConfig.getEnvironment());
 	}
 
 	@Test
