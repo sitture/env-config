@@ -69,8 +69,8 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	*
 	* Clears an existing property.
+	*
 	* @param property
 	* 					Name of the property to clear
 	*/
@@ -79,8 +79,8 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	*
 	* Clears a property from the config.
+	*
 	* @param property
 	* 					Name of the property to clear
 	*/
