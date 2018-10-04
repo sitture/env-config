@@ -69,6 +69,26 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
+	*
+	* Clears an existing property.
+	* @param property
+	* 					Name of the property to clear
+	*/
+	private void clearProperty(final String property) {
+		getConfiguration().clearProperty(property);
+	}
+
+	/**
+	*
+	* Clears a property from the config.
+	* @param property
+	* 					Name of the property to clear
+	*/
+	public static void clear(final String property) {
+		getConfig().clearProperty(property);
+	}
+
+	/**
 	 * Set a property into the config with given Object value.
 	 * @param property
 	 *            Key of the config entry

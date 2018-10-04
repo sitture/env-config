@@ -142,6 +142,14 @@ The `.set(...)` can be used for both existing and non-existing properties.
 
 You can get a full list of available properties with `EnvConfig.getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
 
+
+### Clear property `EnvConfig.clear("...")`
+
+You can clear an existing property in EnvConfig:
+```java
+EnvConfig.clear("my.property")
+```
+
 ## Issues & Contributions
 
 Please [open an issue here](../../issues) on GitHub

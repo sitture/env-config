@@ -89,4 +89,11 @@ public class EnvConfigTest {
 		Assert.assertEquals("value", EnvConfig.get("property2"));
 	}
 
+	@Test
+	public void testCanClearProperty() {
+		System.setProperty("property", "value");
+		EnvConfig.clear("property");
+		Assert.assertNull(System.getProperty("property"));
+	}
+
 }
