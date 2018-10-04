@@ -118,6 +118,14 @@ You can override any property set in the environment properties file by setting 
 
 E.g. `my.env.property` can be overridden by `MY_ENV_PROPERTY` environment variable.
 
+### Add property `EnvConfig.add("...")`
+
+You can add key/value pairs to the EnvConfig to be accessed somewhere else in the project.
+
+```java
+EnvConfig.add("my.property", "my_value");
+```
+
 ### Get all `EnvConfig.getConfig()`
 
 You can get a full list of available properties with `EnvConfig..getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.

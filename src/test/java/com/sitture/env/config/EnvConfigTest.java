@@ -63,5 +63,18 @@ public class EnvConfigTest {
 	public void testMissingVariableExceptionThrown() {
 		EnvConfig.get("non.existing", true);
 	}
+	
+	@Test
+	public void testCanAddANewProperty() {
+		EnvConfig.add("1", 1);
+		Assert.assertEquals(1, EnvConfig.getInteger("1"));
+		Assert.assertEquals("1", EnvConfig.get("1"));
+		Assert.assertFalse(EnvConfig.getBool("1"));
+		EnvConfig.add("1", "1");
+		Assert.assertEquals(1, EnvConfig.getInteger("1"));
+		Assert.assertEquals("1", EnvConfig.get("1"));
+		EnvConfig.add("flag", true);
+		Assert.assertTrue(EnvConfig.getBool("flag"));
+	}
 
 }

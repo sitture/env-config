@@ -33,8 +33,7 @@ public final class EnvConfig extends ConfigLoader {
 	 * Returns value of the property 'property' of empty string if the property
 	 * is not found.
 	 *
-	 * @param property
-	 *            Name of the property to get value of
+	 * @param property - Name of the property to get value of
 	 * @return value of the property of empty string
 	 */
 	private String getProperty(final String property) {
@@ -44,6 +43,25 @@ public final class EnvConfig extends ConfigLoader {
 		}
 		return null != value ? value.trim() : value;
 	}
+	
+	/**
+	 * Adds a property to the config.
+	 *
+	 * @param property - Name of the property to add value of
+	 */
+	private void addProperty(final String property, final Object value) {
+		getConfiguration().addProperty(property, value);
+	}
+	
+	/**
+     * Adds a property into the config with given Object value.
+     * 
+     * @param property - Key of the config entry
+     * @param value - value of the config entry
+     */
+    public static void add(final String property, final Object value) {
+    	getConfig().addProperty((String) property, value);
+    }
 
 	/**
 	 * Get property from file.
