@@ -126,6 +126,14 @@ You can add key/value pairs to the EnvConfig to be accessed somewhere else in th
 EnvConfig.add("my.property", "my_value");
 ```
 
+### Set property `EnvConfig.set("...")`
+
+You can set/update an existing property in EnvConfig:
+
+```java
+EnvConfig.set("my.property", "my_value");
+```
+
 ### Get all `EnvConfig.getConfig()`
 
 You can get a full list of available properties with `EnvConfig..getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
