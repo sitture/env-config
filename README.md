@@ -140,7 +140,7 @@ The `.set(...)` can be used for both existing and non-existing properties.
 
 ### Get all `EnvConfig.getConfig()`
 
-You can get a full list of available properties with `EnvConfig..getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
+You can get a full list of available properties with `EnvConfig.getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
 
 ## Issues & Contributions
 
