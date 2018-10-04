@@ -1,7 +1,6 @@
 # env-config
 
-A simple utility to manage environment configs in Java-based projects
-by merging `*.properties` files with environment variables overrides.
+A simple utility to manage environment configs in Java-based projects by merging `*.properties` files with environment variables overrides.
 
 [![CircleCI](https://circleci.com/gh/sitture/env-config.svg?style=shield)](https://circleci.com/gh/sitture/env-config) [![Maven Central](https://img.shields.io/maven-central/v/com.sitture/env-config.svg)](https://mvnrepository.com/search?q=com.sitture) [![Maintainability](https://api.codeclimate.com/v1/badges/338645e6d3c853fcb93e/maintainability)](https://codeclimate.com/github/sitture/env-config/maintainability) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)](https://opensource.org/licenses/MIT) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](../../issues)
 
@@ -35,8 +34,7 @@ To start using this:
 
 ### `config` directory
 
-The default required directory for configuration files in `config` under project root.
-This can be overridden by `CONFIG_DIR` environment variable.
+The default required directory for configuration files in `config` under project root. This can be overridden by `CONFIG_DIR` environment variable.
 
 * create a directory called `config` in project root.
 
@@ -46,8 +44,7 @@ The default environment is set to `default` and
 can be overridden by `CONFIG_ENV` environment variable.
 
 1. create a `default` environment subdirectory under `config` directory.
-2. create a `default.properties` file in the `default` directory.
-E.g. `config/default/default.properties`
+2. create a `default.properties` file in the `default` directory. E.g. `config/default/default.properties`
 
 ```bash
 # formatted as key=value
@@ -55,8 +52,7 @@ my.first.property=my_first_value
 my.second.property=my_second_value
 ```
 
-You can add multiple `.properties` files under environment directory.
-E.g. You may want to split the property files into:
+You can add multiple `.properties` files under environment directory. E.g. You may want to split the property files into:
 
 ```text
 .
@@ -80,9 +76,7 @@ E.g. You may want to split the property files into:
 
 ### Environment priority
 
-The `EnvConfig` will go through properties set under your environment and then load properties
-from default environment ignoring the ones already set. You can keep the shared properties
-under your `default` environment without having to repeat them in every other environment.
+The `EnvConfig` will go through properties set under your environment and then load properties from default environment ignoring the ones already set. You can keep the shared properties under your `default` environment without having to repeat them in every other environment.
 
 ### Current environment
 
@@ -118,13 +112,11 @@ If the property isn't set then a `ConfigException` is thrown.
 EnvConfig.get("my.property", "defaultValue");
 ```
 
-__Note:__ All the environment variable names are set to properties naming convention.
-E.g. `MY_ENV_VAR` can be accessed by `EnvConfig.get("my.env.var");`
+__Note:__ All the environment variable names are set to properties naming convention. E.g. `MY_ENV_VAR` can be accessed by `EnvConfig.get("my.env.var");`
 
 ### Property overrides
 
-You can override any property set in the environment properties file
-by setting an system environment variable.
+You can override any property set in the environment properties file by setting an system environment variable.
 
 E.g. `my.env.property` can be overridden by `MY_ENV_PROPERTY` environment variable.
 
@@ -148,17 +140,13 @@ The `.set(...)` can be used for both existing and non-existing properties.
 
 ### Get all `EnvConfig.getConfig()`
 
-You can get a full list of available properties with `EnvConfig..getConfig()`
-which is a combination of properties from `config` directory,
-system properties and all environment variables.
+You can get a full list of available properties with `EnvConfig..getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
 
 ## Issues & Contributions
 
 Please [open an issue here](../../issues) on GitHub
 if you have a problem, suggestion, or other comment.
 
-Pull requests are welcome and encouraged!
-Any contributions should include new or updated unit tests as necessary
-to maintain thorough test coverage.
+Pull requests are welcome and encouraged! Any contributions should include new or updated unit tests as necessary to maintain thorough test coverage.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
