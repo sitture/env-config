@@ -13,6 +13,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 Add the following dependency to use this EnvConfig:
 
 ### Maven
+
 ```xml
 <dependency>
     <groupId>com.sitture</groupId>
@@ -33,7 +34,8 @@ To start using this:
 
 ### `config` directory
 
-The default required directory for configuration files in `config` under project root. This can be overridden by `CONFIG_DIR` environment variable.
+The default required directory for configuration files in `config` under project root.
+This can be overridden by `CONFIG_DIR` environment variable.
 
 * create a directory called `config` in project root.
 
@@ -74,7 +76,9 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 
 ### Environment priority
 
-The `EnvConfig` will go through properties set under your environment and then load properties from default environment ignoring the ones already set. You can keep the shared properties under your `default` environment without having to repeat them in every other environment.
+The `EnvConfig` will go through properties set under your environment and then load properties
+from default environment ignoring the ones already set. You can keep the shared properties
+under your `default` environment without having to repeat them in every other environment.
 
 ### Current environment
 
@@ -110,11 +114,13 @@ If the property isn't set then a `ConfigException` is thrown.
 EnvConfig.get("my.property", "defaultValue");
 ```
 
-__Note:__ All the environment variable names are set to properties naming convention. E.g. `MY_ENV_VAR` can be accessed by `EnvConfig.get("my.env.var");`.
+__Note:__ All the environment variable names are set to properties naming convention.
+E.g. `MY_ENV_VAR` can be accessed by `EnvConfig.get("my.env.var");`
 
 ### Property overrides
 
-You can override any property set in the environment properties file by setting an system environment variable.
+You can override any property set in the environment properties file
+by setting an system environment variable.
 
 E.g. `my.env.property` can be overridden by `MY_ENV_PROPERTY` environment variable.
 
@@ -134,16 +140,20 @@ You can set/update an existing property in EnvConfig:
 EnvConfig.set("my.property", "my_value");
 ```
 
-The `.set(...)` can be used for both existing and non-existing properties. 
+The `.set(...)` can be used for both existing and non-existing properties.
 
 ### Get all `EnvConfig.getConfig()`
 
-You can get a full list of available properties with `EnvConfig..getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
+You can get a full list of available properties with `EnvConfig..getConfig()`
+which is a combination of properties from `config` directory,
+system properties and all environment variables.
 
 ## Issues & Contributions
 
 Please [open an issue here](../../issues) on GitHub if you have a problem, suggestion, or other comment.
 
-Pull requests are welcome and encouraged! Any contributions should include new or updated unit tests as necessary to maintain thorough test coverage.
+Pull requests are welcome and encouraged!
+Any contributions should include new or updated unit tests as necessary
+to maintain thorough test coverage.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.

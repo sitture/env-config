@@ -8,8 +8,8 @@ public class MissingVariableException extends RuntimeException {
 		super(e);
 	}
 
-	public MissingVariableException(String message, Throwable e) {
-		super(message, e);
+	public MissingVariableException(String message, Throwable error) {
+		super(message, error);
 	}
 
 	public MissingVariableException(String message) {

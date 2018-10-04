@@ -126,7 +126,8 @@ public final class EnvConfig extends ConfigLoader {
 	public static String get(final String property, final boolean required) {
 		final String value = get(property);
 		if (null == value && required) {
-			throw new MissingVariableException("Missing required variable '" + property + "'");
+			throw new MissingVariableException(
+					"Missing required variable '" + property + "'");
 		}
 		return value;
 	}
@@ -145,8 +146,8 @@ public final class EnvConfig extends ConfigLoader {
 	/**
 	 * returns a key/value from a named config, parsed as Boolean.
 	 *
-	 * @param key
-	 *            the key
+	 * @param property
+	 *            the property
 	 * @return a Boolean representing the value, false if the value cannot be
 	 *         parsed as Boolean
 	 */

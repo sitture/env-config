@@ -57,7 +57,8 @@ abstract class ConfigLoader {
 	private List<File> getConfigFiles(final String configPath) {
 		File configDir = new File(configPath);
 		if (!configDir.exists() || !configDir.isDirectory()) {
-			throw new ConfigException("'" + configPath + "' does not exist or not a valid config directory!");
+			throw new ConfigException(
+					"'" + configPath + "' does not exist or not a valid config directory!");
 		}
 
 		return getConfigProperties(configDir.listFiles(), configPath);
