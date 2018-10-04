@@ -144,7 +144,7 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	 * returns a key/value from a named config, parsed as Boolean.
+	 * Returns a key/value from a named config, parsed as Boolean.
 	 *
 	 * @param property
 	 *            the property
@@ -172,6 +172,8 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
+	 * Returns the composite configuration.
+	 * 
 	 * @return the configuration object.
 	 */
 	private static CompositeConfiguration getConfiguration() {

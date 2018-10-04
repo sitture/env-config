@@ -1,0 +1,17 @@
+engines:
+  # ... CONFIG CONTENT ...
+  markdownlint:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    checks:
+      MD024:
+        enabled: false
+      MD026:
+        enabled: false
+  checkstyle:
+    enabled: true
+    # ... CONFIG CONTENT ...
+    checks:
+      com.puppycrawl.tools.checkstyle.checks.sizes.LineLengthCheck:
+        enabled: false
+# ... CONFIG CONTENT ...

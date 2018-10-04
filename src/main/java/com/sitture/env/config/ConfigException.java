@@ -6,7 +6,7 @@ public class ConfigException extends RuntimeException {
 
 	/**
 	 * Constructs a new runtime exception.
-	 * @param e
+	 * @param error
 	 *            a {@link java.lang.Throwable} object.
 	 */
 	public ConfigException(Throwable error) {
@@ -17,7 +17,7 @@ public class ConfigException extends RuntimeException {
 	 * Constructs a new runtime exception.
 	 * @param message
 	 *            a {@link java.lang.String} object.
-	 * @param e
+	 * @param error
 	 *            a {@link java.lang.Throwable} object.
 	 */
 	public ConfigException(String message, Throwable error) {
