@@ -43,7 +43,7 @@ public final class EnvConfig extends ConfigLoader {
 		}
 		return null != value ? value.trim() : value;
 	}
-	
+
 	/**
 	 * Adds a property to the config.
 	 *
@@ -52,16 +52,15 @@ public final class EnvConfig extends ConfigLoader {
 	private void addProperty(final String property, final Object value) {
 		getConfiguration().addProperty(property, value);
 	}
-	
+
 	/**
-     * Adds a property into the config with given Object value.
-     * 
-     * @param property - Key of the config entry
-     * @param value - value of the config entry
-     */
-    public static void add(final String property, final Object value) {
-    	getConfig().addProperty((String) property, value);
-    }
+	 * Adds a property into the config with given Object value.
+	 * @param property - Key of the config entry
+	 * @param value - value of the config entry
+	 */
+	public static void add(final String property, final Object value) {
+		getConfig().addProperty((String) property, value);
+	}
 
 	/**
 	 * Get property from file.
@@ -108,21 +107,20 @@ public final class EnvConfig extends ConfigLoader {
 	/**
 	 * Get property from file.
 	 *
-	 * @param property
-	 *            property name.
+	 * @param property - property name.
 	 * @return property value.
 	 */
 	public static int getInteger(final String property) {
 		return Integer.parseInt(get(property));
 	}
 
-	 /**
-     * returns a key/value from a named config, parsed as Boolean.
-     *
-     * @param key the key
-     * @return a Boolean representing the value, false if the value cannot be
-     * parsed as Boolean
-     */
+	/**
+	 * returns a key/value from a named config, parsed as Boolean.
+	 *
+	 * @param key the key
+	 * @return a Boolean representing the value, false if the value cannot be
+	 *         parsed as Boolean
+	 */
 	public static boolean getBool(final String property) {
 		if (null == get(property)) {
 			return false;

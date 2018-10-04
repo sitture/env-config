@@ -63,7 +63,7 @@ public class EnvConfigTest {
 	public void testMissingVariableExceptionThrown() {
 		EnvConfig.get("non.existing", true);
 	}
-	
+
 	@Test
 	public void testCanAddANewProperty() {
 		EnvConfig.add("1", 1);
