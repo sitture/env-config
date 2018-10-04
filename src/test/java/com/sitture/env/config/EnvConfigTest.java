@@ -77,4 +77,16 @@ public class EnvConfigTest {
 		Assert.assertTrue(EnvConfig.getBool("flag"));
 	}
 
+	@Test
+	public void testCanSetProperty() {
+		System.setProperty("property", "value");
+		Assert.assertEquals("value", EnvConfig.get("property"));
+		// re-assign to an existing property
+		EnvConfig.set("property", "updatedValue");
+		Assert.assertEquals("updatedValue", EnvConfig.get("property"));
+		// set a new property
+		EnvConfig.set("property2", "value");
+		Assert.assertEquals("value", EnvConfig.get("property2"));
+	}
+
 }

@@ -33,7 +33,8 @@ public final class EnvConfig extends ConfigLoader {
 	 * Returns value of the property 'property' of empty string if the property
 	 * is not found.
 	 *
-	 * @param property - Name of the property to get value of
+	 * @param property
+	 *            Name of the property to get value of
 	 * @return value of the property of empty string
 	 */
 	private String getProperty(final String property) {
@@ -47,24 +48,50 @@ public final class EnvConfig extends ConfigLoader {
 	/**
 	 * Adds a property to the config.
 	 *
-	 * @param property - Name of the property to add value of
+	 * @param property
+	 *            Name of the property to add value of
+	 * @param value
+	 *            Value to be assigned to the property
 	 */
 	private void addProperty(final String property, final Object value) {
 		getConfiguration().addProperty(property, value);
 	}
 
 	/**
+	 * Sets an existing property to given new value.
+	 * @param property
+	 *            Name of the property to set value of
+	 * @param value
+	 *            Value to be assigned to the existing property
+	 */
+	private void setProperty(final String property, final Object value) {
+		getConfiguration().setProperty(property, value);
+	}
+
+	/**
+	 * Set a property into the config with given Object value.
+	 * @param property
+	 *            Key of the config entry
+	 * @param value
+	 *            value of the config entry
+	 */
+	public static void set(final String property, final Object value) {
+		getConfig().setProperty(property, value);
+	}
+
+	/**
 	 * Adds a property into the config with given Object value.
-	 * @param property - Key of the config entry
-	 * @param value - value of the config entry
+	 * @param property
+	 *            Key of the config entry
+	 * @param value
+	 *            value of the config entry
 	 */
 	public static void add(final String property, final Object value) {
-		getConfig().addProperty((String) property, value);
+		getConfig().addProperty(property, value);
 	}
 
 	/**
 	 * Get property from file.
-	 *
 	 * @param property
 	 *            property name.
 	 * @return property value.
@@ -107,7 +134,8 @@ public final class EnvConfig extends ConfigLoader {
 	/**
 	 * Get property from file.
 	 *
-	 * @param property - property name.
+	 * @param property
+	 *            - property name.
 	 * @return property value.
 	 */
 	public static int getInteger(final String property) {
@@ -117,7 +145,8 @@ public final class EnvConfig extends ConfigLoader {
 	/**
 	 * returns a key/value from a named config, parsed as Boolean.
 	 *
-	 * @param key the key
+	 * @param key
+	 *            the key
 	 * @return a Boolean representing the value, false if the value cannot be
 	 *         parsed as Boolean
 	 */
