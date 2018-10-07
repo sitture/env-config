@@ -138,10 +138,6 @@ EnvConfig.set("my.property", "my_value");
 
 The `.set(...)` can be used for both existing and non-existing properties.
 
-### Get all `EnvConfig.getConfig()`
-
-You can get a full list of available properties with `EnvConfig.getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
-
 ### Clear property `EnvConfig.clear("...")`
 
 You can clear an existing property in EnvConfig:
@@ -149,6 +145,10 @@ You can clear an existing property in EnvConfig:
 ```java
 EnvConfig.clear("my.property")
 ```
+
+### Get all `EnvConfig.getConfig()`
+
+You can get a full list of available properties with `EnvConfig.getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
 
 ## Issues & Contributions
 
