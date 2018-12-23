@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: maven:3-jdk-8-alpine
 
     working_directory: ~/env-config
 
@@ -34,7 +34,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: maven:3-jdk-8-alpine
     steps:
       - checkout
       - run:
