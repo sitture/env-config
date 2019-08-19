@@ -16,7 +16,7 @@ abstract class ConfigLoader {
 	protected static final String CONFIG_ENV_KEY = "config.env";
 	protected static final String DEFAULT_ENVIRONMENT = "default";
 	private static final String CONFIG_DIR = "config.dir";
-	private static final String DEFAULT_ENV_DIRECTORY = "config";
+	private static final String DEFAULT_ENV_DIRECTORY = "env";
 	protected static CompositeConfiguration configuration;
 
 	private String getProperty(final String key, final String defaultValue) {
@@ -60,7 +60,6 @@ abstract class ConfigLoader {
 			throw new ConfigException(
 					"'" + configPath + "' does not exist or not a valid config directory!");
 		}
-
 		return getConfigProperties(configDir.listFiles(), configPath);
 	}
 
@@ -68,32 +67,37 @@ abstract class ConfigLoader {
 		if (configFiles.length == 0) {
 			throw new ConfigException("No property files found under '" + configPath + "'");
 		}
-
 		return getFilteredPropertiesFiles(configFiles);
 	}
 
 	private List<File> getFilteredPropertiesFiles(File[] configFiles) {
 		List<File> filteredFiles = new ArrayList<File>();
 		for (File file : configFiles) {
-			if (isValidProperties(file)) {
+			if (isValidPropertiesFile(file)) {
 				filteredFiles.add(file);
 			}
 		}
 		return filteredFiles;
 	}
 
-	private boolean isValidProperties(final File file) {
+	private boolean isValidPropertiesFile(final File file) {
 		return file.getName().endsWith(".properties");
 	}
 
 	protected void loadConfigurations() {
 		configuration = new CompositeConfiguration();
 		loadEnvConfigurations();
+		loadKeePassConfigurations();
 		final String env = getEnv();
 		loadFileConfigurations(getConfigPath(env));
 		if (!env.equals(DEFAULT_ENVIRONMENT)) {
 			loadFileConfigurations(getConfigPath(DEFAULT_ENVIRONMENT));
 		}
+	}
+
+	private void loadKeePassConfigurations() {
+		final KeePassEntries keepassEntries = new KeePassEntries();
+		configuration.addConfiguration(keepassEntries.getEntriesConfiguration("europa-e2e", getEnv()));
 	}
 
 	private void loadEnvConfigurations() {
