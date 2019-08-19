@@ -38,6 +38,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install gpg
+          command: apk add --update gpg
+      - run:
           name: Push To Maven
           command: |
             echo "on a tag -> set pom.xml <version> to $CIRCLE_TAG"
