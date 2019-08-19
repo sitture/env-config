@@ -1,4 +1,4 @@
-package com.sitture.env.config;
+package com.github.sitture.env.config;
 
 public class MissingVariableException extends RuntimeException {
 
