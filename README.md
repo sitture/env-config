@@ -74,7 +74,7 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 │       └── integration.properties
 ```
 
-### KeePass Database Entries
+### `KeePass` Database Entries
 
 If you have secret password which cannot be stored as plain text within project repository, you can store them into a password-protected [KeePass](https://keepass.info/) database file.
 
