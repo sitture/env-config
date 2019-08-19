@@ -13,14 +13,17 @@ import org.slf4j.LoggerFactory;
 abstract class ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
-	protected static final String CONFIG_ENV_KEY = "config.env";
-	protected static final String DEFAULT_ENVIRONMENT = "default";
+	static final String CONFIG_ENV_KEY = "config.env";
+	private static final String DEFAULT_ENVIRONMENT = "default";
 	private static final String CONFIG_DIR = "config.dir";
-	private static final String DEFAULT_ENV_DIRECTORY = "env";
-	protected static CompositeConfiguration configuration;
+	private static final String DEFAULT_ENV_DIRECTORY = "config";
+	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
+	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
+	private static final String CONFIG_KEEPASS_MASTERKEY_KEY = "CONFIG_KEEPASS_MASTERKEY";
+	static CompositeConfiguration configuration;
 
 	private String getProperty(final String key, final String defaultValue) {
-		String value = System.getenv(key.replace(".", "_").toUpperCase());
+		String value = System.getenv(key);
 		if (null != value) {
 			setProperty(key, value);
 			return value;
@@ -30,7 +33,7 @@ abstract class ConfigLoader {
 		return value;
 	}
 
-	protected String getEnv() {
+	private String getEnv() {
 		return getProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
 	}
 
@@ -45,13 +48,26 @@ abstract class ConfigLoader {
 
 	private String getBuildDir() {
 		final String workingDirectory = System.getProperty("user.dir");
-		final String buildDir = System.getProperty("project.build.directory", workingDirectory);
-		return buildDir;
+		return System.getProperty("project.build.directory", workingDirectory);
+	}
+
+	private String getConfigKeePassFilename() {
+		final String[] buildDir = getBuildDir().split(File.separator);
+		final String defaultFileName = buildDir[buildDir.length-1];
+		return getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
+	}
+
+	private String getConfigKeePassMasterKey() {
+		final String password = System.getenv(CONFIG_KEEPASS_MASTERKEY_KEY);
+		if (null == password) {
+			throw new MissingVariableException(
+					String.format("Missing required variable '%s'", CONFIG_KEEPASS_MASTERKEY_KEY));
+		}
+		return password;
 	}
 
 	private String getConfigPath(final String env) {
-		final String defaultConfig = getBuildDir() + File.separator + getConfigDir() + File.separator + env;
-		return defaultConfig;
+		return getBuildDir() + File.separator + getConfigDir() + File.separator + env;
 	}
 
 	private List<File> getConfigFiles(final String configPath) {
@@ -84,20 +100,24 @@ abstract class ConfigLoader {
 		return file.getName().endsWith(".properties");
 	}
 
-	protected void loadConfigurations() {
+	void loadConfigurations() {
 		configuration = new CompositeConfiguration();
 		loadEnvConfigurations();
-		loadKeePassConfigurations();
 		final String env = getEnv();
+		final String groupName = getConfigKeePassFilename();
+		System.out.println(getConfigKeePassFilename());
+		loadKeePassConfigurations(groupName, env);
+		loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
 		loadFileConfigurations(getConfigPath(env));
 		if (!env.equals(DEFAULT_ENVIRONMENT)) {
 			loadFileConfigurations(getConfigPath(DEFAULT_ENVIRONMENT));
 		}
 	}
 
-	private void loadKeePassConfigurations() {
-		final KeePassEntries keepassEntries = new KeePassEntries();
-		configuration.addConfiguration(keepassEntries.getEntriesConfiguration("europa-e2e", getEnv()));
+	private void loadKeePassConfigurations(final String groupName, final String env) {
+		final String masterKey = getConfigKeePassMasterKey();
+		final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName, env);
+		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
 	}
 
 	private void loadEnvConfigurations() {

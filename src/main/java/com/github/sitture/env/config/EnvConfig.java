@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public final class EnvConfig extends ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EnvConfig.class);
-	protected static EnvConfig envConfig;
+	private static EnvConfig envConfig;
 
 	private EnvConfig() {
 		loadConfigurations();
