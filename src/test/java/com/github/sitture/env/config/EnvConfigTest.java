@@ -1,4 +1,4 @@
-package com.sitture.env.config;
+package com.github.sitture.env.config;
 
 import org.junit.Assert;
 import org.junit.Before;
