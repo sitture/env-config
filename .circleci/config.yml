@@ -39,7 +39,7 @@ jobs:
       - checkout
       - run:
           name: install gpg
-          command: apk add --update gpg
+          command: apk add --no-cache gnupg
       - run:
           name: Push To Maven
           command: |
