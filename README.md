@@ -74,6 +74,24 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 │       └── integration.properties
 ```
 
+### KeePass Database Entries
+
+If you have secret password which cannot be stored as plain text within project repository, you can store them into a password-protected [KeePass](https://keepass.info/) database file.
+
+1. create a keepass database file, add to your resources folder. i.e. `src/main/resources` or `src/test/resources`.
+
+#### Configurations
+
+* `CONFIG_KEEPASS_ENABLED` - A flag to enable reading of the keePass file. Default is set to `false`.
+* `CONFIG_KEEPASS_FILENAME` - This is the name of the DB file. Default is the name of project directory.
+* `CONFIG_KEEPASS_MASTERKEY` - The key to access the DB file.
+
+#### KeePass Groups
+
+* The top level group should have the same name as the DB filename. e.g. if DB file is `env-config.kdbx` then top level group should be `env-config`.
+* The sub-groups should match with environment directory you have created above. For example, you should have `default` group for the default environment. 
+* The entries within the `default` will be shared across all environments similar to the environment directories behaviour.
+
 ### Environment priority
 
 The `EnvConfig` will go through properties set under your environment and then load properties from default environment ignoring the ones already set. You can keep the shared properties under your `default` environment without having to repeat them in every other environment.

@@ -3,7 +3,6 @@ package com.github.sitture.env.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -15,7 +14,7 @@ abstract class ConfigLoader {
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
 	static final String CONFIG_ENV_KEY = "config.env";
 	private static final String DEFAULT_ENVIRONMENT = "default";
-	private static final String CONFIG_DIR = "config.dir";
+	private static final String CONFIG_DIR_KEY = "config.dir";
 	private static final String DEFAULT_ENV_DIRECTORY = "config";
 	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
 	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
@@ -23,7 +22,7 @@ abstract class ConfigLoader {
 	static CompositeConfiguration configuration;
 
 	private String getProperty(final String key, final String defaultValue) {
-		String value = System.getenv(key);
+		String value = System.getenv(key.replace(".", "_").toUpperCase());
 		if (null != value) {
 			setProperty(key, value);
 			return value;
@@ -43,12 +42,16 @@ abstract class ConfigLoader {
 	}
 
 	private String getConfigDir() {
-		return getProperty(CONFIG_DIR, DEFAULT_ENV_DIRECTORY);
+		return getProperty(CONFIG_DIR_KEY, DEFAULT_ENV_DIRECTORY);
 	}
 
 	private String getBuildDir() {
 		final String workingDirectory = System.getProperty("user.dir");
 		return System.getProperty("project.build.directory", workingDirectory);
+	}
+
+	private boolean isConfigKeePassEnabled() {
+		return Boolean.parseBoolean(getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false"));
 	}
 
 	private String getConfigKeePassFilename() {
@@ -105,9 +108,10 @@ abstract class ConfigLoader {
 		loadEnvConfigurations();
 		final String env = getEnv();
 		final String groupName = getConfigKeePassFilename();
-		System.out.println(getConfigKeePassFilename());
-		loadKeePassConfigurations(groupName, env);
-		loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
+		if (isConfigKeePassEnabled()) {
+			loadKeePassConfigurations(groupName, env);
+			loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
+		}
 		loadFileConfigurations(getConfigPath(env));
 		if (!env.equals(DEFAULT_ENVIRONMENT)) {
 			loadFileConfigurations(getConfigPath(DEFAULT_ENVIRONMENT));
@@ -115,6 +119,7 @@ abstract class ConfigLoader {
 	}
 
 	private void loadKeePassConfigurations(final String groupName, final String env) {
+		LOG.debug(String.format("Loading keePass entries for %s/%s.", groupName, env));
 		final String masterKey = getConfigKeePassMasterKey();
 		final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName, env);
 		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
