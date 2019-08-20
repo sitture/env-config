@@ -51,7 +51,8 @@ abstract class ConfigLoader {
 	}
 
 	private boolean isConfigKeePassEnabled() {
-		return Boolean.parseBoolean(getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false"));
+		final String isKeePassEnabled = getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false");
+		return Boolean.parseBoolean(isKeePassEnabled);
 	}
 
 	private String getConfigKeePassFilename() {

@@ -15,7 +15,7 @@ public class EnvConfigTest {
 	public void setup() {
 		environmentVariables.clear("CONFIG_ENV", "CONFIG_DIR", "CONFIG_KEEPASS_ENABLED");
 		environmentVariables.set("CONFIG_KEEPASS_MASTERKEY", "envconfig");
-		System.setProperty("config.keepass.enabled", "true");
+		EnvConfig.reset();
 	}
 
 	@Test
@@ -100,6 +100,7 @@ public class EnvConfigTest {
 
 	@Test
 	public void testCanGetEntryFromKeepassDefaultGroup() {
+		System.setProperty("config.keepass.enabled", "true");
 		System.setProperty("config.env", "default");
 		// when my.keepass.property does not exist in default env.
 		// and only exists default group of keepass
@@ -108,6 +109,7 @@ public class EnvConfigTest {
 
 	@Test
 	public void testCanGetEntryFromKeepassDB() {
+		System.setProperty("config.keepass.enabled", "true");
 		System.setProperty("config.env", "test");
 		// when my.keepass.property exists in test env
 		// and only exists in default group of keepass
@@ -116,7 +118,18 @@ public class EnvConfigTest {
 	}
 
 	@Test
+	public void testCanGetEntryFromKeepassDisabled() {
+		System.setProperty("config.keepass.enabled", "false");
+		System.setProperty("config.env", "test");
+		// when my.keepass.property exists in test env
+		// and only exists in default group of keepass
+		// then keepass takes priority
+		Assert.assertEquals("my_value", EnvConfig.get("my.keepass.property"));
+	}
+
+	@Test
 	public void testCanGetKeepassOnlyEntry() {
+		environmentVariables.set("CONFIG_KEEPASS_ENABLED", "true");
 		System.setProperty("config.env", "test");
 		// when another.property does not exist in test env
 		// and exists in test group of keepass

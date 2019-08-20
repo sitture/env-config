@@ -29,6 +29,10 @@ public final class EnvConfig extends ConfigLoader {
 		return envConfig;
 	}
 
+	static synchronized void reset() {
+		envConfig = null;
+	}
+
 	/**
 	 * Returns value of the property 'property' of empty string if the property
 	 * is not found.
