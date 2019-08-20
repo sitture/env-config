@@ -1,29 +1,26 @@
 package com.github.sitture.env.config;
 
-import de.slackspace.openkeepass.KeePassDatabase;
-import de.slackspace.openkeepass.domain.Group;
-import de.slackspace.openkeepass.domain.KeePassFile;
-import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.MapConfiguration;
-
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-class KeePassEntries {
+import de.slackspace.openkeepass.KeePassDatabase;
+import de.slackspace.openkeepass.domain.Group;
+import de.slackspace.openkeepass.domain.KeePassFile;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.MapConfiguration;
 
-    public static void main(String[] args) {
-        new KeePassEntries("envconfig", "env-config", "default").getEntriesConfiguration();
-    }
+class KeePassEntries {
 
     private static Configuration entriesConfiguration;
     private static KeePassFile keePassFile;
+    private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
 
     KeePassEntries(final String masterKey, String groupName, final String env) {
-        if (null != groupName && groupName.endsWith(".kdbx")) {
-            groupName = groupName.split(".kdbx")[0];
+        if (null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)) {
+            groupName = groupName.split(KEEPASS_DB_FILE_EXTENSION)[0];
         }
         keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(groupName.concat(".kdbx"))).openDatabase(masterKey);
         entriesConfiguration = new MapConfiguration(getEntriesMap(groupName, env));
