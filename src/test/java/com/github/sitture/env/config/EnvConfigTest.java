@@ -143,10 +143,4 @@ public class EnvConfigTest {
 		Assert.assertEquals("ANOTHER_PROPERTY", EnvConfig.get("another.property"));
 	}
 
-	@Test(expected = MissingVariableException.class)
-	public void testMissingVariableExceptionThrownWhenNoKeePassMasterKey() {
-		System.setProperty(CONFIG_KEEPASS_ENABLED_KEY, "true");
-		EnvConfig.get("another.property");
-	}
-
 }
