@@ -49,7 +49,8 @@
 		<commons-configuration2.version>2.2</commons-configuration2.version>
 		<slf4j.version>1.7.22</slf4j.version>
 		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-		<system-rules.version>1.17.2</system-rules.version>
+		<system-rules.version>1.19.0</system-rules.version>
+		<openkeepass.version>0.8.1</openkeepass.version>
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
@@ -62,8 +63,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
@@ -126,6 +127,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>de.slackspace</groupId>
+			<artifactId>openkeepass</artifactId>
+			<version>${openkeepass.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>${commons-beanutils.version}</version>
@@ -144,12 +150,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
 			<version>${slf4j.version}</version>
 			<type>jar</type>
 		</dependency>

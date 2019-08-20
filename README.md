@@ -40,8 +40,7 @@ The default required directory for configuration files in `config` under project
 
 ### `config` environments
 
-The default environment is set to `default` and
-can be overridden by `CONFIG_ENV` environment variable.
+The default environment is set to `default` and can be overridden by `CONFIG_ENV` environment variable.
 
 1. create a `default` environment subdirectory under `config` directory.
 2. create a `default.properties` file in the `default` directory. E.g. `config/default/default.properties`
@@ -52,7 +51,7 @@ my.first.property=my_first_value
 my.second.property=my_second_value
 ```
 
-You can add multiple `.properties` files under environment directory. E.g. You may want to split the property files into:
+You can add multiple `.properties` files under environment directory. E.g. You may want to split the properties into:
 
 ```text
 .
@@ -73,6 +72,24 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 │   └── integration
 │       └── integration.properties
 ```
+
+### `KeePass` Database Entries
+
+If you have secret passwords which cannot be stored as plain text within project repository, you can store them into a password-protected [KeePass](https://keepass.info/) database file.
+
+1. create a keepass database file, add to your resources folder. i.e. `src/main/resources` or `src/test/resources`.
+
+#### Configurations
+
+* `CONFIG_KEEPASS_ENABLED` - A flag to enable reading of the keePass file. Default is set to `false`.
+* `CONFIG_KEEPASS_FILENAME` - This is the name of the DB file. Default is the name of project directory.
+* `CONFIG_KEEPASS_MASTERKEY` - The key to access the DB file.
+
+#### KeePass Groups
+
+* The top level group should have the same name as the DB filename. e.g. if DB file is `env-config.kdbx` then top level group should be `env-config`.
+* The sub-groups should match with the environment directory you have created above. For example, you should have `default` group for the default environment.
+* The entries within the `default` group will be shared across all environments similar to the environment directories behaviour.
 
 ### Environment priority
 

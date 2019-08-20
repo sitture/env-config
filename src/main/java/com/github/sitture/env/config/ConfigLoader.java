@@ -3,7 +3,6 @@ package com.github.sitture.env.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
@@ -13,14 +12,17 @@ import org.slf4j.LoggerFactory;
 abstract class ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
-	protected static final String CONFIG_ENV_KEY = "config.env";
-	protected static final String DEFAULT_ENVIRONMENT = "default";
-	private static final String CONFIG_DIR = "config.dir";
+	static final String CONFIG_ENV_KEY = "config.env";
+	private static final String DEFAULT_ENVIRONMENT = "default";
+	private static final String CONFIG_DIR_KEY = "config.dir";
 	private static final String DEFAULT_ENV_DIRECTORY = "config";
-	protected static CompositeConfiguration configuration;
+	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
+	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
+	private static final String CONFIG_KEEPASS_MASTERKEY_KEY = "config.keepass.masterkey";
+	static CompositeConfiguration configuration;
 
 	private String getProperty(final String key, final String defaultValue) {
-		String value = System.getenv(key.replace(".", "_").toUpperCase());
+		String value = getEnvByPropertyKey(key);
 		if (null != value) {
 			setProperty(key, value);
 			return value;
@@ -30,7 +32,7 @@ abstract class ConfigLoader {
 		return value;
 	}
 
-	protected String getEnv() {
+	private String getEnv() {
 		return getProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
 	}
 
@@ -40,18 +42,46 @@ abstract class ConfigLoader {
 	}
 
 	private String getConfigDir() {
-		return getProperty(CONFIG_DIR, DEFAULT_ENV_DIRECTORY);
+		return getProperty(CONFIG_DIR_KEY, DEFAULT_ENV_DIRECTORY);
 	}
 
 	private String getBuildDir() {
 		final String workingDirectory = System.getProperty("user.dir");
-		final String buildDir = System.getProperty("project.build.directory", workingDirectory);
-		return buildDir;
+		return System.getProperty("project.build.directory", workingDirectory);
+	}
+
+	private boolean isConfigKeePassEnabled() {
+		final String isKeePassEnabled = getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false");
+		return Boolean.parseBoolean(isKeePassEnabled);
+	}
+
+	private String getConfigKeePassFilename() {
+		final String[] buildDir = getBuildDir().split(File.separator);
+		final String defaultFileName = buildDir[buildDir.length-1];
+		return getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
+	}
+
+	private String getEnvByPropertyKey(final String key) {
+		return System.getenv(key.replace(".", "_").toUpperCase());
+	}
+
+	private String getConfigKeePassMasterKey() {
+		String value = getEnvByPropertyKey(CONFIG_KEEPASS_MASTERKEY_KEY);
+		if (null != value) {
+			setProperty(CONFIG_KEEPASS_MASTERKEY_KEY, value);
+			return value;
+		}
+		value = System.getProperty(CONFIG_KEEPASS_MASTERKEY_KEY);
+		if (null == value) {
+			throw new MissingVariableException(
+					String.format("Missing required variable '%s'", CONFIG_KEEPASS_MASTERKEY_KEY));
+		}
+		setProperty(CONFIG_KEEPASS_MASTERKEY_KEY, value);
+		return value;
 	}
 
 	private String getConfigPath(final String env) {
-		final String defaultConfig = getBuildDir() + File.separator + getConfigDir() + File.separator + env;
-		return defaultConfig;
+		return getBuildDir() + File.separator + getConfigDir() + File.separator + env;
 	}
 
 	private List<File> getConfigFiles(final String configPath) {
@@ -60,7 +90,6 @@ abstract class ConfigLoader {
 			throw new ConfigException(
 					"'" + configPath + "' does not exist or not a valid config directory!");
 		}
-
 		return getConfigProperties(configDir.listFiles(), configPath);
 	}
 
@@ -68,32 +97,43 @@ abstract class ConfigLoader {
 		if (configFiles.length == 0) {
 			throw new ConfigException("No property files found under '" + configPath + "'");
 		}
-
 		return getFilteredPropertiesFiles(configFiles);
 	}
 
 	private List<File> getFilteredPropertiesFiles(File[] configFiles) {
 		List<File> filteredFiles = new ArrayList<File>();
 		for (File file : configFiles) {
-			if (isValidProperties(file)) {
+			if (isValidPropertiesFile(file)) {
 				filteredFiles.add(file);
 			}
 		}
 		return filteredFiles;
 	}
 
-	private boolean isValidProperties(final File file) {
+	private boolean isValidPropertiesFile(final File file) {
 		return file.getName().endsWith(".properties");
 	}
 
-	protected void loadConfigurations() {
+	void loadConfigurations() {
 		configuration = new CompositeConfiguration();
 		loadEnvConfigurations();
 		final String env = getEnv();
+		final String groupName = getConfigKeePassFilename();
+		if (isConfigKeePassEnabled()) {
+			loadKeePassConfigurations(groupName, env);
+			loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
+		}
 		loadFileConfigurations(getConfigPath(env));
 		if (!env.equals(DEFAULT_ENVIRONMENT)) {
 			loadFileConfigurations(getConfigPath(DEFAULT_ENVIRONMENT));
 		}
+	}
+
+	private void loadKeePassConfigurations(final String groupName, final String env) {
+		LOG.debug(String.format("Loading keePass entries for %s/%s.", groupName, env));
+		final String masterKey = getConfigKeePassMasterKey();
+		final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName, env);
+		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
 	}
 
 	private void loadEnvConfigurations() {

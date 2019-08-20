@@ -17,21 +17,19 @@ class EnvironmentVariables {
 		environmentConfiguration = new MapConfiguration(getEnvMap());
 	}
 
-	public Configuration getSystemConfiguration() {
+	Configuration getSystemConfiguration() {
 		return systemConfiguration;
 	}
 
-	public Configuration getEnvironmentConfiguration() {
+	Configuration getEnvironmentConfiguration() {
 		return environmentConfiguration;
 	}
 
-	public static Map<String, String> getEnvMap() {
+	private static Map<String, String> getEnvMap() {
 		Map<String, String> envMap = new HashMap<String, String>();
-
 		for (final Map.Entry<String, String> envVar : System.getenv().entrySet()) {
 			envMap.put(getProcessedEnvKey(envVar.getKey()), envVar.getValue());
 		}
-
 		return envMap;
 	}
 
