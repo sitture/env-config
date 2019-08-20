@@ -18,11 +18,11 @@ abstract class ConfigLoader {
 	private static final String DEFAULT_ENV_DIRECTORY = "config";
 	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
 	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
-	private static final String CONFIG_KEEPASS_MASTERKEY_KEY = "CONFIG_KEEPASS_MASTERKEY";
+	private static final String CONFIG_KEEPASS_MASTERKEY_KEY = "config.keepass.masterkey";
 	static CompositeConfiguration configuration;
 
 	private String getProperty(final String key, final String defaultValue) {
-		String value = System.getenv(key.replace(".", "_").toUpperCase());
+		String value = getEnvByPropertyKey(key);
 		if (null != value) {
 			setProperty(key, value);
 			return value;
@@ -61,13 +61,23 @@ abstract class ConfigLoader {
 		return getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
 	}
 
+	private String getEnvByPropertyKey(final String key) {
+		return System.getenv(key.replace(".", "_").toUpperCase());
+	}
+
 	private String getConfigKeePassMasterKey() {
-		final String password = System.getenv(CONFIG_KEEPASS_MASTERKEY_KEY);
-		if (null == password) {
+		String value = getEnvByPropertyKey(CONFIG_KEEPASS_MASTERKEY_KEY);
+		if (null != value) {
+			setProperty(CONFIG_KEEPASS_MASTERKEY_KEY, value);
+			return value;
+		}
+		value = System.getProperty(CONFIG_KEEPASS_MASTERKEY_KEY);
+		if (null == value) {
 			throw new MissingVariableException(
 					String.format("Missing required variable '%s'", CONFIG_KEEPASS_MASTERKEY_KEY));
 		}
-		return password;
+		setProperty(CONFIG_KEEPASS_MASTERKEY_KEY, value);
+		return value;
 	}
 
 	private String getConfigPath(final String env) {
