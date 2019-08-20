@@ -10,14 +10,6 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Ability to read [keepass](https://keepass.info) database file.
 
-New properties:
-
-```sh
-CONFIG_KEEPASS_ENABLED=true
-CONFIG_KEEPASS_FILENAME=test.kdbx
-CONFIG_KEEPASS_MASTERKEY=password
-```
-
 ## 0.4.0
 
 ### Added

@@ -35,6 +35,7 @@ jobs:
   deploy:
     docker:
       - image: maven:3-jdk-8
+    working_directory: ~/env-config
     steps:
       - checkout
       - run:
