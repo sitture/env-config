@@ -52,7 +52,10 @@ class KeePassEntries {
         }
         Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().equals(env)).findFirst();
         envGroup.ifPresent(group -> group.getEntries()
-                .forEach(entry -> envMap.put(getProcessedEnvKey(entry.getUsername()), entry.getPassword())));
+                .forEach(entry -> {
+                    envMap.put(entry.getUsername(), entry.getPassword());
+                    envMap.put(getProcessedEnvKey(entry.getUsername()), entry.getPassword());
+                }));
         return envMap;
     }
 

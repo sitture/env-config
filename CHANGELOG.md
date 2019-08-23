@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.5.1
+
+### Changed
+
+- Now adds the property from keepass configuration keys in original format as well as lower-cased. 
+
+E.g. For property `TEST_PROPERTY`, should now be able to get by `EnvConfig.get("TEST_PROPERTY")` or `EnvConfig.get("test.property")`.
+
+- Keepass properties now take precedence over the environment variables.
+
 ## 0.5.0
 
 ### Added

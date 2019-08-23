@@ -21,6 +21,14 @@ abstract class ConfigLoader {
 	private static final String CONFIG_KEEPASS_MASTERKEY_KEY = "config.keepass.masterkey";
 	static CompositeConfiguration configuration;
 
+	private String getEnvByPropertyKey(final String key) {
+		String value = System.getenv(key.replace(".", "_").toUpperCase());
+		if (null == value) {
+			value = System.getenv(key);
+		}
+		return value;
+	}
+
 	private String getProperty(final String key, final String defaultValue) {
 		String value = getEnvByPropertyKey(key);
 		if (null != value) {
@@ -59,10 +67,6 @@ abstract class ConfigLoader {
 		final String[] buildDir = getBuildDir().split(File.separator);
 		final String defaultFileName = buildDir[buildDir.length-1];
 		return getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
-	}
-
-	private String getEnvByPropertyKey(final String key) {
-		return System.getenv(key.replace(".", "_").toUpperCase());
 	}
 
 	private String getConfigKeePassMasterKey() {
@@ -116,13 +120,13 @@ abstract class ConfigLoader {
 
 	void loadConfigurations() {
 		configuration = new CompositeConfiguration();
-		loadEnvConfigurations();
 		final String env = getEnv();
 		final String groupName = getConfigKeePassFilename();
-		if (isConfigKeePassEnabled()) {
+        if (isConfigKeePassEnabled()) {
 			loadKeePassConfigurations(groupName, env);
 			loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
 		}
+		loadEnvConfigurations();
 		loadFileConfigurations(getConfigPath(env));
 		if (!env.equals(DEFAULT_ENVIRONMENT)) {
 			loadFileConfigurations(getConfigPath(DEFAULT_ENVIRONMENT));
