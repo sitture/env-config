@@ -109,6 +109,7 @@ public class EnvConfigTest {
 		// when my.keepass.property does not exist in default env.
 		// and only exists default group of keepass
 		Assert.assertEquals("KEEPASS_VALUE", EnvConfig.get("my.keepass.property"));
+		Assert.assertEquals("KEEPASS_VALUE", EnvConfig.get("MY_KEEPASS_PROPERTY"));
 	}
 
 	@Test
@@ -120,6 +121,7 @@ public class EnvConfigTest {
 		// and only exists in default group of keepass
 		// then keepass takes priority
 		Assert.assertEquals("KEEPASS_VALUE", EnvConfig.get("my.keepass.property"));
+		Assert.assertEquals("KEEPASS_VALUE", EnvConfig.get("MY_KEEPASS_PROPERTY"));
 	}
 
 	@Test
