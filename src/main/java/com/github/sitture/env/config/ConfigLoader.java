@@ -124,7 +124,9 @@ abstract class ConfigLoader {
 		final String groupName = getConfigKeePassFilename();
         if (isConfigKeePassEnabled()) {
 			loadKeePassConfigurations(groupName, env);
-			loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
+			if (!env.equals(DEFAULT_ENVIRONMENT)) {
+				loadKeePassConfigurations(groupName, DEFAULT_ENVIRONMENT);
+			}
 		}
 		loadEnvConfigurations();
 		loadFileConfigurations(getConfigPath(env));

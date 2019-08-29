@@ -41,10 +41,7 @@ class KeePassEntries {
     }
 
     private static Map<String, String> getEntriesMap(final String groupName, final String env) {
-        Map<String, String> envMap = new HashMap<String, String>();
-        for (final Map.Entry<String, String> envVar : System.getenv().entrySet()) {
-            envMap.put(envVar.getKey(), envVar.getValue());
-        }
+        Map<String, String> entriesMap = new HashMap<String, String>();
         Optional<Group> projectGroup = keePassFile.getTopGroups().stream()
                 .filter(group -> group.getName().equals(groupName)).findFirst();
         if (!projectGroup.isPresent()) {
@@ -53,10 +50,10 @@ class KeePassEntries {
         Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().equals(env)).findFirst();
         envGroup.ifPresent(group -> group.getEntries()
                 .forEach(entry -> {
-                    envMap.put(entry.getUsername(), entry.getPassword());
-                    envMap.put(getProcessedEnvKey(entry.getUsername()), entry.getPassword());
+                    entriesMap.put(entry.getTitle(), entry.getPassword());
+                    entriesMap.put(getProcessedEnvKey(entry.getTitle()), entry.getPassword());
                 }));
-        return envMap;
+        return entriesMap;
     }
 
     private static String getProcessedEnvKey(final String envVar) {
