@@ -129,7 +129,8 @@ If the property isn't set then a `ConfigException` is thrown.
 EnvConfig.get("my.property", "defaultValue");
 ```
 
-__Note:__ All the environment variable names are set to properties naming convention. E.g. `MY_ENV_VAR` can be accessed by `EnvConfig.get("my.env.var");`
+__Note:__ All the environment variable names are set to properties naming convention. 
+E.g. `MY_ENV_VAR` can either be accessed by `EnvConfig.get("my.env.var");` or `EnvConfig.get("MY_ENV_VAR");`
 
 ### Property overrides
 
