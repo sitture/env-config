@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.5.3
+
+### Changed
+
+- Now adds the raw environments as well as processed lowercased keys
+E.g. TEST_VAR can either be retrieved with `EnvConfig.get("TEST_VAR")` or `EnvConfig.get("test.var")`
+
 ## 0.5.2
 
 ### Fixed

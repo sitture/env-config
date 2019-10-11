@@ -34,6 +34,20 @@ public class EnvConfigTest {
 	}
 
 	@Test
+	public void testCanGetProperty() {
+		System.setProperty(CONFIG_ENV_KEY, "test");
+		Assert.assertEquals("my_value", EnvConfig.get("my.property"));
+	}
+
+	@Test
+	public void testCanGetPropertyFromEnvVars() {
+		System.setProperty(CONFIG_ENV_KEY, "test");
+		environmentVariables.set("MY_PROPERTY", "my_env_value");
+		Assert.assertEquals("my_env_value", EnvConfig.get("my.property"));
+		Assert.assertEquals("my_env_value", EnvConfig.get("MY_PROPERTY"));
+	}
+
+	@Test
 	public void testCanGetParsedInt() {
 		System.setProperty("property", "123");
 		Assert.assertEquals(123, EnvConfig.getInteger("property"));

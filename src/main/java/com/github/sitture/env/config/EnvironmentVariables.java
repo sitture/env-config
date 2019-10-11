@@ -28,6 +28,7 @@ class EnvironmentVariables {
 	private static Map<String, String> getEnvMap() {
 		Map<String, String> envMap = new HashMap<String, String>();
 		System.getenv().entrySet().forEach(entry -> {
+			envMap.put(entry.getKey(), entry.getValue());
 			envMap.put(getProcessedEnvKey(entry.getKey()), entry.getValue());
 		});
 		return envMap;

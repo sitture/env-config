@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5.2</version>
+	<version>0.5.3</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
