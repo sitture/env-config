@@ -43,15 +43,15 @@ class KeePassEntries {
     private static Map<String, String> getEntriesMap(final String groupName, final String env) {
         Map<String, String> entriesMap = new HashMap<String, String>();
         Optional<Group> projectGroup = keePassFile.getTopGroups().stream()
-                .filter(group -> group.getName().equals(groupName)).findFirst();
+                .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (!projectGroup.isPresent()) {
             throw new IllegalArgumentException(String.format("Group %s not found in the database!", groupName));
         }
-        Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().equals(env)).findFirst();
+        Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
         envGroup.ifPresent(group -> group.getEntries()
                 .forEach(entry -> {
-                    entriesMap.put(entry.getTitle(), entry.getPassword());
-                    entriesMap.put(getProcessedEnvKey(entry.getTitle()), entry.getPassword());
+                    entriesMap.put(entry.getTitle().trim(), entry.getPassword());
+                    entriesMap.put(getProcessedEnvKey(entry.getTitle().trim()), entry.getPassword());
                 }));
         return entriesMap;
     }

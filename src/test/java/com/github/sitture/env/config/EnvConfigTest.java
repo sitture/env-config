@@ -159,4 +159,14 @@ public class EnvConfigTest {
 		Assert.assertEquals("ANOTHER_PROPERTY", EnvConfig.get("another.property"));
 	}
 
+	@Test
+	public void testCanGetKeepassOnlyEntryWhenEntryWithTrailingSpace() {
+		environmentVariables.set(CONFIG_KEEPASS_ENABLED_KEY.replace(".", "_").toUpperCase(), "true");
+		environmentVariables.set(CONFIG_KEEPASS_MASTERKEY_KEY.replace(".", "_").toUpperCase(), CONFIG_KEEPASS_PASSWORD);
+		System.setProperty(CONFIG_ENV_KEY, "test");
+		// when another.property does not exist in test env
+		// and exists in test group of keepass
+		Assert.assertEquals("KEEPASS_VALUE", EnvConfig.get("trailing.space.property"));
+	}
+
 }
