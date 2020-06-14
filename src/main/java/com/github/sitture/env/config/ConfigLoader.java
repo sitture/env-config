@@ -9,17 +9,17 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-abstract class ConfigLoader {
+class ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
-	static final String CONFIG_ENV_KEY = "config.env";
+	protected static final String CONFIG_ENV_KEY = "config.env";
 	private static final String DEFAULT_ENVIRONMENT = "default";
 	private static final String CONFIG_DIR_KEY = "config.dir";
 	private static final String DEFAULT_ENV_DIRECTORY = "config";
 	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
 	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
 	private static final String CONFIG_KEEPASS_MASTERKEY_KEY = "config.keepass.masterkey";
-	static CompositeConfiguration configuration;
+	protected static CompositeConfiguration configuration;
 
 	private String getEnvByPropertyKey(final String key) {
 		String value = System.getenv(key.replace(".", "_").toUpperCase());
@@ -30,12 +30,7 @@ abstract class ConfigLoader {
 	}
 
 	private String getProperty(final String key, final String defaultValue) {
-		String value = getEnvByPropertyKey(key);
-		if (null != value) {
-			setProperty(key, value);
-			return value;
-		}
-		value = System.getProperty(key, defaultValue);
+		final String value = null != getEnvByPropertyKey(key) ? getEnvByPropertyKey(key) : System.getProperty(key, defaultValue);
 		setProperty(key, value);
 		return value;
 	}
@@ -46,7 +41,7 @@ abstract class ConfigLoader {
 
 	private void setProperty(final String key, final String value) {
 		System.setProperty(key, value);
-		LOG.debug(key + " set to '" + value + "'");
+		LOG.debug("{} set to '{}'", key, value);
 	}
 
 	private String getConfigDir() {
@@ -59,8 +54,7 @@ abstract class ConfigLoader {
 	}
 
 	private boolean isConfigKeePassEnabled() {
-		final String isKeePassEnabled = getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false");
-		return Boolean.parseBoolean(isKeePassEnabled);
+		return Boolean.parseBoolean(getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false"));
 	}
 
 	private String getConfigKeePassFilename() {
@@ -70,12 +64,9 @@ abstract class ConfigLoader {
 	}
 
 	private String getConfigKeePassMasterKey() {
-		String value = getEnvByPropertyKey(CONFIG_KEEPASS_MASTERKEY_KEY);
-		if (null != value) {
-			setProperty(CONFIG_KEEPASS_MASTERKEY_KEY, value);
-			return value;
-		}
-		value = System.getProperty(CONFIG_KEEPASS_MASTERKEY_KEY);
+		final String value = null != getEnvByPropertyKey(CONFIG_KEEPASS_MASTERKEY_KEY)
+				? getEnvByPropertyKey(CONFIG_KEEPASS_MASTERKEY_KEY)
+				: System.getProperty(CONFIG_KEEPASS_MASTERKEY_KEY);
 		if (null == value) {
 			throw new MissingVariableException(
 					String.format("Missing required variable '%s'", CONFIG_KEEPASS_MASTERKEY_KEY));
@@ -89,7 +80,7 @@ abstract class ConfigLoader {
 	}
 
 	private List<File> getConfigFiles(final String configPath) {
-		File configDir = new File(configPath);
+		final File configDir = new File(configPath);
 		if (!configDir.exists() || !configDir.isDirectory()) {
 			throw new ConfigException(
 					"'" + configPath + "' does not exist or not a valid config directory!");
@@ -104,9 +95,9 @@ abstract class ConfigLoader {
 		return getFilteredPropertiesFiles(configFiles);
 	}
 
-	private List<File> getFilteredPropertiesFiles(File[] configFiles) {
-		List<File> filteredFiles = new ArrayList<File>();
-		for (File file : configFiles) {
+	private List<File> getFilteredPropertiesFiles(final File[] configFiles) {
+		final List<File> filteredFiles = new ArrayList<>();
+		for (final File file : configFiles) {
 			if (isValidPropertiesFile(file)) {
 				filteredFiles.add(file);
 			}
@@ -118,7 +109,7 @@ abstract class ConfigLoader {
 		return file.getName().endsWith(".properties");
 	}
 
-	void loadConfigurations() {
+	protected void loadConfigurations() {
 		configuration = new CompositeConfiguration();
 		final String env = getEnv();
 		final String groupName = getConfigKeePassFilename();
@@ -154,7 +145,7 @@ abstract class ConfigLoader {
 				configuration.addConfiguration(new Configurations().properties(file));
 			}
 		} catch (ConfigurationException e) {
-			e.printStackTrace();
+			LOG.debug("Could not load configuration files. \n %s", e.getMessage());
 		}
 	}
 

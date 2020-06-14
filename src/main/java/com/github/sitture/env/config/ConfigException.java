@@ -9,7 +9,7 @@ public class ConfigException extends RuntimeException {
 	 * @param error
 	 *            a {@link java.lang.Throwable} object.
 	 */
-	public ConfigException(Throwable error) {
+	public ConfigException(final Throwable error) {
 		super(error);
 	}
 
@@ -20,7 +20,7 @@ public class ConfigException extends RuntimeException {
 	 * @param error
 	 *            a {@link java.lang.Throwable} object.
 	 */
-	public ConfigException(String message, Throwable error) {
+	public ConfigException(final String message, final Throwable error) {
 		super(message, error);
 	}
 
@@ -29,7 +29,7 @@ public class ConfigException extends RuntimeException {
 	 * @param message
 	 *            a {@link java.lang.String} object.
 	 */
-	public ConfigException(String message) {
+	public ConfigException(final String message) {
 		super(message);
 	}
 
