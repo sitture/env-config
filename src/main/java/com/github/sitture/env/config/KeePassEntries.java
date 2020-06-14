@@ -14,25 +14,25 @@ import org.apache.commons.configuration2.MapConfiguration;
 
 class KeePassEntries {
 
-    private static Configuration entriesConfiguration;
-    private static KeePassFile keePassFile;
+    private final Configuration entriesConfiguration;
+    private final KeePassFile keePassFile;
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
 
-    KeePassEntries(final String masterKey, String groupName, final String env) {
-        if (null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)) {
-            groupName = groupName.split(KEEPASS_DB_FILE_EXTENSION)[0];
-        }
-        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(groupName.concat(".kdbx"))).openDatabase(masterKey);
-        entriesConfiguration = new MapConfiguration(getEntriesMap(groupName, env));
+    KeePassEntries(final String masterKey, final String groupName, final String env) {
+        final String processedGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
+                ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
+                : groupName;
+        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(processedGroupName.concat(KEEPASS_DB_FILE_EXTENSION))).openDatabase(masterKey);
+        entriesConfiguration = new MapConfiguration(getEntriesMap(processedGroupName, env));
     }
 
-    Configuration getEntriesConfiguration() {
+    protected Configuration getEntriesConfiguration() {
         return entriesConfiguration;
     }
 
-    private File getKeepassDatabaseFile(String fileName) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
+    private File getKeepassDatabaseFile(final String fileName) {
+        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        final URL resource = classLoader.getResource(fileName);
         if (resource == null) {
             throw new IllegalArgumentException(String.format("Database %s does not exist!", fileName));
         } else {
@@ -40,14 +40,14 @@ class KeePassEntries {
         }
     }
 
-    private static Map<String, String> getEntriesMap(final String groupName, final String env) {
-        Map<String, String> entriesMap = new HashMap<String, String>();
-        Optional<Group> projectGroup = keePassFile.getTopGroups().stream()
+    private Map<String, String> getEntriesMap(final String groupName, final String env) {
+        final Optional<Group> projectGroup = keePassFile.getTopGroups().stream()
                 .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (!projectGroup.isPresent()) {
             throw new IllegalArgumentException(String.format("Group %s not found in the database!", groupName));
         }
-        Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
+        final Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
+        final Map<String, String> entriesMap = new HashMap<>();
         envGroup.ifPresent(group -> group.getEntries()
                 .forEach(entry -> {
                     entriesMap.put(entry.getTitle().trim(), entry.getPassword());

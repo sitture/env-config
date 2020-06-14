@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public final class EnvConfig extends ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EnvConfig.class);
-	private static EnvConfig envConfig;
+	private static EnvConfig config;
 
 	private EnvConfig() {
 		loadConfigurations();
@@ -22,15 +22,19 @@ public final class EnvConfig extends ConfigLoader {
 	 *
 	 * @return instance of Config
 	 */
-	public static synchronized EnvConfig getConfig() {
-		if (envConfig == null) {
-			envConfig = new EnvConfig();
+	public static EnvConfig getConfig() {
+		synchronized(EnvConfig.class) {
+			if (config == null) {
+				config = new EnvConfig();
+			}
 		}
-		return envConfig;
+		return config;
 	}
 
-	static synchronized void reset() {
-		envConfig = null;
+	protected static void reset() {
+		synchronized(EnvConfig.class) {
+			config = null;
+		}
 	}
 
 	/**
@@ -176,10 +180,7 @@ public final class EnvConfig extends ConfigLoader {
 	 *         parsed as Boolean
 	 */
 	public static boolean getBool(final String property) {
-		if (null == get(property)) {
-			return false;
-		}
-		return Boolean.parseBoolean(get(property));
+		return null != get(property) && Boolean.parseBoolean(get(property));
 	}
 
 	/**
@@ -205,15 +206,16 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	private Map<String, Object> asMap() {
-		Map<String, Object> propertiesMap = new TreeMap<String, Object>();
-		Iterator<String> keys = getConfiguration().getKeys();
+		final Map<String, Object> propertiesMap = new TreeMap<>();
+		final Iterator<String> keys = getConfiguration().getKeys();
 		while (keys.hasNext()) {
-			String property = keys.next();
+			final String property = keys.next();
 			propertiesMap.put(property, get(property));
 		}
 		return propertiesMap;
 	}
 
+	@Override
 	public String toString() {
 		return asMap().toString().replaceAll(", ", "\n");
 	}

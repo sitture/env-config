@@ -9,24 +9,24 @@ import org.apache.commons.configuration2.SystemConfiguration;
 
 class EnvironmentVariables {
 
-	private static Configuration systemConfiguration;
-	private static Configuration environmentConfiguration;
+	private final Configuration systemConfiguration;
+	private final Configuration environmentConfiguration;
 
 	EnvironmentVariables() {
 		systemConfiguration = new SystemConfiguration();
 		environmentConfiguration = new MapConfiguration(getEnvMap());
 	}
 
-	Configuration getSystemConfiguration() {
+	protected Configuration getSystemConfiguration() {
 		return systemConfiguration;
 	}
 
-	Configuration getEnvironmentConfiguration() {
+	protected Configuration getEnvironmentConfiguration() {
 		return environmentConfiguration;
 	}
 
 	private static Map<String, String> getEnvMap() {
-		Map<String, String> envMap = new HashMap<String, String>();
+		final Map<String, String> envMap = new HashMap<>();
 		System.getenv().entrySet().forEach(entry -> {
 			envMap.put(entry.getKey(), entry.getValue());
 			envMap.put(getProcessedEnvKey(entry.getKey()), entry.getValue());

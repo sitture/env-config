@@ -34,11 +34,12 @@ build.log
 .svn
 .CVS
 .hg*
+.checkstyle
 
 # switch to regexp syntax.
 #  syntax: regexp
 #  ^\.pc/
 
-#SHITTY output not in target directory
+# output not in target directory
 build.log
 

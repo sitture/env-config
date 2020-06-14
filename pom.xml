@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5.3</version>
+	<version>0.6.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -45,23 +45,25 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<commons-beanutils.version>1.9.3</commons-beanutils.version>
+		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<commons-configuration2.version>2.7</commons-configuration2.version>
-		<slf4j.version>1.7.22</slf4j.version>
-		<maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+		<slf4j.version>1.7.30</slf4j.version>
+		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+		<maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
-		<openkeepass.version>0.8.1</openkeepass.version>
+		<openkeepass.version>0.8.2</openkeepass.version>
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.8.1</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -97,7 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.8</version>
+				<version>${maven-pmd-plugin.version}</version>
 				<configuration>
 					<failOnViolation>true</failOnViolation>
 					<printFailingErrors>true</printFailingErrors>
@@ -142,16 +144,16 @@
 			<version>${commons-configuration2.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
