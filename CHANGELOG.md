@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.5.7
+
+### Updated
+
+- Migrating to use github actions
+
 ## 0.5.6
 
 ### Updated
@@ -36,7 +42,7 @@ E.g. TEST_VAR can either be retrieved with `EnvConfig.get("TEST_VAR")` or `EnvCo
 
 - Env vars now loaded after the keePass configurations.
 
-### Changed 
+### Changed
 
 - KeePass title instead of username is now used as the key in the map.
 
@@ -44,7 +50,7 @@ E.g. TEST_VAR can either be retrieved with `EnvConfig.get("TEST_VAR")` or `EnvCo
 
 ### Changed
 
-- Now adds the property from keepass configuration keys in original format as well as lower-cased. 
+- Now adds the property from keepass configuration keys in original format as well as lower-cased.
 
 E.g. For property `TEST_PROPERTY`, should now be able to get by `EnvConfig.get("TEST_PROPERTY")` or `EnvConfig.get("test.property")`.
 
