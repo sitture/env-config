@@ -235,5 +235,14 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>github</id>
+				<repository>
+					<id>github</id>
+					<name>GitHub Packages</name>
+					<url>https://maven.pkg.github.com/sitture/env-config</url>
+				</repository>
+			</distributionManagement>
+		</profile>
 	</profiles>
 </project>
