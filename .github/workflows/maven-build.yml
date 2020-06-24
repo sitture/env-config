@@ -1,13 +1,9 @@
 name: Build
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the master branch
   push:
-    branches:
-      - master
+    branches: [ master ]
   pull_request:
-    branches:
-      - master
+    branches: [ master ]
 jobs:
   build:
     runs-on: ubuntu-latest
