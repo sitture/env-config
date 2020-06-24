@@ -24,7 +24,7 @@ jobs:
           echo $GPG_SECRET_KEYS | base64 --decode | gpg --import
           echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
           mvn -B org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=${GITHUB_REF##*/}
-          mvn -B -Prelease,github deploy
+          mvn -B -Pgithub-release deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
