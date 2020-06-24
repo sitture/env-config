@@ -2,7 +2,7 @@
 
 A simple utility to manage environment configs in Java-based projects by merging `*.properties` files with environment variables overrides.
 
-[![CircleCI](https://circleci.com/gh/sitture/env-config.svg?style=shield)](https://circleci.com/gh/sitture/env-config) [![Maven Central](https://img.shields.io/maven-central/v/com.github.sitture/env-config.svg)](https://mvnrepository.com/search?q=com.github.sitture) [![Maintainability](https://api.codeclimate.com/v1/badges/338645e6d3c853fcb93e/maintainability)](https://codeclimate.com/github/sitture/env-config/maintainability) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)](https://opensource.org/licenses/MIT) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](../../issues)
+![](https://github.com/sitture/env-config/workflows/Build/badge.svg?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.github.sitture/env-config.svg)](https://mvnrepository.com/search?q=com.github.sitture) [![Maintainability](https://api.codeclimate.com/v1/badges/338645e6d3c853fcb93e/maintainability)](https://codeclimate.com/github/sitture/env-config/maintainability) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?maxAge=2592000)](https://opensource.org/licenses/MIT) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](../../issues)
 
 All notable changes to this project are documented in [CHANGELOG.md](CHANGELOG.md).
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
@@ -20,6 +20,20 @@ Add the following dependency to use this EnvConfig:
     <artifactId>env-config</artifactId>
     <version>${version}</version>
 </dependency>
+```
+
+### Github Packages
+
+If you would like to use github package instead of maven central, add the following repository to pom.xml.
+
+```xml
+<repositories>
+  <repository>
+    <id>github</id>
+    <name>GitHub Packages</name>
+    <url>https://maven.pkg.github.com/sitture/env-config</url>
+  </repository>
+</repositories>
 ```
 
 ### Gradle
@@ -129,7 +143,7 @@ If the property isn't set then a `ConfigException` is thrown.
 EnvConfig.get("my.property", "defaultValue");
 ```
 
-__Note:__ All the environment variable names are set to properties naming convention. 
+__Note:__ All the environment variable names are set to properties naming convention.
 E.g. `MY_ENV_VAR` can either be accessed by `EnvConfig.get("my.env.var");` or `EnvConfig.get("MY_ENV_VAR");`
 
 ### Property overrides

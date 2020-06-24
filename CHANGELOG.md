@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Updated
 
 - Migrating to use github actions
+- Publishing to both maven central and github packages
 
 ## 0.5.6
 

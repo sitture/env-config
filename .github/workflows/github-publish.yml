@@ -27,3 +27,5 @@ jobs:
           mvn -B -Prelease,github deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
+          GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
