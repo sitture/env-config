@@ -159,7 +159,7 @@
 
 	<profiles>
 		<profile>
-			<id>ossrh-release</id>
+			<id>ossrh</id>
 			<build>
 				<plugins>
 					<plugin>
@@ -227,7 +227,7 @@
 			</distributionManagement>
 		</profile>
 		<profile>
-			<id>github-release</id>
+			<id>github</id>
 			<build>
 				<plugins>
 					<plugin>
