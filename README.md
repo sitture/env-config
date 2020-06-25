@@ -131,10 +131,10 @@ EnvConfig.getBool("my.property");
 
 ```java
 // when a property is required to continue
-EnvConfig.get("my.property", true);
+EnvConfig.getOrThrow("my.property");
 ```
 
-If the property isn't set then a `ConfigException` is thrown.
+If the property isn't set then a `MissingVariableException` is thrown.
 
 ### Get property with `defaultValue`
 

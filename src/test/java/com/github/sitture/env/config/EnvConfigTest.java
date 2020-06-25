@@ -84,7 +84,7 @@ public class EnvConfigTest {
 
 	@Test(expected = MissingVariableException.class)
 	public void testMissingVariableExceptionThrown() {
-		EnvConfig.get("non.existing", true);
+		EnvConfig.getOrThrow("non.existing");
 	}
 
 	@Test
