@@ -143,17 +143,15 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	 * Get property from file.
+	 * Get property or throw an MissingVariableException exception.
 	 *
 	 * @param property
 	 *            property name.
-	 * @param required
-	 *            boolean if its a required property
 	 * @return property value.
 	 */
-	public static String get(final String property, final boolean required) {
+	public static String getOrThrow(final String property) {
 		final String value = get(property);
-		if (null == value && required) {
+		if (null == value) {
 			throw new MissingVariableException(
 					"Missing required variable '" + property + "'");
 		}
