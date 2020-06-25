@@ -143,11 +143,12 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	 * Get property or throw an MissingVariableException exception.
+	 * Get property from file.
 	 *
 	 * @param property
 	 *            property name.
 	 * @return property value.
+	 * @throws MissingVariableException if property does not exist.
 	 */
 	public static String getOrThrow(final String property) {
 		final String value = get(property);
