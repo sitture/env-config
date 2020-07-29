@@ -36,7 +36,7 @@ class ConfigLoader {
 	}
 
 	private String getEnv() {
-		return getProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
+		return getProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT).trim();
 	}
 
 	private void setProperty(final String key, final String value) {
@@ -145,7 +145,7 @@ class ConfigLoader {
 				configuration.addConfiguration(new Configurations().properties(file));
 			}
 		} catch (ConfigurationException e) {
-			LOG.debug("Could not load configuration files. \n %s", e.getMessage());
+			LOG.debug("Could not load configuration files. \n {}", e.getMessage());
 		}
 	}
 

@@ -38,6 +38,12 @@ public class EnvConfigTest {
 	}
 
 	@Test
+	public void testCanGetEnvironmentWithASpace() {
+		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT + " ");
+		Assert.assertEquals(TEST_ENVIRONMENT, EnvConfig.getEnvironment());
+	}
+
+	@Test
 	public void testCanGetProperty() {
 		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT);
 		Assert.assertEquals("my_value", EnvConfig.get("my.property"));
