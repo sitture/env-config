@@ -187,10 +187,10 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	 * Returns key/value from a named config, parsed as List<String>
+	 * Returns key/value from a named config, parsed as List of Strings
 	 *     with comma separated values.
 	 *
-	 * @param property
+	 * @param property the property
 	 * @return a list of strings
 	 */
 	public static List<String> getList(final String property) {
@@ -198,11 +198,11 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	/**
-	 * Returns key/value from a named config, parsed as List<String>
+	 * Returns key/value from a named config, parsed as List of Strings
 	 *     with a given delimiter.
 	 *
-	 * @param property
-	 * @param delimiter
+	 * @param property the property
+	 * @param delimiter the delimiter
 	 * @return a list of strings
 	 */
 	public static List<String> getList(final String property, final String delimiter) {
