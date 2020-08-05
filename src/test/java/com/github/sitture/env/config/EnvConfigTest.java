@@ -6,6 +6,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class EnvConfigTest {
 
 	private static final String CONFIG_ENV_KEY = "config.env";
@@ -71,6 +74,32 @@ public class EnvConfigTest {
 		Assert.assertFalse(EnvConfig.getBool(TEST_PROPERTY));
 		System.setProperty(TEST_PROPERTY, "falssse");
 		Assert.assertFalse(EnvConfig.getBool(TEST_PROPERTY));
+	}
+
+	@Test
+	public void testCanGetParsedList() {
+		Assert.assertTrue(EnvConfig.getList(TEST_PROPERTY).isEmpty());
+		System.setProperty(TEST_PROPERTY, "env");
+		Assert.assertEquals(1, EnvConfig.getList(TEST_PROPERTY).size());
+		System.setProperty(TEST_PROPERTY, "env, config");
+		final List<String> actualList = EnvConfig.getList(TEST_PROPERTY);
+		Assert.assertEquals(2, actualList.size());
+		final List<String> expectedList = Arrays.asList("env", "config");
+		Assert.assertEquals(expectedList, actualList);
+	}
+
+	@Test
+	public void testCanGetParsedListWithDelimiter() {
+		final String delimiter = ";";
+		final String property = "test.property";
+		Assert.assertTrue(EnvConfig.getList(property, delimiter).isEmpty());
+		System.setProperty(property, "env;");
+		Assert.assertEquals(1, EnvConfig.getList(property, delimiter).size());
+		System.setProperty(property, "env;config ");
+		final List<String> actualList = EnvConfig.getList(property, delimiter);
+		Assert.assertEquals(2, actualList.size());
+		final List<String> expectedList = Arrays.asList("env", "config");
+		Assert.assertEquals(expectedList, actualList);
 	}
 
 	@Test

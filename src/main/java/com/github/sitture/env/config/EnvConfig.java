@@ -1,8 +1,12 @@
 package com.github.sitture.env.config;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.slf4j.Logger;
@@ -180,6 +184,34 @@ public final class EnvConfig extends ConfigLoader {
 	 */
 	public static boolean getBool(final String property) {
 		return null != get(property) && Boolean.parseBoolean(get(property));
+	}
+
+	/**
+	 * Returns key/value from a named config, parsed as List<String>
+	 *     with comma separated values.
+	 *
+	 * @param property
+	 * @return a list of strings
+	 */
+	public static List<String> getList(final String property) {
+		return getList(property, ",");
+	}
+
+	/**
+	 * Returns key/value from a named config, parsed as List<String>
+	 *     with a given delimiter.
+	 *
+	 * @param property
+	 * @param delimiter
+	 * @return a list of strings
+	 */
+	public static List<String> getList(final String property, final String delimiter) {
+		final String value = get(property);
+		return null == value
+				? Collections.emptyList()
+				: Stream.of(value.split(delimiter))
+				.map(String::trim)
+				.collect(Collectors.toList());
 	}
 
 	/**

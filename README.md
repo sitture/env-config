@@ -125,6 +125,7 @@ To get a property set either in the properties file, system property or environm
 EnvConfig.get("my.property");
 EnvConfig.getInt("my.property");
 EnvConfig.getBool("my.property");
+EnvConfig.getList("my.property"); // will return a List<String> from a comma separated String.
 ```
 
 ### Get `required` property
