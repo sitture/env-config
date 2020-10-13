@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.6.1
+
+### Updated
+
+- Bumps junit from 4.12 to 4.13.1
+
 ## 0.6.0
 
 ### Added
