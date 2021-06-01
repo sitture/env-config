@@ -31,8 +31,8 @@ public class EnvConfigTest {
 
 	@Test
 	public void testCanGetDefaultEnvironment() {
-		//System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
-		//Assert.assertEquals(DEFAULT_ENVIRONMENT, EnvConfig.getEnvironment());
+		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
+		Assert.assertEquals(DEFAULT_ENVIRONMENT, EnvConfig.getEnvironment());
 		// when env not set
 		System.clearProperty(CONFIG_ENV_KEY);
 		Assert.assertEquals(DEFAULT_ENVIRONMENT, EnvConfig.getEnvironment());
@@ -72,11 +72,11 @@ public class EnvConfigTest {
 	public void testCanGetPropertyWhenMultipleEnv() {
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
-		//Assert.assertEquals(testEnv, EnvConfig.getEnvironment());
+		Assert.assertEquals(testEnv, EnvConfig.getEnvironment());
 		// When a property.one exists in all environments, including default
-		//Assert.assertEquals(testEnv, EnvConfig.get("property.one"));
+		Assert.assertEquals(testEnv, EnvConfig.get("property.one"));
 		// When a property.two exists in current environment only
-		//Assert.assertEquals(testEnv, EnvConfig.get("property.two"));
+		Assert.assertEquals(testEnv, EnvConfig.get("property.two"));
 		// When a property.three does not exist in current environment
 		Assert.assertEquals("test", EnvConfig.get("property.three"));
 		// When a property.four exists in default environment only
@@ -84,11 +84,39 @@ public class EnvConfigTest {
 	}
 
 	@Test
+	public void testCanGetFromEntryWhenEnvVarAndDefaultValueSame() {
+		environmentVariables.set("property.five", "default");
+		final String testEnv = "test-env";
+		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
+		// when property.four is set as env variable
+		// and does not exist in test-env
+		// and exists in test env
+		// and exists in default env with same value as env var
+		// then value in test env takes priority
+		Assert.assertEquals("test", EnvConfig.get("property.five"));
+	}
+
+	@Test
+	public void testCanGetFromEntryWhenEnvVarAndDefaultValueDifferent() {
+		environmentVariables.set("property.five", "env.default");
+		final String testEnv = "test-env";
+		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
+		// when property.four is set as env variable
+		// and does not exist in test-env
+		// and exists in test env
+		// and exists in default env with different value to env var
+		// then value in env var takes priority
+		Assert.assertEquals("env.default", EnvConfig.get("property.five"));
+	}
+
+	@Test
 	public void testCanGetPropertyFromEnvVars() {
 		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT);
-		environmentVariables.set("MY_PROPERTY", "my_env_value");
-		Assert.assertEquals("my_env_value", EnvConfig.get("my.property"));
-		Assert.assertEquals("my_env_value", EnvConfig.get("MY_PROPERTY"));
+		environmentVariables.set("MY_ENV_PROPERTY", "my_env_value");
+		Assert.assertEquals("my_env_value", EnvConfig.get("my.env.property"));
+		Assert.assertEquals("my_env_value", EnvConfig.get("MY_ENV_PROPERTY"));
+
+		Assert.assertEquals("my_value", EnvConfig.get("my.property"));
 	}
 
 	@Test
@@ -210,6 +238,20 @@ public class EnvConfigTest {
 		// then keepass takes priority
 		Assert.assertEquals("KEEPASS_ENVIRONMENT", EnvConfig.get("my.keepass.property"));
 		Assert.assertEquals("KEEPASS_ENVIRONMENT", EnvConfig.get("MY_KEEPASS_PROPERTY"));
+	}
+
+	@Test
+	public void testCanGetPropertyFromKeepassWhenMultipleEnv() {
+		environmentVariables.set(CONFIG_KEEPASS_ENABLED_KEY.replace(".", "_").toUpperCase(), "true");
+		environmentVariables.set(CONFIG_KEEPASS_MASTERKEY_KEY.replace(".", "_").toUpperCase(), CONFIG_KEEPASS_PASSWORD);
+		environmentVariables.set("MY_KEEPASS_PROPERTY", "KEEPASS_ENV_VALUE");
+//		environmentVariables.set("PROPERTY_ONE", "KEEPASS_ENV");
+		final String testEnv = "test-no-keepass";
+		System.setProperty(CONFIG_ENV_KEY, "keepass," + testEnv);
+		Assert.assertEquals(testEnv, EnvConfig.getEnvironment());
+		// When a property.one exists in all environments, including default
+		// Then keepass takes priority
+		Assert.assertEquals("KEEPASS_ENVIRONMENT", EnvConfig.get("my.keepass.property"));
 	}
 
 	@Test

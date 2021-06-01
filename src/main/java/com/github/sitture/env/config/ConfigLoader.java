@@ -3,11 +3,13 @@ package com.github.sitture.env.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.configuration2.CompositeConfiguration;
+import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
@@ -125,10 +127,10 @@ class ConfigLoader {
 		configuration = new CompositeConfiguration();
 		final List<String> envs = getEnvList();
 		final String groupName = getConfigKeePassFilename();
-		loadEnvConfigurations();
 		if (isConfigKeePassEnabled()) {
 			envs.forEach(env -> loadKeePassConfigurations(groupName, env));
 		}
+		loadEnvConfigurations(getConfigPath(DEFAULT_ENVIRONMENT));
 		envs.forEach(env -> loadFileConfigurations(getConfigPath(env)));
 	}
 
@@ -139,9 +141,26 @@ class ConfigLoader {
 		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
 	}
 
-	private void loadEnvConfigurations() {
+	private void loadEnvConfigurations(final String configPath) {
 		final EnvironmentVariables envVars = new EnvironmentVariables();
-		configuration.addConfiguration(envVars.getEnvironmentConfiguration());
+		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
+		try {
+			for (final File file : getConfigFiles(configPath)) {
+				final Configuration defaults = new Configurations().properties(file);
+				final Iterator<String> keys = defaults.getKeys();
+				while (keys.hasNext()) {
+					final String property = keys.next();
+					if (envOverrides.containsKey(property)
+							&& envOverrides.getProperty(property).equals(defaults.getProperty(property))) {
+						envOverrides.clearProperty(property);
+					}
+				}
+			}
+		} catch (ConfigurationException e) {
+			LOG.debug("Could not load configuration files. \n {}", e.getMessage());
+		}
+
+		configuration.addConfiguration(envOverrides);
 		configuration.addConfiguration(envVars.getSystemConfiguration());
 	}
 
@@ -154,5 +173,7 @@ class ConfigLoader {
 			LOG.debug("Could not load configuration files. \n {}", e.getMessage());
 		}
 	}
+
+
 
 }
