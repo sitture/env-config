@@ -88,7 +88,7 @@ public class EnvConfigTest {
 		environmentVariables.set("property.five", "default");
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
-		// when property.four is set as env variable
+		// when property.five is set as env variable
 		// and does not exist in test-env
 		// and exists in test env
 		// and exists in default env with same value as env var
@@ -101,12 +101,25 @@ public class EnvConfigTest {
 		environmentVariables.set("property.five", "env.default");
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
-		// when property.four is set as env variable
+		// when property.five is set as env variable
 		// and does not exist in test-env
 		// and exists in test env
 		// and exists in default env with different value to env var
 		// then value in env var takes priority
 		Assert.assertEquals("env.default", EnvConfig.get("property.five"));
+	}
+
+	@Test
+	public void testCanGetFromEntryWhenEnvVarSet() {
+		environmentVariables.set("property.six", "env.property.six");
+		final String testEnv = "test-env";
+		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
+		// when property.six is set as env variable
+		// and exists in test-env env
+		// and exists in test env
+		// and exists in default env with different value to env var
+		// then value in env var takes priority
+		Assert.assertEquals("env.property.six", EnvConfig.get("property.six"));
 	}
 
 	@Test
