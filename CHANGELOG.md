@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.7.0
+
+### Added
+
+- Adds the ability to supply multiple environments. E.g. `config.env=env1,env2` where env2 takes precedence.
+
 ## 0.6.1
 
 ### Updated

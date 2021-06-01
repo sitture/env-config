@@ -194,7 +194,7 @@ public final class EnvConfig extends ConfigLoader {
 	 * @return a list of strings
 	 */
 	public static List<String> getList(final String property) {
-		return getList(property, ",");
+		return getList(property, DEFAULT_DELIMITER);
 	}
 
 	/**
@@ -207,11 +207,7 @@ public final class EnvConfig extends ConfigLoader {
 	 */
 	public static List<String> getList(final String property, final String delimiter) {
 		final String value = get(property);
-		return null == value
-				? Collections.emptyList()
-				: Stream.of(value.split(delimiter))
-				.map(String::trim)
-				.collect(Collectors.toList());
+		return getListOfValues(value, delimiter);
 	}
 
 	/**
@@ -220,7 +216,10 @@ public final class EnvConfig extends ConfigLoader {
 	 * @return env property value.
 	 */
 	public static String getEnvironment() {
-		return getConfig().getProperty(CONFIG_ENV_KEY);
+		final List<String> envs = getListOfValues(
+				get(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT),
+				DEFAULT_DELIMITER);
+		return envs.get(envs.size() - 1);
 	}
 
 	private CompositeConfiguration getCompositeConfig() {
@@ -244,6 +243,14 @@ public final class EnvConfig extends ConfigLoader {
 			propertiesMap.put(property, get(property));
 		}
 		return propertiesMap;
+	}
+
+	private static List<String> getListOfValues(final String value, final String delimiter) {
+		return null == value
+				? Collections.emptyList()
+				: Stream.of(value.split(delimiter))
+				.map(String::trim)
+				.collect(Collectors.toList());
 	}
 
 	@Override
