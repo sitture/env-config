@@ -235,7 +235,7 @@ public final class EnvConfig extends ConfigLoader {
 		return getConfig().getCompositeConfig();
 	}
 
-	private Map<String, Object> asMap() {
+	public Map<String, Object> asMap() {
 		final Map<String, Object> propertiesMap = new TreeMap<>();
 		final Iterator<String> keys = getConfiguration().getKeys();
 		while (keys.hasNext()) {
