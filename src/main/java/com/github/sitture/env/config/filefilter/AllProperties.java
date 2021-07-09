@@ -1,0 +1,11 @@
+package com.github.sitture.env.config.filefilter;
+import java.io.File;
+import java.io.FileFilter;
+
+public class AllProperties implements FileFilter {
+
+    @Override
+    public boolean accept(final File file) {
+        return file.getName().endsWith(".properties");
+    }
+}
