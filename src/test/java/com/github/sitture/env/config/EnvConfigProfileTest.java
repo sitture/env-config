@@ -18,15 +18,15 @@ public class EnvConfigProfileTest {
 	@Before
 	public void setUp() {
 		EnvConfig.reset();
-		environmentVariables.clear("property.one");
+		environmentVariables.clear(CONFIG_ENV_PROFILE);
 	}
 
 	@Test
 	public void testCanGetPropertyFromProfile() {
-		// given env is default and property.one exists in env properties
+		// given env is default and prof1.one exists in env properties
 		setEnvironment(DEFAULT_ENVIRONMENT);
 		// when an existing profile is set
-		// and property.one also exists with a different value
+		// and prof1.one also exists with a different value
 		setProfile("prof1");
 		// then value from profile property takes precedence
 		Assert.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
@@ -34,10 +34,10 @@ public class EnvConfigProfileTest {
 
 	@Test
 	public void testCanGetFromProfileWhenProfileSetAsEnv() {
-		// given env is default and property.one exists in env properties
+		// given env is default and prof1.one exists in env properties
 		setEnvironment(DEFAULT_ENVIRONMENT);
 		// when an existing profile is set
-		// and property.one also exists with a different value
+		// and prof1.one also exists with a different value
 		environmentVariables.set("CONFIG_ENV_PROFILE", "prof1");
 		// then value from profile property takes precedence
 		Assert.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
@@ -45,10 +45,10 @@ public class EnvConfigProfileTest {
 
 	@Test
 	public void testCanGetFromProfileUnderDefault() {
-		// given env is test and property.one exists in test/test.properties
+		// given env is test and prof1.one exists in test/test.properties
 		setEnvironment("test");
 		// when an existing profile is set in default env only
-		// and property.one also exists with a different value
+		// and prof1.one also exists with a different value
 		setProfile("prof1");
 		// then value from profile property takes precedence
 		Assert.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
@@ -67,10 +67,10 @@ public class EnvConfigProfileTest {
 
 	@Test
 	public void testCanGetFromProfileUnderEnv() {
-		// given env is test and property.one exists in test/test.properties
+		// given env is test and prof1.one exists in test/test.properties
 		setEnvironment("test");
 		// when an existing profile only exists in test env
-		// and property.one also exists with a different value
+		// and prof1.one also exists with a different value
 		setProfile("test-prof1");
 		// then value from profile property takes precedence
 		Assert.assertEquals("test.prof1.value", EnvConfig.get("test-prof1.one"));
@@ -78,12 +78,12 @@ public class EnvConfigProfileTest {
 
 	@Test
 	public void testCanGetWhenEnvVarAndProfileValuesDifferent() {
-		// given env is test and property.one exists in default/default.properties
+		// given env is test and prof1.one exists in default/default.properties
 		setEnvironment(DEFAULT_ENVIRONMENT);
 		// when an existing profile exists
-		// and property.one also exists in profile
+		// and prof1.one also exists in profile
 		environmentVariables.set("CONFIG_ENV_PROFILE", "prof1");
-		// and property.one also set as environment variable
+		// and prof1.one also set as environment variable
 		environmentVariables.set("PROF1_ONE", "env.prof1.value");
 		// then value from profile property takes precedence
 		Assert.assertEquals("env.prof1.value", EnvConfig.get("prof1.one"));
