@@ -87,7 +87,7 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 │       └── integration.properties
 ```
 
-### Using an environment as base
+### base environments
 
 You can base an environment based on another by specifying multiple environment in `CONFIG_ENV` environment variable.
 
