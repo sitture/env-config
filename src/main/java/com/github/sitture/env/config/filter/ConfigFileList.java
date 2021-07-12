@@ -1,4 +1,4 @@
-package com.github.sitture.env.config.filefilter;
+package com.github.sitture.env.config.filter;
 
 import com.github.sitture.env.config.ConfigException;
 import com.github.sitture.env.config.utils.BuildDirUtils;

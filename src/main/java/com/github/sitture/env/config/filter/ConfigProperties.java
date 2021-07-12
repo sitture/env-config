@@ -1,4 +1,5 @@
-package com.github.sitture.env.config.filefilter;
+package com.github.sitture.env.config.filter;
+
 import java.io.File;
 import java.io.FileFilter;
 

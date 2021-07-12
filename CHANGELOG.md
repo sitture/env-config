@@ -10,7 +10,6 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - Adds the ability to load in profiles using `CONFIG_ENV_PROFILE`
 
-
 ## 0.7.2
 
 ### Updated

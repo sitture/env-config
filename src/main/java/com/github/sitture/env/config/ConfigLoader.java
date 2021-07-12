@@ -1,7 +1,7 @@
 package com.github.sitture.env.config;
 
-import com.github.sitture.env.config.filefilter.ConfigFileList;
-import com.github.sitture.env.config.filefilter.ConfigProfileFileList;
+import com.github.sitture.env.config.filter.ConfigFileList;
+import com.github.sitture.env.config.filter.ConfigProfileFileList;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
