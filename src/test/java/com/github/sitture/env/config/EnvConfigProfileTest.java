@@ -89,6 +89,26 @@ public class EnvConfigProfileTest {
 		Assert.assertEquals("env.prof1.value", EnvConfig.get("prof1.one"));
 	}
 
+	@Test
+	public void testCanGetFromProfileWhenMultipleEnvs() {
+		// given env is test-env with no profiles
+		setEnvironment("test,test-env");
+		// and test env is set as base with property set in prof2 profile
+		setProfile("prof2");
+		// then value from profile takes precedence
+		Assert.assertEquals("test.prof2.value", EnvConfig.get("prof2.one"));
+	}
+
+	@Test
+	public void testCanGetFromDefaultProfileWhenMultipleEnvs() {
+		// given env is test-env with no profiles
+		setEnvironment("test,test-env");
+		// and test env is set base with non-existing profile
+		setProfile("prof1");
+		// then value from profile takes precedence
+		Assert.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
+	}
+
 	private void setEnvironment(final String environment) {
 		System.setProperty(CONFIG_ENV_KEY, environment);
 	}
