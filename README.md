@@ -87,18 +87,6 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 │       └── integration.properties
 ```
 
-### base environments
-
-You can base an environment based on another by specifying multiple environment in `CONFIG_ENV` environment variable.
-
-E.g. if you would like `env2` environment to inherit properties from `env2` environment:
-
-```shell
-CONFIG_ENV=env1,env2
-```
-
-The above will load environment properties from env2 on top of env1 and finally the default properties from default environment.
-
 ### `config` profiles
 
 You can also have config profiles within an environments by specifying the `CONFIG_ENV_PROFILE=profile1` variable E.g.
@@ -124,6 +112,18 @@ If `CONFIG_ENV=integration` and `CONFIG_ENV_PROFILE=profile1` suggests to load p
 2. `default/profile1/profile1.properties`
 3. `integration/integration.properties`
 4. `default/default.properties`
+
+### base environments
+
+You can base an environment based on another by specifying multiple environment in `CONFIG_ENV` environment variable.
+
+E.g. if you would like `env2` environment to inherit properties from `env2` environment:
+
+```shell
+CONFIG_ENV=env1,env2
+```
+
+The above will load environment properties from env2 on top of env1 and finally the default properties from default environment.
 
 ### `KeePass` Database Entries
 
