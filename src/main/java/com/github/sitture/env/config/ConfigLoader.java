@@ -1,21 +1,20 @@
 package com.github.sitture.env.config;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.github.sitture.env.config.filefilter.ConfigFileList;
-import com.github.sitture.env.config.filefilter.AllProperties;
-import com.github.sitture.env.config.filefilter.ProfileSpecificProperties;
+import com.github.sitture.env.config.filefilter.ConfigProfileFileList;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.github.sitture.env.config.utils.BuildDirUtils.getBuildDir;
 import static com.github.sitture.env.config.utils.PropertyUtils.getProperty;
@@ -24,7 +23,9 @@ import static com.github.sitture.env.config.utils.PropertyUtils.getRequiredPrope
 class ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
+
 	protected static final String CONFIG_ENV_KEY = "config.env";
+	protected static final String CONFIG_ENV_PROFILE_KEY = "config.env.profile";
 	protected static final String DEFAULT_ENVIRONMENT = "default";
 	protected static final String DEFAULT_DELIMITER = ",";
 	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
@@ -41,6 +42,10 @@ class ConfigLoader {
 				.distinct()
 				.map(String::trim)
 				.collect(Collectors.toList());
+	}
+
+	private String getEnvProfile() {
+		return getProperty(CONFIG_ENV_PROFILE_KEY, "");
 	}
 
 	private boolean isConfigKeePassEnabled() {
@@ -60,12 +65,16 @@ class ConfigLoader {
 	protected void loadConfigurations() {
 		configuration = new CompositeConfiguration();
 		final List<String> envs = getEnvList();
+		final String configProfile = getEnvProfile();
 		final String groupName = getConfigKeePassFilename();
 		if (isConfigKeePassEnabled()) {
 			envs.forEach(env -> loadKeePassConfigurations(groupName, env));
 		}
-		loadEnvConfigurations(DEFAULT_ENVIRONMENT);
-		envs.forEach(env -> loadFileConfigurations(env));
+		loadEnvConfigurations();
+		if (!configProfile.isEmpty()) {
+			envs.forEach(env -> loadFileConfigurations(new ConfigProfileFileList(env, configProfile)));
+		}
+		envs.forEach(env -> loadFileConfigurations(new ConfigFileList(env)));
 	}
 
 	private void loadKeePassConfigurations(final String groupName, final String env) {
@@ -75,10 +84,10 @@ class ConfigLoader {
 		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
 	}
 
-	private void loadEnvConfigurations(final String configPath) {
+	private void loadEnvConfigurations() {
 		final EnvironmentVariables envVars = new EnvironmentVariables();
 		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
-		final ConfigFileList cfl = new ConfigFileList(configPath, new AllProperties());
+		final ConfigFileList cfl = new ConfigFileList(DEFAULT_ENVIRONMENT);
 		try {
 			for (final File file : cfl.listFiles()) {
 				final Configuration defaults = new Configurations().properties(file);
@@ -99,10 +108,9 @@ class ConfigLoader {
 		configuration.addConfiguration(envVars.getSystemConfiguration());
 	}
 
-	private void loadFileConfigurations(final String configPath) {
+	private void loadFileConfigurations(final ConfigFileList configFileList) {
 		try {
-			final ConfigFileList cfl = new ConfigFileList(configPath, new ProfileSpecificProperties());
-			for (final File file : cfl.listFiles()) {
+			for (final File file : configFileList.listFiles()) {
 				configuration.addConfiguration(new Configurations().properties(file));
 			}
 		} catch (ConfigurationException e) {

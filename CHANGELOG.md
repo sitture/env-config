@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.8.0
+
+### Added
+
+- Adds the ability to load in profiles using `CONFIG_ENV_PROFILE`
+
+
 ## 0.7.2
 
 ### Updated
