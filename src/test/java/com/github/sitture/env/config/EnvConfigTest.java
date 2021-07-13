@@ -52,7 +52,7 @@ public class EnvConfigTest {
 
 	@Test(expected = ConfigException.class)
 	public void testExceptionWhenEnvMissing() {
-		System.setProperty(CONFIG_ENV_KEY, "default, test2 ");
+		System.setProperty(CONFIG_ENV_KEY, "default, non-existing ");
 		Assert.assertEquals(TEST_ENVIRONMENT, EnvConfig.getEnvironment());
 	}
 
@@ -66,6 +66,12 @@ public class EnvConfigTest {
 	public void testCanGetProperty() {
 		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT);
 		Assert.assertEquals("my_value", EnvConfig.get("my.property"));
+	}
+
+	@Test
+	public void testDoesNotGetsPropertyFromSubDirs() {
+		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
+		Assert.assertNull(EnvConfig.get("property.sub.dir"));
 	}
 
 	@Test

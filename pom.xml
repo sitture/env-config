@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7.1</version>
+	<version>0.8.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -54,9 +54,9 @@
 		<openkeepass.version>0.8.2</openkeepass.version>
 		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-		<junit.version>4.13.1</junit.version>
+		<junit.version>4.13.2</junit.version>
 	</properties>
 
 	<build>
