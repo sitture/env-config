@@ -87,6 +87,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Now adds the raw environments as well as processed lowercased keys
+
 E.g. TEST_VAR can either be retrieved with `EnvConfig.get("TEST_VAR")` or `EnvConfig.get("test.var")`
 
 ## 0.5.2
