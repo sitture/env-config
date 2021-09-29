@@ -1,8 +1,12 @@
 package com.github.sitture.env.config.utils;
 
 import com.github.sitture.env.config.MissingVariableException;
+import org.apache.commons.configuration2.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 public final class PropertyUtils {
 
@@ -14,6 +18,12 @@ public final class PropertyUtils {
 
     public static String getProcessedEnvKey(final String envVar) {
         return envVar.replaceAll("_", ".").toLowerCase();
+    }
+
+    public static Map<String, Object> getConfigurationMap(final CompositeConfiguration configuration) {
+        final Map<String, Object> propertiesMap = new TreeMap<>();
+        configuration.getKeys().forEachRemaining(key -> propertiesMap.put(key, configuration.getString(key)));
+        return propertiesMap;
     }
 
     public static String getProperty(final String key, final String defaultValue) {

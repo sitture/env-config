@@ -1,16 +1,16 @@
 package com.github.sitture.env.config;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.github.sitture.env.config.utils.PropertyUtils.getConfigurationMap;
 
 public final class EnvConfig extends ConfigLoader {
 
@@ -236,13 +236,7 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	public Map<String, Object> asMap() {
-		final Map<String, Object> propertiesMap = new TreeMap<>();
-		final Iterator<String> keys = getConfiguration().getKeys();
-		while (keys.hasNext()) {
-			final String property = keys.next();
-			propertiesMap.put(property, get(property));
-		}
-		return propertiesMap;
+		return getConfigurationMap(getConfiguration());
 	}
 
 	private static List<String> getListOfValues(final String value, final String delimiter) {

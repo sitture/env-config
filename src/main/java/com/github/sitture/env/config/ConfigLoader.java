@@ -2,6 +2,8 @@ package com.github.sitture.env.config;
 
 import com.github.sitture.env.config.filter.ConfigFileList;
 import com.github.sitture.env.config.filter.ConfigProfileFileList;
+import com.github.sitture.env.config.utils.BuildDirUtils;
+import com.github.sitture.env.config.utils.PropertyUtils;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
@@ -20,11 +22,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.github.sitture.env.config.utils.BuildDirUtils.getBuildDir;
-import static com.github.sitture.env.config.utils.PropertyUtils.getProcessedEnvKey;
-import static com.github.sitture.env.config.utils.PropertyUtils.getProperty;
-import static com.github.sitture.env.config.utils.PropertyUtils.getRequiredProperty;
-
 class ConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConfigLoader.class);
@@ -41,7 +38,7 @@ class ConfigLoader {
 	private List<String> getEnvList() {
 		final String value = String.format("%s%s%s",
 				DEFAULT_ENVIRONMENT, DEFAULT_DELIMITER,
-				getProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT));
+				PropertyUtils.getProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT));
 		return Stream.of(value.split(DEFAULT_DELIMITER))
 				.sorted(Collections.reverseOrder())
 				.distinct()
@@ -50,21 +47,21 @@ class ConfigLoader {
 	}
 
 	private String getEnvProfile() {
-		return getProperty(CONFIG_ENV_PROFILE_KEY, "");
+		return PropertyUtils.getProperty(CONFIG_ENV_PROFILE_KEY, "");
 	}
 
 	private boolean isConfigKeePassEnabled() {
-		return Boolean.parseBoolean(getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false"));
+		return Boolean.parseBoolean(PropertyUtils.getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false"));
 	}
 
 	private String getConfigKeePassFilename() {
-		final String[] buildDir = getBuildDir().split(File.separator);
+		final String[] buildDir = BuildDirUtils.getBuildDir().split(File.separator);
 		final String defaultFileName = buildDir[buildDir.length-1];
-		return getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
+		return PropertyUtils.getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
 	}
 
 	private String getConfigKeePassMasterKey() {
-		return getRequiredProperty(CONFIG_KEEPASS_MASTER_KEY_KEY);
+		return PropertyUtils.getRequiredProperty(CONFIG_KEEPASS_MASTER_KEY_KEY);
 	}
 
 	protected void loadConfigurations() {
@@ -121,7 +118,7 @@ class ConfigLoader {
 				config.getKeys().forEachRemaining(key -> {
 					final Object value = config.getProperty(key);
 					propertiesMap.put(key, value);
-					propertiesMap.put(getProcessedEnvKey(key), value);
+					propertiesMap.put(PropertyUtils.getProcessedEnvKey(key), value);
 				});
 				configuration.addConfiguration(new MapConfiguration(propertiesMap));
 			}
