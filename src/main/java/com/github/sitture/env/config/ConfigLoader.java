@@ -4,6 +4,8 @@ import com.github.sitture.env.config.filter.ConfigFileList;
 import com.github.sitture.env.config.filter.ConfigProfileFileList;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.MapConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
@@ -11,12 +13,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.sitture.env.config.utils.BuildDirUtils.getBuildDir;
+import static com.github.sitture.env.config.utils.PropertyUtils.getProcessedEnvKey;
 import static com.github.sitture.env.config.utils.PropertyUtils.getProperty;
 import static com.github.sitture.env.config.utils.PropertyUtils.getRequiredProperty;
 
@@ -111,7 +116,14 @@ class ConfigLoader {
 	private void loadFileConfigurations(final ConfigFileList configFileList) {
 		try {
 			for (final File file : configFileList.listFiles()) {
-				configuration.addConfiguration(new Configurations().properties(file));
+				final PropertiesConfiguration config = new Configurations().properties(file);
+				final Map<String, Object> propertiesMap = new HashMap<>();
+				config.getKeys().forEachRemaining(key -> {
+					final Object value = config.getProperty(key);
+					propertiesMap.put(key, value);
+					propertiesMap.put(getProcessedEnvKey(key), value);
+				});
+				configuration.addConfiguration(new MapConfiguration(propertiesMap));
 			}
 		} catch (ConfigurationException e) {
 			LOG.debug("Could not load configuration files. \n {}", e.getMessage());

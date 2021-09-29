@@ -1,11 +1,13 @@
 package com.github.sitture.env.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.configuration2.SystemConfiguration;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.github.sitture.env.config.utils.PropertyUtils.getProcessedEnvKey;
 
 class EnvironmentVariables {
 
@@ -32,10 +34,6 @@ class EnvironmentVariables {
 			envMap.put(getProcessedEnvKey(entry.getKey()), entry.getValue());
 		});
 		return envMap;
-	}
-
-	private static String getProcessedEnvKey(final String envVar) {
-		return envVar.replaceAll("_", ".").toLowerCase();
 	}
 
 }

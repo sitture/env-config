@@ -12,6 +12,10 @@ public final class PropertyUtils {
 
     }
 
+    public static String getProcessedEnvKey(final String envVar) {
+        return envVar.replaceAll("_", ".").toLowerCase();
+    }
+
     public static String getProperty(final String key, final String defaultValue) {
         final String value = getEnvOrSystemProperty(key, defaultValue);
         setProperty(key, value);

@@ -129,6 +129,17 @@ public class EnvConfigTest {
 	}
 
 	@Test
+	public void testCanGetFromEntryWhenEnvVarSetInMultiEnvs() {
+		final String testEnv = "test-env";
+		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
+		// when property.seven is not set in test-env
+		// and exists in test env in environment variable format. i.e. PROPERTY_SEVEN=test
+		// and exists in default env with different value i.e. PROPERTY_SEVEN=default
+		// then i should be able to value from test env using the properties format
+		Assert.assertEquals("test", EnvConfig.get("property.seven"));
+	}
+
+	@Test
 	public void testCanGetPropertyFromEnvVars() {
 		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT);
 		environmentVariables.set("MY_ENV_PROPERTY", "my_env_value");
