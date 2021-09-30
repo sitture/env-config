@@ -6,6 +6,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,6 +30,20 @@ public class EnvConfigTest {
 	@Before
 	public void setUp() {
 		EnvConfig.reset();
+	}
+
+	@Test
+	public void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
+		final Constructor<EnvConfig> constructor = EnvConfig.class.getDeclaredConstructor();
+		Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+		constructor.setAccessible(true);
+		constructor.newInstance();
+	}
+
+	@Test
+	public void testStaticAndSingleton() {
+		Assert.assertEquals(EnvConfig.getConfig().hashCode(), EnvConfig.getConfig().hashCode());
 	}
 
 	@Test

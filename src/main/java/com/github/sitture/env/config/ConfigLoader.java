@@ -33,7 +33,7 @@ class ConfigLoader {
 	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
 	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
 	private static final String CONFIG_KEEPASS_MASTER_KEY_KEY = "config.keepass.masterkey";
-	protected static CompositeConfiguration configuration;
+	protected CompositeConfiguration configuration;
 
 	private List<String> getEnvList() {
 		final String value = String.format("%s%s%s",
@@ -80,7 +80,9 @@ class ConfigLoader {
 	}
 
 	private void loadKeePassConfigurations(final String groupName, final String env) {
-		LOG.debug(String.format("Loading keePass entries for %s/%s.", groupName, env));
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Loading keePass entries for {}/{}.", groupName, env);
+		}
 		final String masterKey = getConfigKeePassMasterKey();
 		final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName, env);
 		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
@@ -103,7 +105,9 @@ class ConfigLoader {
 				}
 			}
 		} catch (ConfigurationException e) {
-			LOG.debug("Could not load configuration files. \n {}", e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Could not load configuration files. \n {}", e.getMessage());
+			}
 		}
 
 		configuration.addConfiguration(envOverrides);
@@ -123,7 +127,9 @@ class ConfigLoader {
 				configuration.addConfiguration(new MapConfiguration(propertiesMap));
 			}
 		} catch (ConfigurationException e) {
-			LOG.debug("Could not load configuration files. \n {}", e.getMessage());
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Could not load configuration files. \n {}", e.getMessage());
+			}
 		}
 	}
 
