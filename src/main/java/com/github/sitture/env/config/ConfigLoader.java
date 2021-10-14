@@ -55,8 +55,7 @@ class ConfigLoader {
 	}
 
 	private String getConfigKeePassFilename() {
-		final String[] buildDir = BuildDirUtils.getBuildDir().split(File.separator);
-		final String defaultFileName = buildDir[buildDir.length-1];
+		final String defaultFileName = new File(BuildDirUtils.getBuildDir()).getName();
 		return PropertyUtils.getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
 	}
 
