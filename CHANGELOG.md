@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 0.8.3
+
+### Fixed
+
+- Changes the way that we get the filename to fix an issue in Windows
+
+## 0.8.2
+
+### Updated
+
+- Updating to latest version of checkstyle and pmd
+
 ## 0.8.1
 
 ### Fixed
