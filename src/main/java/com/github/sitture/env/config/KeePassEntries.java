@@ -16,10 +16,9 @@ class KeePassEntries {
 
     private final KeePassFile keePassFile;
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
-    private final String keePassGroupName;
 
     KeePassEntries(final String masterKey, final String groupName) {
-        keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
+        final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
                 ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
                 : groupName;
         keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)))
@@ -27,6 +26,9 @@ class KeePassEntries {
     }
 
     protected Configuration getEntriesConfiguration(final String env) {
+        final String keePassGroupName = !keePassFile.getTopGroups().isEmpty()
+                ? keePassFile.getTopGroups().get(0).getName()
+                : "Root";
         return new MapConfiguration(getEntriesMap(keePassGroupName, env));
     }
 
@@ -35,7 +37,7 @@ class KeePassEntries {
         final URL resource = classLoader.getResource(fileName);
         File keepassFile;
         if (null == resource) {
-            throw new IllegalArgumentException(String.format("Database %s does not exist!", fileName));
+            throw new ConfigException(String.format("Database %s does not exist!", fileName));
         } else {
             try {
                 keepassFile = new File(resource.toURI());
@@ -57,12 +59,12 @@ class KeePassEntries {
         envGroup.ifPresent(group -> group.getEntries()
                 .forEach(entry -> {
                     entriesMap.put(entry.getTitle().trim(), entry.getPassword());
-                    entriesMap.put(getProcessedEnvKey(entry.getTitle().trim()), entry.getPassword());
+                    entriesMap.put(getProcessedPropertyKey(entry.getTitle().trim()), entry.getPassword());
                 }));
         return entriesMap;
     }
 
-    private static String getProcessedEnvKey(final String envVar) {
+    private static String getProcessedPropertyKey(final String envVar) {
         return envVar.replaceAll("_", ".").toLowerCase();
     }
 

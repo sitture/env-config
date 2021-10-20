@@ -29,6 +29,7 @@ public class EnvConfigTest {
 
 	@Before
 	public void setUp() {
+		System.clearProperty("config.keepass.filename");
 		EnvConfig.reset();
 	}
 
@@ -263,15 +264,39 @@ public class EnvConfigTest {
 		Assert.assertNull(System.getProperty(TEST_PROPERTY));
 	}
 
-	@Test
-	public void testCanGetEntryFromKeepassDefaultGroup() {
+	private void enabledKeepass() {
 		System.setProperty(CONFIG_KEEPASS_ENABLED_KEY, "true");
 		System.setProperty(CONFIG_KEEPASS_MASTERKEY_KEY, CONFIG_KEEPASS_PASSWORD);
 		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
+	}
+
+	@Test
+	public void testCanGetEntryFromKeepassDefaultGroup() {
+		enabledKeepass();
 		// when my.keepass.property does not exist in default env.
 		// and only exists default group of keepass
 		Assert.assertEquals(KEEPASS_VALUE, EnvConfig.get("my.keepass.property"));
 		Assert.assertEquals(KEEPASS_VALUE, EnvConfig.get("MY_KEEPASS_PROPERTY"));
+	}
+
+	@Test
+	public void testCanGetEntryFromKeepassWhenFileNameSpecified() {
+		System.setProperty("config.keepass.filename", "env-config.kdbx");
+		enabledKeepass();
+		Assert.assertEquals(KEEPASS_VALUE, EnvConfig.get("my.keepass.property"));
+	}
+
+	@Test
+	public void testCanGetFromKeepassWhenFileNameWithSpace() {
+		System.setProperty("config.keepass.filename", "env config.kdbx");
+		enabledKeepass();
+		Assert.assertEquals(KEEPASS_VALUE, EnvConfig.get("my.keepass.property"));
+	}
+
+	@Test(expected = ConfigException.class)
+	public void testExceptionWhenKeepassFileMissing() {
+		System.setProperty("config.keepass.filename", "non-existing");
+		testCanGetEntryFromKeepassDefaultGroup();
 	}
 
 	@Test
