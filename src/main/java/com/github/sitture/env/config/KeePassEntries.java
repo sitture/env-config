@@ -16,9 +16,10 @@ class KeePassEntries {
 
     private final KeePassFile keePassFile;
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
+    private final String keePassGroupName;
 
     KeePassEntries(final String masterKey, final String groupName) {
-        final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
+        keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
                 ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
                 : groupName;
         keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)))
@@ -26,7 +27,6 @@ class KeePassEntries {
     }
 
     protected Configuration getEntriesConfiguration(final String env) {
-        final String keePassGroupName = keePassFile.getTopGroups().get(0).getName();
         return new MapConfiguration(getEntriesMap(keePassGroupName, env));
     }
 
