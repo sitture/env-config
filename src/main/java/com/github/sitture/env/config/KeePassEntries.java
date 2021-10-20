@@ -1,33 +1,32 @@
 package com.github.sitture.env.config;
 
-import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import de.slackspace.openkeepass.KeePassDatabase;
 import de.slackspace.openkeepass.domain.Group;
 import de.slackspace.openkeepass.domain.KeePassFile;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 
+import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 class KeePassEntries {
 
-    private final Configuration entriesConfiguration;
     private final KeePassFile keePassFile;
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
 
-    KeePassEntries(final String masterKey, final String groupName, final String env) {
-        final String processedGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
+    KeePassEntries(final String masterKey, final String groupName) {
+        final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
                 ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
                 : groupName;
-        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(processedGroupName.concat(KEEPASS_DB_FILE_EXTENSION))).openDatabase(masterKey);
-        entriesConfiguration = new MapConfiguration(getEntriesMap(processedGroupName, env));
+        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION))).openDatabase(masterKey);
     }
 
-    protected Configuration getEntriesConfiguration() {
-        return entriesConfiguration;
+    protected Configuration getEntriesConfiguration(final String env) {
+        final String keePassGroupName = keePassFile.getTopGroups().get(0).getName();
+        return new MapConfiguration(getEntriesMap(keePassGroupName, env));
     }
 
     private File getKeepassDatabaseFile(final String fileName) {

@@ -56,7 +56,7 @@ class ConfigLoader {
 
 	private String getConfigKeePassFilename() {
 		final String defaultFileName = new File(BuildDirUtils.getBuildDir()).getName();
-		return PropertyUtils.getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName);
+		return new File(PropertyUtils.getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName)).getName();
 	}
 
 	private String getConfigKeePassMasterKey() {
@@ -69,22 +69,15 @@ class ConfigLoader {
 		final String configProfile = getEnvProfile();
 		final String groupName = getConfigKeePassFilename();
 		if (isConfigKeePassEnabled()) {
-			envs.forEach(env -> loadKeePassConfigurations(groupName, env));
+			final String masterKey = getConfigKeePassMasterKey();
+			final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
+			envs.forEach(env -> configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
 		}
 		loadEnvConfigurations();
 		if (!configProfile.isEmpty()) {
 			envs.forEach(env -> loadFileConfigurations(new ConfigProfileFileList(env, configProfile)));
 		}
 		envs.forEach(env -> loadFileConfigurations(new ConfigFileList(env)));
-	}
-
-	private void loadKeePassConfigurations(final String groupName, final String env) {
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Loading keePass entries for {}/{}.", groupName, env);
-		}
-		final String masterKey = getConfigKeePassMasterKey();
-		final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName, env);
-		configuration.addConfiguration(keepassEntries.getEntriesConfiguration());
 	}
 
 	private void loadEnvConfigurations() {
