@@ -67,8 +67,8 @@ class ConfigLoader {
 		configuration = new CompositeConfiguration();
 		final List<String> envs = getEnvList();
 		final String configProfile = getEnvProfile();
-		final String groupName = getConfigKeePassFilename();
 		if (isConfigKeePassEnabled()) {
+			final String groupName = getConfigKeePassFilename();
 			final String masterKey = getConfigKeePassMasterKey();
 			final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
 			envs.forEach(env -> configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
