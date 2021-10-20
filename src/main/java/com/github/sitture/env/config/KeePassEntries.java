@@ -21,7 +21,8 @@ class KeePassEntries {
         final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
                 ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
                 : groupName;
-        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION))).openDatabase(masterKey);
+        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)))
+                .openDatabase(masterKey);
     }
 
     protected Configuration getEntriesConfiguration(final String env) {
@@ -32,11 +33,17 @@ class KeePassEntries {
     private File getKeepassDatabaseFile(final String fileName) {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
+        File keepassFile;
+        if (null == resource) {
             throw new IllegalArgumentException(String.format("Database %s does not exist!", fileName));
         } else {
-            return new File(resource.getFile());
+            try {
+                keepassFile = new File(resource.toURI());
+            } catch (final Exception e) {
+                keepassFile = new File(resource.getFile());
+            }
         }
+        return keepassFile;
     }
 
     private Map<String, String> getEntriesMap(final String groupName, final String env) {
