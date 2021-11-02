@@ -44,6 +44,11 @@ public class BuildDirUtilsTest {
         System.setProperty(CONFIG_DIR_KEY, BuildDirUtils.getBuildDir() + "/env/dir");
         assertEquals("Incorrect config path",
                 BuildDirUtils.getBuildDir() + "/env/dir/foo", BuildDirUtils.getConfigPath("foo"));
+    }
+
+    @Test
+    public void testCanGetConfigPathWhenAbsolute() {
+        // when config.dir is set to absolute
         System.setProperty(CONFIG_DIR_KEY, "/usr/dir/env/dir");
         assertEquals("Incorrect config path",
                 "/usr/dir/env/dir/foo", BuildDirUtils.getConfigPath("foo"));
