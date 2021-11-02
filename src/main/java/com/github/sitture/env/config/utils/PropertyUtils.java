@@ -13,7 +13,6 @@ public final class PropertyUtils {
     private static final Logger LOG = LoggerFactory.getLogger(PropertyUtils.class);
 
     private PropertyUtils() {
-
     }
 
     public static String getProcessedEnvKey(final String envVar) {

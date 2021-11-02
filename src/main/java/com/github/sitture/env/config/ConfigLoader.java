@@ -30,7 +30,6 @@ class ConfigLoader {
 	protected static final String CONFIG_ENV_PROFILE_KEY = "config.env.profile";
 	protected static final String DEFAULT_ENVIRONMENT = "default";
 	protected static final String DEFAULT_DELIMITER = ",";
-	private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
 	private static final String CONFIG_KEEPASS_ENABLED_KEY = "config.keepass.enabled";
 	private static final String CONFIG_KEEPASS_MASTER_KEY_KEY = "config.keepass.masterkey";
 	protected CompositeConfiguration configuration;
@@ -54,11 +53,6 @@ class ConfigLoader {
 		return Boolean.parseBoolean(PropertyUtils.getProperty(CONFIG_KEEPASS_ENABLED_KEY, "false"));
 	}
 
-	private String getConfigKeePassFilename() {
-		final String defaultFileName = new File(BuildDirUtils.getBuildDir()).getName();
-		return new File(PropertyUtils.getProperty(CONFIG_KEEPASS_FILENAME_KEY, defaultFileName)).getName();
-	}
-
 	private String getConfigKeePassMasterKey() {
 		return PropertyUtils.getRequiredProperty(CONFIG_KEEPASS_MASTER_KEY_KEY);
 	}
@@ -68,7 +62,7 @@ class ConfigLoader {
 		final List<String> envs = getEnvList();
 		final String configProfile = getEnvProfile();
 		if (isConfigKeePassEnabled()) {
-			final String groupName = getConfigKeePassFilename();
+			final String groupName = BuildDirUtils.getConfigKeePassFilename();
 			final String masterKey = getConfigKeePassMasterKey();
 			final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
 			envs.forEach(env -> configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
