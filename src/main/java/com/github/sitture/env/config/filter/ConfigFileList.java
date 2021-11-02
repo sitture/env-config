@@ -2,7 +2,6 @@ package com.github.sitture.env.config.filter;
 
 import com.github.sitture.env.config.ConfigException;
 import com.github.sitture.env.config.utils.BuildDirUtils;
-import com.github.sitture.env.config.utils.PropertyUtils;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -12,13 +11,11 @@ import java.util.Objects;
 
 public class ConfigFileList {
 
-    private static final String CONFIG_DIR_KEY = "config.dir";
-    private static final String DEFAULT_ENV_DIRECTORY = "config";
     protected final String configPath;
     private final FileFilter fileFilter;
 
     public ConfigFileList(final String env) {
-        this.configPath = getConfigPath(env);
+        this.configPath = BuildDirUtils.getConfigPath(env);
         this.fileFilter = new ConfigProperties();
     }
 
@@ -37,13 +34,5 @@ public class ConfigFileList {
             throw new ConfigException("No property files found under '" + configDir.getPath() + "'");
         }
         return files;
-    }
-
-    private String getConfigDir() {
-        return PropertyUtils.getProperty(CONFIG_DIR_KEY, DEFAULT_ENV_DIRECTORY);
-    }
-
-    private String getConfigPath(final String env) {
-        return BuildDirUtils.getBuildDir() + File.separator + getConfigDir() + File.separator + env;
     }
 }
