@@ -87,6 +87,12 @@ public class EnvConfigTest {
 	}
 
 	@Test
+	public void testCanGetPropertyFromGetOrThrow() {
+		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT);
+		Assert.assertEquals("my_value", EnvConfig.getOrThrow("my.property"));
+	}
+
+	@Test
 	public void testDoesNotGetsPropertyFromSubDirs() {
 		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
 		Assert.assertNull(EnvConfig.get("property.sub.dir"));
