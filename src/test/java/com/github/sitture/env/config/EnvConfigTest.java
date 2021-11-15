@@ -28,10 +28,10 @@ class EnvConfigTest {
 	private static final String KEEPASS_VALUE = "KEEPASS_VALUE";
 
 	@SystemStub
-	EnvironmentVariables environmentVariables;
+	private final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
 	@BeforeEach
-	void setUp() {
+	void setUp() throws Exception {
 		System.clearProperty("config.keepass.filename");
 		EnvConfig.reset();
 	}

@@ -2,11 +2,14 @@ package com.github.sitture.env.config;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ExtendWith(SystemStubsExtension.class)
 class EnvConfigProfileTest {
 
 	private static final String CONFIG_ENV_KEY = "config.env";

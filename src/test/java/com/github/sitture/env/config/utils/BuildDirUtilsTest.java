@@ -20,61 +20,61 @@ class BuildDirUtilsTest {
 
     @Test
     void testCanGetBuildDir() {
-        assertEquals("invalid buildDir!", System.getProperty("user.dir"), BuildDirUtils.getBuildDir());
+        assertEquals(System.getProperty("user.dir"), BuildDirUtils.getBuildDir(), "invalid buildDir!");
     }
 
     @Test
     void testCanGetConfigPath() {
         // when config.dir isn't specified
-        assertEquals("Incorrect config path",
-                BuildDirUtils.getBuildDir() + "/config/test", BuildDirUtils.getConfigPath("test"));
+        assertEquals(BuildDirUtils.getBuildDir() + "/config/test",
+                BuildDirUtils.getConfigPath("test"), "Incorrect config path");
     }
 
     @Test
     void testCanGetConfigPathWhenRelative() {
         // when config.dir is set to relative path
         System.setProperty(CONFIG_DIR_KEY, "env/dir");
-        assertEquals("Incorrect config path",
-                BuildDirUtils.getBuildDir() + "/env/dir/foo", BuildDirUtils.getConfigPath("foo"));
+        assertEquals(BuildDirUtils.getBuildDir() + "/env/dir/foo",
+                BuildDirUtils.getConfigPath("foo"), "Incorrect config path");
     }
 
     @Test
     void testCanGetConfigPathWhenAbsoluteWithin() {
         // when config.dir is set to absolute
         System.setProperty(CONFIG_DIR_KEY, BuildDirUtils.getBuildDir() + "/env/dir");
-        assertEquals("Incorrect config path",
-                BuildDirUtils.getBuildDir() + "/env/dir/foo", BuildDirUtils.getConfigPath("foo"));
+        assertEquals(BuildDirUtils.getBuildDir() + "/env/dir/foo",
+                BuildDirUtils.getConfigPath("foo"), "Incorrect config path");
     }
 
     @Test
     void testCanGetConfigPathWhenAbsolute() {
         // when config.dir is set to absolute
         System.setProperty(CONFIG_DIR_KEY, "/usr/dir/env/dir");
-        assertEquals("Incorrect config path",
-                "/usr/dir/env/dir/foo", BuildDirUtils.getConfigPath("foo"));
+        assertEquals("/usr/dir/env/dir/foo",
+                BuildDirUtils.getConfigPath("foo"), "Incorrect config path");
     }
 
     @Test
     void testCanGetConfigKeepassFileName() {
         // when config.keepass.filename isn't specified
-        assertEquals("Incorrect config.keepass.filename path",
-                new File(BuildDirUtils.getBuildDir()).getName(), BuildDirUtils.getConfigKeePassFilename());
+        assertEquals(new File(BuildDirUtils.getBuildDir()).getName(),
+                BuildDirUtils.getConfigKeePassFilename(), "Incorrect config.keepass.filename path");
     }
 
     @Test
     void testCanGetConfigKeepassFileNameWhenRelative() {
         // when config.keepass.filename isn't specified
         System.setProperty(CONFIG_KEEPASS_FILENAME_KEY, "foobar.kdbx");
-        assertEquals("Incorrect config.keepass.filename path",
-                "foobar.kdbx", BuildDirUtils.getConfigKeePassFilename());
+        assertEquals("foobar.kdbx",
+                BuildDirUtils.getConfigKeePassFilename(), "Incorrect config.keepass.filename path");
     }
 
     @Test
     void testCanGetConfigKeepassFileNameWhenAbsolute() {
         // when config.keepass.filename isn't specified
         System.setProperty(CONFIG_KEEPASS_FILENAME_KEY, "/dir/foobar.kdbx");
-        assertEquals("Incorrect config.keepass.filename path",
-                "foobar.kdbx", BuildDirUtils.getConfigKeePassFilename());
+        assertEquals("foobar.kdbx",
+                BuildDirUtils.getConfigKeePassFilename(), "Incorrect config.keepass.filename path");
     }
 
 }
