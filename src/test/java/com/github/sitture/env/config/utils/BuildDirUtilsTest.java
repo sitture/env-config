@@ -1,37 +1,37 @@
 package com.github.sitture.env.config.utils;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BuildDirUtilsTest {
+class BuildDirUtilsTest {
 
     private static final String CONFIG_DIR_KEY = "config.dir";
     private static final String CONFIG_KEEPASS_FILENAME_KEY = "config.keepass.filename";
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         System.clearProperty(CONFIG_DIR_KEY);
         System.clearProperty(CONFIG_KEEPASS_FILENAME_KEY);
     }
 
     @Test
-    public void testCanGetBuildDir() {
+    void testCanGetBuildDir() {
         assertEquals("invalid buildDir!", System.getProperty("user.dir"), BuildDirUtils.getBuildDir());
     }
 
     @Test
-    public void testCanGetConfigPath() {
+    void testCanGetConfigPath() {
         // when config.dir isn't specified
         assertEquals("Incorrect config path",
                 BuildDirUtils.getBuildDir() + "/config/test", BuildDirUtils.getConfigPath("test"));
     }
 
     @Test
-    public void testCanGetConfigPathWhenRelative() {
+    void testCanGetConfigPathWhenRelative() {
         // when config.dir is set to relative path
         System.setProperty(CONFIG_DIR_KEY, "env/dir");
         assertEquals("Incorrect config path",
@@ -39,7 +39,7 @@ public class BuildDirUtilsTest {
     }
 
     @Test
-    public void testCanGetConfigPathWhenAbsoluteWithin() {
+    void testCanGetConfigPathWhenAbsoluteWithin() {
         // when config.dir is set to absolute
         System.setProperty(CONFIG_DIR_KEY, BuildDirUtils.getBuildDir() + "/env/dir");
         assertEquals("Incorrect config path",
@@ -47,7 +47,7 @@ public class BuildDirUtilsTest {
     }
 
     @Test
-    public void testCanGetConfigPathWhenAbsolute() {
+    void testCanGetConfigPathWhenAbsolute() {
         // when config.dir is set to absolute
         System.setProperty(CONFIG_DIR_KEY, "/usr/dir/env/dir");
         assertEquals("Incorrect config path",
@@ -55,14 +55,14 @@ public class BuildDirUtilsTest {
     }
 
     @Test
-    public void testCanGetConfigKeepassFileName() {
+    void testCanGetConfigKeepassFileName() {
         // when config.keepass.filename isn't specified
         assertEquals("Incorrect config.keepass.filename path",
                 new File(BuildDirUtils.getBuildDir()).getName(), BuildDirUtils.getConfigKeePassFilename());
     }
 
     @Test
-    public void testCanGetConfigKeepassFileNameWhenRelative() {
+    void testCanGetConfigKeepassFileNameWhenRelative() {
         // when config.keepass.filename isn't specified
         System.setProperty(CONFIG_KEEPASS_FILENAME_KEY, "foobar.kdbx");
         assertEquals("Incorrect config.keepass.filename path",
@@ -70,7 +70,7 @@ public class BuildDirUtilsTest {
     }
 
     @Test
-    public void testCanGetConfigKeepassFileNameWhenAbsolute() {
+    void testCanGetConfigKeepassFileNameWhenAbsolute() {
         // when config.keepass.filename isn't specified
         System.setProperty(CONFIG_KEEPASS_FILENAME_KEY, "/dir/foobar.kdbx");
         assertEquals("Incorrect config.keepass.filename path",

@@ -8,7 +8,9 @@
 
 	<!-- Default rulesets -->
 	<rule ref="category/java/bestpractices.xml">
-			<exclude name="UseVarargs" />
+		<exclude name="UseVarargs" />
+		<exclude name="JUnitAssertionsShouldIncludeMessage" />
+		<exclude name="JUnitTestContainsTooManyAsserts" />
 	</rule>
 	<rule ref="category/java/codestyle.xml">
 		<exclude name="AtLeastOneConstructor" />
