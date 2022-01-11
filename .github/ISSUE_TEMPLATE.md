@@ -1,3 +1,7 @@
+# Summary
+
+[Description of the bug or feature]
+
 ### Prerequisites
 
 Put an `x` in all the boxes that apply
@@ -7,10 +11,6 @@ Put an `x` in all the boxes that apply
 * [ ] Have you a detailed log to share?
 
 For more information, see the `CONTRIBUTING` guide.
-
-### Description
-
-[Description of the bug or feature]
 
 ### Steps to Reproduce
 
