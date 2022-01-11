@@ -14,7 +14,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Updated
 
-- Updates maven plugin dependency versions 
+- Updates maven plugin dependency versions
 
 ## 0.9.0
 
