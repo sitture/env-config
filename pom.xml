@@ -52,7 +52,7 @@
 		<maven-pmd-plugin.version>3.15.0</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
-		<nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+		<nexus-staging-maven-plugin.version>1.6.10</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
