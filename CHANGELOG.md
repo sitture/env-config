@@ -4,10 +4,11 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## 0.10.0
 
 ### Updated
 
+- Upgrade minimal required jdk version to 11
 - Updates Unit tests to use Junit5 and system-stubs
 
 ## 0.9.1

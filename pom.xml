@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>0.9.2</version>
+	<version>0.10.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -49,10 +49,10 @@
 		<commons-configuration2.version>2.7</commons-configuration2.version>
 		<slf4j.version>1.7.36</slf4j.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
-		<maven-pmd-plugin.version>3.15.0</maven-pmd-plugin.version>
+		<maven-pmd-plugin.version>3.16.0</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
-		<nexus-staging-maven-plugin.version>1.6.11</nexus-staging-maven-plugin.version>
+		<nexus-staging-maven-plugin.version>1.6.12</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.2.1</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.3.2</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
@@ -62,12 +62,11 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.10.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
+					<release>11</release>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -86,7 +85,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>9.3</version>
+						<version>10.0</version>
 					</dependency>
 				</dependencies>
 				<executions>
