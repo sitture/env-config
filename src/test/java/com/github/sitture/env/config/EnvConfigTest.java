@@ -41,7 +41,6 @@ class EnvConfigTest {
 		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
 		final Constructor<EnvConfig> constructor = EnvConfig.class.getDeclaredConstructor();
 		Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
-		constructor.setAccessible(true);
 		constructor.newInstance();
 	}
 
