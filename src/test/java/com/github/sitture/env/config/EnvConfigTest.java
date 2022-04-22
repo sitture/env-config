@@ -8,9 +8,6 @@ import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,17 +28,9 @@ class EnvConfigTest {
 	private final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
 	@BeforeEach
-	void setUp() throws Exception {
+	void setUp() {
 		System.clearProperty("config.keepass.filename");
 		EnvConfig.reset();
-	}
-
-	@Test
-	void testConstructorIsPrivate() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-		System.setProperty(CONFIG_ENV_KEY, DEFAULT_ENVIRONMENT);
-		final Constructor<EnvConfig> constructor = EnvConfig.class.getDeclaredConstructor();
-		Assertions.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
-		constructor.newInstance();
 	}
 
 	@Test

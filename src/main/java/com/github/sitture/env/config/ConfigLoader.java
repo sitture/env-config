@@ -67,14 +67,14 @@ class ConfigLoader {
 			final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
 			envs.forEach(env -> configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
 		}
-		loadEnvConfigurations();
+		loadEnvConfigurations(envs);
 		if (!configProfile.isEmpty()) {
 			envs.forEach(env -> loadFileConfigurations(new ConfigProfileFileList(env, configProfile)));
 		}
 		envs.forEach(env -> loadFileConfigurations(new ConfigFileList(env)));
 	}
 
-	private void loadEnvConfigurations() {
+	private void loadEnvConfigurations(final List<String> envs) {
 		final EnvironmentVariables envVars = new EnvironmentVariables();
 		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
 		final ConfigFileList cfl = new ConfigFileList(DEFAULT_ENVIRONMENT);
@@ -84,7 +84,7 @@ class ConfigLoader {
 				final Iterator<String> keys = defaults.getKeys();
 				while (keys.hasNext()) {
 					final String property = keys.next();
-					if (envOverrides.containsKey(property)
+					if (envs.size() > 2 && envOverrides.containsKey(property)
 							&& envOverrides.getProperty(property).equals(defaults.getProperty(property))) {
 						envOverrides.clearProperty(property);
 					}
