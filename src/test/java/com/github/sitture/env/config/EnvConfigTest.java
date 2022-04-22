@@ -108,20 +108,32 @@ class EnvConfigTest {
 	}
 
 	@Test
-	void testCanGetFromEntryWhenEnvVarAndDefaultValueSame() {
+	void testCanGetEntryWhenEnvVarAndDefaultValueSameWithParentEnv() {
 		environmentVariables.set("property.five", "default");
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
 		// when property.five is set as env variable
 		// and does not exist in test-env
-		// and exists in test env
 		// and exists in default env with same value as env var
+		// and exists in test env with different value
 		// then value in test env takes priority
 		Assertions.assertEquals("test", EnvConfig.get("property.five"));
 	}
 
 	@Test
-	void testCanGetFromEntryWhenEnvVarAndDefaultValueDifferent() {
+	void testCanGetEntryWhenEnvVarAndDefaultValueSameWithSingleEnv() {
+		final var key = "PROPERTY_SEVEN";
+		environmentVariables.set(key, "default");
+		System.setProperty(CONFIG_ENV_KEY, TEST_ENVIRONMENT);
+		// when PROPERTY_SEVEN=default is set as env variable
+		// and exists in default env with same value as env var
+		// and exists in test env with PROPERTY_SEVEN=test
+		// then value from env variable takes priority
+		Assertions.assertEquals("default", EnvConfig.get(key));
+	}
+
+	@Test
+	void testCanGetEntryWhenEnvVarAndDefaultValueDifferent() {
 		environmentVariables.set("property.five", "env.default");
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
@@ -134,7 +146,7 @@ class EnvConfigTest {
 	}
 
 	@Test
-	void testCanGetFromEntryWhenEnvVarSet() {
+	void testCanGetEntryWhenEnvVarSet() {
 		environmentVariables.set("property.six", "env.property.six");
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
@@ -147,7 +159,7 @@ class EnvConfigTest {
 	}
 
 	@Test
-	void testCanGetFromEntryWhenEnvVarSetInMultiEnvs() {
+	void testCanGetEntryWhenEnvVarSetInMultiEnvs() {
 		final String testEnv = "test-env";
 		System.setProperty(CONFIG_ENV_KEY, "test," + testEnv);
 		// when property.seven is not set in test-env
