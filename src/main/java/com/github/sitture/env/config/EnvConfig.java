@@ -27,7 +27,7 @@ public final class EnvConfig extends ConfigLoader {
 	 * @return instance of Config
 	 */
 	public static EnvConfig getConfig() {
-		synchronized(EnvConfig.class) {
+		synchronized (EnvConfig.class) {
 			if (config == null) {
 				config = new EnvConfig();
 			}
@@ -36,7 +36,7 @@ public final class EnvConfig extends ConfigLoader {
 	}
 
 	protected static void reset() {
-		synchronized(EnvConfig.class) {
+		synchronized (EnvConfig.class) {
 			config = null;
 		}
 	}
