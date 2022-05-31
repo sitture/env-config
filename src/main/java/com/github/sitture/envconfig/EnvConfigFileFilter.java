@@ -1,9 +1,9 @@
-package com.github.sitture.env.config.filter;
+package com.github.sitture.envconfig;
 
 import java.io.File;
 import java.io.FileFilter;
 
-public class ConfigProperties implements FileFilter {
+class EnvConfigFileFilter implements FileFilter {
 
     @Override
     public boolean accept(final File file) {

@@ -1,4 +1,4 @@
-package com.github.sitture.env.config;
+package com.github.sitture.envconfig;
 
 import de.slackspace.openkeepass.KeePassDatabase;
 import de.slackspace.openkeepass.domain.Group;
@@ -14,8 +14,8 @@ import java.util.Optional;
 
 class KeePassEntries {
 
-    private final KeePassFile keePassFile;
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
+    private final KeePassFile keePassFile;
 
     KeePassEntries(final String masterKey, final String groupName) {
         final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
@@ -25,7 +25,11 @@ class KeePassEntries {
                 .openDatabase(masterKey);
     }
 
-    protected Configuration getEntriesConfiguration(final String env) {
+    private static String getProcessedPropertyKey(final String envVar) {
+        return envVar.replaceAll("_", ".").toLowerCase();
+    }
+
+    public Configuration getEntriesConfiguration(final String env) {
         final String keePassGroupName = !keePassFile.getTopGroups().isEmpty()
                 ? keePassFile.getTopGroups().get(0).getName()
                 : "Root";
@@ -37,7 +41,7 @@ class KeePassEntries {
         final URL resource = classLoader.getResource(fileName);
         File keepassFile;
         if (null == resource) {
-            throw new ConfigException(String.format("Database %s does not exist!", fileName));
+            throw new EnvConfigException(String.format("Database %s does not exist!", fileName));
         } else {
             try {
                 keepassFile = new File(resource.toURI());
@@ -51,7 +55,7 @@ class KeePassEntries {
     private Map<String, String> getEntriesMap(final String groupName, final String env) {
         final Optional<Group> projectGroup = keePassFile.getTopGroups().stream()
                 .filter(group -> group.getName().trim().equals(groupName)).findFirst();
-        if (!projectGroup.isPresent()) {
+        if (projectGroup.isEmpty()) {
             throw new IllegalArgumentException(String.format("Group %s not found in the database!", groupName));
         }
         final Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
@@ -62,10 +66,6 @@ class KeePassEntries {
                     entriesMap.put(getProcessedPropertyKey(entry.getTitle().trim()), entry.getPassword());
                 }));
         return entriesMap;
-    }
-
-    private static String getProcessedPropertyKey(final String envVar) {
-        return envVar.replaceAll("_", ".").toLowerCase();
     }
 
 }

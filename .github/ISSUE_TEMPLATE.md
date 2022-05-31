@@ -2,7 +2,7 @@
 
 [Description of the bug or feature]
 
-### Prerequisites
+## Prerequisites
 
 Put an `x` in all the boxes that apply
 
@@ -12,7 +12,7 @@ Put an `x` in all the boxes that apply
 
 For more information, see the `CONTRIBUTING` guide.
 
-### Steps to Reproduce
+## Steps to Reproduce
 
 1. [First Step]
 2. [Second Step]

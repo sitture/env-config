@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.0.0
+
+### Updated
+
+- Updates package name from `com.github.sitture.env.config` to `com.github.sitture.envconfig`
+- Updates the version of checkstyle to 10.3
+- Updates the configuration properties prefix from `config.*` to `env.config.*`
+  - `config.dir` to `env.config.path`
+  - `config.env` to `env.config.environment`
+  - `config.env.profile` to `env.config.profile`
+  - `config.keepass.enabled` to `env.config.keepass.enabled`
+  - `config.keepass.filename` to `env.config.keepass.filename`
+  - `config.keepass.masterkey` to `env.config.keepass.masterkey`
+
 ## 0.10.1
 
 ### Fixed
