@@ -1,6 +1,6 @@
-package com.github.sitture.env.config;
+package com.github.sitture.envconfig;
 
-public class ConfigException extends RuntimeException {
+public class EnvConfigException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -9,7 +9,7 @@ public class ConfigException extends RuntimeException {
 	 * @param error
 	 *            a {@link java.lang.Throwable} object.
 	 */
-	public ConfigException(final Throwable error) {
+	public EnvConfigException(final Throwable error) {
 		super(error);
 	}
 
@@ -20,7 +20,7 @@ public class ConfigException extends RuntimeException {
 	 * @param error
 	 *            a {@link java.lang.Throwable} object.
 	 */
-	public ConfigException(final String message, final Throwable error) {
+	public EnvConfigException(final String message, final Throwable error) {
 		super(message, error);
 	}
 
@@ -29,7 +29,7 @@ public class ConfigException extends RuntimeException {
 	 * @param message
 	 *            a {@link java.lang.String} object.
 	 */
-	public ConfigException(final String message) {
+	public EnvConfigException(final String message) {
 		super(message);
 	}
 

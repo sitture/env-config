@@ -48,13 +48,13 @@ To start using this:
 
 ### `config` directory
 
-The default required directory for configuration files in `config` under project root. This can be overridden by `CONFIG_DIR` environment variable.
+The default required directory for configuration files in `config` under project root. This can be overridden by `ENV_CONFIG_PATH` environment variable.
 
 * create a directory called `config` in project root.
 
 ### `config` environments
 
-The default environment is set to `default` and can be overridden by `CONFIG_ENV` environment variable.
+The default environment is set to `default` and can be overridden by `ENV_CONFIG_ENVIRONMENT` environment variable.
 
 1. create a `default` environment subdirectory under `config` directory.
 2. create a `default.properties` file in the `default` directory. E.g. `config/default/default.properties`
@@ -89,7 +89,7 @@ You can add multiple `.properties` files under environment directory. E.g. You m
 
 ### `config` profiles
 
-You can also have config profiles within an environments by specifying the `CONFIG_ENV_PROFILE=profile1` variable E.g.
+You can also have config profiles within an environment directory by specifying the `ENV_CONFIG_PROFILE=profile1` variable E.g.
 
 ```text
 .
@@ -106,7 +106,7 @@ You can also have config profiles within an environments by specifying the `CONF
 │       └── integration.properties
 ```
 
-If `CONFIG_ENV=integration` and `CONFIG_ENV_PROFILE=profile1` suggests to load properties in the following order:
+If `ENV_CONFIG_ENVIRONMENT=integration` and `ENV_CONFIG_PROFILE=profile1` suggests to load properties in the following order:
 
 1. `integration/profile1/profile1.properties`
 2. `default/profile1/profile1.properties`
@@ -115,12 +115,12 @@ If `CONFIG_ENV=integration` and `CONFIG_ENV_PROFILE=profile1` suggests to load p
 
 ### base environments
 
-You can base an environment based on another by specifying multiple environment in `CONFIG_ENV` environment variable.
+You can base an environment based on another by specifying multiple environment in `ENV_CONFIG_ENVIRONMENT` environment variable.
 
 E.g. if you would like `env2` environment to inherit properties from `env2` environment:
 
 ```shell
-CONFIG_ENV=env1,env2
+ENV_CONFIG_ENVIRONMENT=env1,env2
 ```
 
 The above will load environment properties from env2 on top of env1 and finally the default properties from default environment.
@@ -133,13 +133,13 @@ If you have secret passwords which cannot be stored as plain text within project
 
 #### Configurations
 
-* `CONFIG_KEEPASS_ENABLED` - A flag to enable reading of the keePass file. Default is set to `false`.
-* `CONFIG_KEEPASS_FILENAME` - This is the name of the DB file. Default is the name of project directory.
-* `CONFIG_KEEPASS_MASTERKEY` - The key to access the DB file.
+* `ENV_CONFIG_KEEPASS_ENABLED` - A flag to enable reading of the keePass file. Default is set to `false`.
+* `ENV_CONFIG_KEEPASS_FILENAME` - This is the name of the DB file. Default is the name of project directory.
+* `ENV_CONFIG_KEEPASS_MASTERKEY` - The key to access the DB file.
 
 #### KeePass Groups
 
-* The top level group should have the same name as the DB filename. e.g. if DB file is `env-config.kdbx` then top level group should be `env-config`.
+* The top level group should have the same name as the DB filename. e.g. if DB file is `keepass.kdbx` then top level group should be `keepass`.
 * The sub-groups should match with the environment directory you have created above. For example, you should have `default` group for the default environment.
 * The entries within the `default` group will be shared across all environments similar to the environment directories behaviour.
 

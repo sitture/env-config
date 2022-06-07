@@ -1,14 +1,14 @@
-package com.github.sitture.env.config.filter;
+package com.github.sitture.envconfig;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-public class ConfigProfileFileList extends ConfigFileList {
+class EnvConfigProfileFileList extends EnvConfigFileList {
 
-    protected final String configProfilePath;
+    private final String configProfilePath;
 
-    public ConfigProfileFileList(final String env, final String profile) {
+    EnvConfigProfileFileList(final String env, final String profile) {
         super(env);
         this.configProfilePath = getConfigProfilePath(profile);
     }
