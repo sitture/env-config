@@ -135,7 +135,7 @@ public final class EnvConfig extends EnvConfigLoader {
 	 * @return a list of strings
 	 */
 	public static List<String> getList(final String property) {
-		return getList(property, EnvConfigProperties.CONFIG_DELIMITER_DEFAULT);
+		return getList(property, EnvConfigUtils.CONFIG_DELIMITER_DEFAULT);
 	}
 
 	/**
@@ -156,10 +156,7 @@ public final class EnvConfig extends EnvConfigLoader {
 	 * @return env property value.
 	 */
 	public static String getEnvironment() {
-		final List<String> envs = EnvConfigUtils.getListOfValues(
-				get(EnvConfigProperties.CONFIG_ENV_KEY, EnvConfigProperties.CONFIG_ENV_DEFAULT),
-				EnvConfigProperties.CONFIG_DELIMITER_DEFAULT);
-		return envs.get(envs.size() - 1);
+		return getConfig().configProperties.getEnvironments().get(0);
 	}
 
 	public static Map<String, Object> asMap() {

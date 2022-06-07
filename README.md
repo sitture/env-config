@@ -228,9 +228,9 @@ You can clear an existing property in EnvConfig:
 EnvConfig.clear("my.property")
 ```
 
-### Get all `EnvConfig.getConfig()`
+### Get all `EnvConfig.asMap()`
 
-You can get a full list of available properties with `EnvConfig.getConfig()` which is a combination of properties from `config` directory, system properties and all environment variables.
+You can get a full list of available properties with `EnvConfig.asMap()` which is a combination of properties from `config` directory, system properties and all environment variables.
 
 ## Issues & Contributions
 

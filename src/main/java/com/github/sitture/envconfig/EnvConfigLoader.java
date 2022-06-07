@@ -16,29 +16,37 @@ import java.util.Map;
 class EnvConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EnvConfigLoader.class);
-	protected final CompositeConfiguration configuration;
+	protected final CompositeConfiguration configuration = new CompositeConfiguration();
+	protected final EnvConfigProperties configProperties = new EnvConfigProperties();
 
 	EnvConfigLoader() {
-		configuration = new CompositeConfiguration();
-		final List<String> envs = EnvConfigUtils.getEnvList();
-		final String configProfile = EnvConfigUtils.getEnvProfile();
-		if (EnvConfigUtils.isConfigKeePassEnabled()) {
-			final String groupName = EnvConfigUtils.getConfigKeePassFilename();
-			final String masterKey = EnvConfigUtils.getConfigKeePassMasterKey();
-			final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
-			envs.forEach(env -> configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
-		}
-		loadEnvConfigurations(envs);
+		final List<String> environments = configProperties.getEnvironments();
+		final String configProfile = configProperties.getConfigProfile();
+		loadKeepassConfigurations(environments);
+		LOG.debug("Loading properties from system.env and system.properties");
+		loadEnvConfigurations(environments);
 		if (!configProfile.isEmpty()) {
-			envs.forEach(env -> loadFileConfigurations(new EnvConfigProfileFileList(env, configProfile)));
+			LOG.debug("Loading properties from profile {} under environments {}", configProfile, environments);
+			environments.forEach(env -> loadFileConfigurations(new EnvConfigProfileFileList(configProperties.getConfigProfilePath(env, configProfile))));
 		}
-		envs.forEach(env -> loadFileConfigurations(new EnvConfigFileList(env)));
+		LOG.debug("Loading properties from environment directories {}", environments);
+		environments.forEach(env -> loadFileConfigurations(new EnvConfigFileList(configProperties.getConfigPath(env))));
+	}
+
+	private void loadKeepassConfigurations(final List<String> environments) {
+		if (configProperties.isConfigKeePassEnabled()) {
+			final String groupName = configProperties.getConfigKeePassFilename();
+			final String masterKey = configProperties.getConfigKeePassMasterKey();
+			LOG.debug("Loading properties from keepass {}", groupName);
+			final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
+			environments.forEach(env -> this.configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
+		}
 	}
 
 	private void loadEnvConfigurations(final List<String> envs) {
 		final EnvironmentVariables envVars = new EnvironmentVariables();
 		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
-		final EnvConfigFileList fileList = new EnvConfigFileList(EnvConfigProperties.CONFIG_ENV_DEFAULT);
+		final EnvConfigFileList fileList = new EnvConfigFileList(configProperties.getConfigPath(EnvConfigUtils.CONFIG_ENV_DEFAULT));
 		try {
 			for (final File file : fileList.listFiles()) {
 				final Configuration defaultConfig = new Configurations().properties(file);
@@ -54,8 +62,8 @@ class EnvConfigLoader {
 				LOG.debug("Could not load configuration files. \n {}", e.getMessage());
 			}
 		}
-		configuration.addConfiguration(envOverrides);
-		configuration.addConfiguration(envVars.getSystemConfiguration());
+		this.configuration.addConfiguration(envOverrides);
+		this.configuration.addConfiguration(envVars.getSystemConfiguration());
 	}
 
 	private void loadFileConfigurations(final EnvConfigFileList fileList) {
@@ -68,7 +76,8 @@ class EnvConfigLoader {
 					propertiesMap.put(key, value);
 					propertiesMap.put(EnvConfigUtils.getProcessedEnvKey(key), value);
 				});
-				configuration.addConfiguration(new MapConfiguration(propertiesMap));
+				LOG.debug("Loading properties from {}", file);
+				this.configuration.addConfiguration(new MapConfiguration(propertiesMap));
 			}
 		} catch (ConfigurationException e) {
 			if (LOG.isDebugEnabled()) {
