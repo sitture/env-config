@@ -17,15 +17,17 @@ class EnvConfigProperties {
     private static final Logger LOG = LoggerFactory.getLogger(EnvConfigProperties.class);
     private final List<String> environments;
     private final Path configDir;
+    private final Path configProfilesPath;
 
     EnvConfigProperties() {
-        configDir = getConfigDir();
+        configDir = getConfigPath();
+        configProfilesPath = getConfigProfilePath();
         environments = getEnvList();
     }
 
     String getBuildDir() {
-        final String workingDirectory = System.getProperty("user.dir");
-        return Paths.get(System.getProperty("project.build.directory", workingDirectory)).toString();
+        return Paths.get(Optional.ofNullable(System.getProperty("project.build.directory"))
+                .orElse(System.getProperty("user.dir"))).toString();
     }
 
     List<String> getEnvironments() {
@@ -49,19 +51,30 @@ class EnvConfigProperties {
     }
 
     Path getConfigProfilePath(final String env, final String configProfile) {
-        return Paths.get(getConfigProfilePath(env).toString(), configProfile);
+        return Paths.get(this.configProfilesPath.toString(), env, configProfile);
     }
 
-    private Path getConfigProfilePath(final String env) {
-        return Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, this.configDir.toString()), env).toAbsolutePath();
+    private Path getPath(final Path configPath) {
+        final File configDir = configPath.toFile();
+        if (!configDir.exists() || !configDir.isDirectory()) {
+            throw new EnvConfigException(
+                    "'" + configPath + "' does not exist or not a valid config directory!");
+        }
+        return configPath;
     }
 
-    private Path getConfigDir() {
-        return Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PATH_KEY, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath();
+    private Path getConfigProfilePath() {
+        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, this.configDir.toString())).toAbsolutePath());
+    }
+
+    private Path getConfigPath() {
+        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PATH_KEY, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
     }
 
     private String getConfigurationProperty(final String key, final String defaultValue) {
-        return Optional.ofNullable(System.getProperty(key)).orElse(Optional.ofNullable(getEnvByPropertyKey(key)).orElse(defaultValue));
+        return Optional.ofNullable(System.getProperty(key))
+                .orElse(Optional.ofNullable(getEnvByPropertyKey(key))
+                        .orElse(defaultValue));
     }
 
     private String getEnvByPropertyKey(final String key) {

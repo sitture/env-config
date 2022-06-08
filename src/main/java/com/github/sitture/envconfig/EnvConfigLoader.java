@@ -68,6 +68,9 @@ class EnvConfigLoader {
 	}
 
 	private void loadFileConfigurations(final EnvConfigFileList fileList) {
+		if (fileList.listFiles().isEmpty()) {
+			LOG.debug("No property files found under {}", fileList.configPath);
+		}
 		try {
 			for (final File file : fileList.listFiles()) {
 				final Configuration config = new Configurations().properties(file);

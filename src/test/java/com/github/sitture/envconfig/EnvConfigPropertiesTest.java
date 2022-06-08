@@ -5,6 +5,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -18,6 +21,7 @@ class EnvConfigPropertiesTest {
         System.clearProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY);
         System.clearProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY);
         System.clearProperty(EnvConfigUtils.CONFIG_PROFILE_KEY);
+        System.clearProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY);
     }
 
     @Test
@@ -63,35 +67,59 @@ class EnvConfigPropertiesTest {
     }
 
     @Test
-    void testCanGetConfigPathWhenRelative() {
+    void testExceptionWhenConfigPathDoesNotExist() {
+        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, "/non/existing/dir");
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+                () -> new EnvConfigProperties().getConfigPath("env"));
+        Assertions.assertEquals("'/non/existing/dir' does not exist or not a valid config directory!",
+                exception.getMessage());
+    }
+
+    @Test
+    void testExceptionWhenConfigProfilePathDoesNotExist() {
+        System.setProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, "/non/existing/dir");
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+                () -> new EnvConfigProperties().getConfigProfilePath("env", "profile"));
+        Assertions.assertEquals("'/non/existing/dir' does not exist or not a valid config directory!",
+                exception.getMessage());
+    }
+
+    @Test
+    void testCanGetConfigPathWhenRelative() throws IOException {
+        final Path directory = Files.createTempDirectory(Paths.get("config"), "sample-dir");
+        directory.toFile().deleteOnExit();
         // when config.dir is set to relative path
-        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, "env/dir");
+        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
         configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/env/dir/foo"),
+        Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo"),
                 configProperties.getConfigPath("foo"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/env/dir/foo/prof"),
+        Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo", "prof"),
                 configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
     @Test
-    void testCanGetConfigPathWhenAbsoluteWithin() {
+    void testCanGetConfigPathWhenAbsoluteWithin() throws IOException {
+        final Path directory = Files.createTempDirectory(Path.of(new EnvConfigProperties().getBuildDir()), "sample-dir");
+        directory.toFile().deleteOnExit();
         // when config.dir is set to absolute
-        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, new EnvConfigProperties().getBuildDir() + "/env/dir");
+        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
         configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/env/dir/foo"),
+        Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
                 configProperties.getConfigPath("foo"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/env/dir/foo/prof"),
+        Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
                 configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
     @Test
-    void testCanGetConfigPathWhenAbsolute() {
+    void testCanGetConfigPathWhenAbsolute() throws IOException {
+        final Path directory = Files.createTempDirectory("sample-dir");
+        directory.toFile().deleteOnExit();
         // when config.dir is set to absolute
-        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, "/usr/dir/env/dir");
+        System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
         configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get("/usr/dir/env/dir/foo"),
+        Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
                 configProperties.getConfigPath("foo"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get("/usr/dir/env/dir/foo/prof"),
+        Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
                 configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 

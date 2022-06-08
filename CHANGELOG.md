@@ -9,6 +9,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Adds a new configuration item `env.config.profiles.path` to load profiles from another directory.
+- Now throws an EnvConfigException on non-existing `env.config.path` and `env.config.profiles.path`.
 
 ### Fixed
 
