@@ -50,8 +50,16 @@ class EnvConfigProperties {
         return Paths.get(this.configDir.toString(), env);
     }
 
+    private Path getConfigPath() {
+        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PATH_KEY, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
+    }
+
     Path getConfigProfilePath(final String env, final String configProfile) {
         return Paths.get(this.configProfilesPath.toString(), env, configProfile);
+    }
+
+    private Path getConfigProfilePath() {
+        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, this.configDir.toString())).toAbsolutePath());
     }
 
     private Path getPath(final Path configPath) {
@@ -61,14 +69,6 @@ class EnvConfigProperties {
                     "'" + configPath + "' does not exist or not a valid config directory!");
         }
         return configPath;
-    }
-
-    private Path getConfigProfilePath() {
-        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, this.configDir.toString())).toAbsolutePath());
-    }
-
-    private Path getConfigPath() {
-        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PATH_KEY, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
     }
 
     private String getConfigurationProperty(final String key, final String defaultValue) {
