@@ -87,7 +87,7 @@ class EnvConfigProfileTest {
         // and prof1.one also exists with a different value
         setProfile("prof1");
         // then value from profile property takes precedence
-        Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.one"));
+        Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.two"));
     }
 
     @Test
