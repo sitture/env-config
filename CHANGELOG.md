@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.1.0
+
+### Added
+
+- Adds a new configuration item `env.config.profiles.path` to load profiles from another directory.
+- Now throws an EnvConfigException on non-existing `env.config.path` and `env.config.profiles.path`.
+
+### Fixed
+
+- Fixes an issue with default environment loading more than once.
+- Resolve env.config.path only once at the start.
+
 ## 1.0.0
 
 ### Updated

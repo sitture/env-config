@@ -1,20 +1,21 @@
 package com.github.sitture.envconfig;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 class EnvConfigFileList {
 
-    protected final String configPath;
+    protected final Path configPath;
 
-    EnvConfigFileList(final String env) {
-        this.configPath = EnvConfigUtils.getConfigPath(env);
+    EnvConfigFileList(final Path configPath) {
+        this.configPath = configPath;
     }
 
     public List<File> listFiles() {
-        final File configDir = new File(configPath);
+        final File configDir = configPath.toFile();
         if (!configDir.exists() || !configDir.isDirectory()) {
             throw new EnvConfigException(
                     "'" + configPath + "' does not exist or not a valid config directory!");
