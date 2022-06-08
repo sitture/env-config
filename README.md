@@ -48,10 +48,20 @@ compile 'com.github.sitture:env-config:${version}'
 |--------------------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `env.config.path`              | `ENV_CONFIG_PATH`              | The base directory where the configuration files are lived. **default:** `config` directory under the project.                                            |
 | `env.config.environment`       | `ENV_CONFIG_ENVIRONMENT`       | The environment to activate. **default:** `default` directory under the base configuration directory.                                                     |
+| `env.config.profiles.path`     | `ENV_CONFIG_PROFILES_PATH`     | The base directory where the profile based configuration files are lived. **default:** `${env.config.path}`                                               |
 | `env.config.profile`           | `ENV_CONFIG_PROFILE`           | The profile to activate from the active environment directory.                                                                                            |
 | `env.config.keepass.enabled`   | `ENV_CONFIG_KEEPASS_ENABLED`   | Whether to load properties from a keepass file. **default:** `false`                                                                                      |
 | `env.config.keepass.filename`  | `ENV_CONFIG_KEEPASS_FILENAME`  | The keepass filename to load from the resources folder (src/main/resources). **default:** the root project directory name. i.e. `project.build.directory` |
 | `env.config.keepass.masterkey` | `ENV_CONFIG_KEEPASS_MASTERKEY` | The password to open the keepass file. This is required if `env.config.keepass.enabled=true`.                                                             |                                                                
+
+## Configuration precedence
+
+1. Java System properties - `System.getProperties()`
+2. OS environment variables - `System.getenv()`
+3. Environment profile properties - `config/${env.config.environment}/profile/*.properties`
+4. Default profile properties - `config/default/profile/*.properties`
+5. Environment specific properties - `config/${env.config.environment}/*.properties`
+6. Default properties - `config/default/*.properties`
 
 ## Usage
 
@@ -184,7 +194,7 @@ EnvConfig.getList("my.property"); // will return a List<String> from a comma sep
 EnvConfig.getOrThrow("my.property");
 ```
 
-If the property isn't set then a `MissingVariableException` is thrown.
+If the property isn't set then a `EnvConfigException` is thrown.
 
 ### Get property with `defaultValue`
 

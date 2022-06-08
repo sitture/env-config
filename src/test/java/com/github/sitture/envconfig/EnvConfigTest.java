@@ -260,7 +260,7 @@ class EnvConfigTest {
     }
 
     @Test
-    void testMissingVariableExceptionThrown() {
+    void testEnvConfigExceptionThrown() {
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
                 () -> EnvConfig.getOrThrow("non.existing"));
         Assertions.assertEquals("Missing required variable 'non.existing'", exception.getMessage());

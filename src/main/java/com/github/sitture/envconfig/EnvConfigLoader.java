@@ -23,7 +23,6 @@ class EnvConfigLoader {
 		final List<String> environments = configProperties.getEnvironments();
 		final String configProfile = configProperties.getConfigProfile();
 		loadKeepassConfigurations(environments);
-		LOG.debug("Loading properties from system.env and system.properties");
 		loadEnvConfigurations(environments);
 		if (!configProfile.isEmpty()) {
 			LOG.debug("Loading properties from profile {} under environments {}", configProfile, environments);
@@ -45,6 +44,8 @@ class EnvConfigLoader {
 
 	private void loadEnvConfigurations(final List<String> envs) {
 		final EnvironmentVariables envVars = new EnvironmentVariables();
+		LOG.debug("Loading properties from system.properties");
+		this.configuration.addConfiguration(envVars.getSystemConfiguration());
 		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
 		final EnvConfigFileList fileList = new EnvConfigFileList(configProperties.getConfigPath(EnvConfigUtils.CONFIG_ENV_DEFAULT));
 		try {
@@ -62,8 +63,8 @@ class EnvConfigLoader {
 				LOG.debug("Could not load configuration files. \n {}", e.getMessage());
 			}
 		}
+		LOG.debug("Loading properties from system.env");
 		this.configuration.addConfiguration(envOverrides);
-		this.configuration.addConfiguration(envVars.getSystemConfiguration());
 	}
 
 	private void loadFileConfigurations(final EnvConfigFileList fileList) {

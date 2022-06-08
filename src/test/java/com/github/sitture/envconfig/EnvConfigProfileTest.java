@@ -11,6 +11,7 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import static com.github.sitture.envconfig.EnvConfigUtils.CONFIG_ENV_DEFAULT;
 import static com.github.sitture.envconfig.EnvConfigUtils.CONFIG_ENV_KEY;
+import static com.github.sitture.envconfig.EnvConfigUtils.CONFIG_PROFILES_PATH_KEY;
 import static com.github.sitture.envconfig.EnvConfigUtils.CONFIG_PROFILE_KEY;
 
 @ExtendWith(SystemStubsExtension.class)
@@ -27,6 +28,7 @@ class EnvConfigProfileTest {
     @AfterEach
     void tearDown() {
         System.clearProperty(CONFIG_PROFILE_KEY);
+        System.clearProperty(CONFIG_PROFILES_PATH_KEY);
     }
 
     @Test
@@ -38,6 +40,19 @@ class EnvConfigProfileTest {
         setProfile("prof1");
         // then value from profile property takes precedence
         Assertions.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
+    }
+
+    @Test
+    void testCanGetFromProfileWhenDifferentProfilePath() {
+        // given env is default and prof1.one exists in env properties
+        setEnvironment(CONFIG_ENV_DEFAULT);
+        // when profiles path is different to config.path
+        setProfilePath("config/sample-profiles");
+        // when an existing profile is set
+        // and prof1.one also exists with a different value
+        setProfile("prof1");
+        // then value from profile property takes precedence
+        Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.one"));
     }
 
     @Test
@@ -60,6 +75,19 @@ class EnvConfigProfileTest {
         setProfile("prof1");
         // then value from profile property takes precedence
         Assertions.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
+    }
+
+    @Test
+    void testCanGetFromProfileUnderDefaultProfileWhenDifferentProfilePath() {
+        // given env is test and prof1.one exists in test/test.properties
+        setEnvironment("test");
+        // when profiles path is different to config.path
+        setProfilePath("config/sample-profiles");
+        // when an existing profile is set in default env only
+        // and prof1.one also exists with a different value
+        setProfile("prof1");
+        // then value from profile property takes precedence
+        Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.one"));
     }
 
     @Test
@@ -136,6 +164,10 @@ class EnvConfigProfileTest {
 
     private void setProfile(final String profile) {
         System.setProperty(CONFIG_PROFILE_KEY, profile);
+    }
+
+    private void setProfilePath(final String path) {
+        System.setProperty(CONFIG_PROFILES_PATH_KEY, path);
     }
 
 }

@@ -61,7 +61,7 @@ class EnvConfigProperties {
     }
 
     private String getConfigurationProperty(final String key, final String defaultValue) {
-        return Optional.ofNullable(getEnvByPropertyKey(key)).orElse(System.getProperty(key, defaultValue));
+        return Optional.ofNullable(System.getProperty(key)).orElse(Optional.ofNullable(getEnvByPropertyKey(key)).orElse(defaultValue));
     }
 
     private String getEnvByPropertyKey(final String key) {
