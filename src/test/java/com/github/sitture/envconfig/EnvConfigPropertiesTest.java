@@ -41,6 +41,7 @@ class EnvConfigPropertiesTest {
     @Test
     void testCanGetEnvironmentsList() {
         // when config.environment isn't specified
+        System.clearProperty(EnvConfigUtils.CONFIG_ENV_KEY);
         Assertions.assertEquals(List.of("default"), new EnvConfigProperties().getEnvironments());
         // when a single environment is specified
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test ");

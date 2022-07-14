@@ -46,7 +46,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
-		<commons-configuration2.version>2.7</commons-configuration2.version>
+		<commons-configuration2.version>2.8.0</commons-configuration2.version>
 		<slf4j.version>1.7.36</slf4j.version>
 		<maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
 		<maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
