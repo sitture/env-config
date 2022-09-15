@@ -135,8 +135,8 @@ class EnvConfigTest {
         // and does not exist in test-env
         // and exists in default env with same value as env var
         // and exists in test env with different value
-        // then value in test env takes priority
-        Assertions.assertEquals("test", EnvConfig.get("property.five"));
+        // then value from env variable takes priority
+        Assertions.assertEquals("default", EnvConfig.get("property.five"));
     }
 
     @Test
@@ -187,6 +187,18 @@ class EnvConfigTest {
         // and exists in default env with different value i.e. PROPERTY_SEVEN=default
         // then i should be able to value from test env using the properties format
         Assertions.assertEquals("test", EnvConfig.get("property.seven"));
+    }
+
+    @Test
+    void testCanGetEntryWhenEnvVarAndDefaultValueSameWithMultipleEnv() {
+        final String key = "property.one";
+        // when property.env is set in default env
+        // and PROPERTY_ENV is set as env var to same value as default
+        environmentVariables.set("PROPERTY_ONE", "default");
+        // and property.one is also set in test-env and test env properties
+        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test,test-env");
+        // then value from env variable takes priority
+        Assertions.assertEquals("default", EnvConfig.get(key));
     }
 
     @Test

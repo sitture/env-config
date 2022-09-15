@@ -148,14 +148,14 @@ class EnvConfigProfileTest {
     @Test
     void testThrowsExceptionWhenNoPropertiesInProfile() {
         // given env is default and empty-profile exists in env properties
-        setEnvironment("empty-env");
+        setEnvironment("default");
         // when an and empty-profile directory does not contain any valid properties files
         setProfile("empty-profile");
         // then an exception is thrown
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
                 () -> EnvConfig.getOrThrow("non.existing"));
         Assertions.assertTrue(exception.getMessage().startsWith("No property files found under"), exception.getMessage());
-        Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/empty-env/empty-profile'"));
+        Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/default/empty-profile'"));
     }
 
     private void setEnvironment(final String environment) {
