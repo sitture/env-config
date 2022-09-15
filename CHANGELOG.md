@@ -9,7 +9,6 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Updated
 
 - Bump slf4j-api from 1.7.36 to 2.0.0
-- 
 
 ### Fixed
 
