@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.2.0
+
+### Updated
+
+- Bump slf4j-api from 1.7.36 to 2.0.0
+- 
+
+### Fixed
+
+- Fixes an issue when env var and parent/default env values are same
+- Fixes an issue with flaky unit tests
+
 ## 1.1.1
 
 ### Added

@@ -16,6 +16,7 @@ import java.util.Map;
 class EnvConfigLoader {
 
 	private static final Logger LOG = LoggerFactory.getLogger(EnvConfigLoader.class);
+	private static final int MIN_ENVIRONMENTS = 1;
 	protected final CompositeConfiguration configuration = new CompositeConfiguration();
 	protected final EnvConfigProperties configProperties = new EnvConfigProperties();
 
@@ -47,13 +48,19 @@ class EnvConfigLoader {
 		LOG.debug("Loading properties from system.properties");
 		this.configuration.addConfiguration(envVars.getSystemConfiguration());
 		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
-		final EnvConfigFileList fileList = new EnvConfigFileList(configProperties.getConfigPath(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+		if (envs.size() > MIN_ENVIRONMENTS) {
+			envs.stream().filter(env -> !env.equals(EnvConfigUtils.CONFIG_ENV_DEFAULT)).forEach(env -> processEnvOverrides(envOverrides, env));
+		}
+		LOG.debug("Loading properties from system.env");
+		this.configuration.addConfiguration(envOverrides);
+	}
+
+	private void processEnvOverrides(final Configuration envOverrides, final String env) {
 		try {
-			for (final File file : fileList.listFiles()) {
-				final Configuration defaultConfig = new Configurations().properties(file);
-				defaultConfig.getKeys().forEachRemaining(property -> {
-					if (envs.size() > 2 && envOverrides.containsKey(property)
-							&& envOverrides.getProperty(property).equals(defaultConfig.getProperty(property))) {
+			for (final File file : new EnvConfigFileList(configProperties.getConfigPath(env)).listFiles()) {
+				final Configuration properties = new Configurations().properties(file);
+				properties.getKeys().forEachRemaining(property -> {
+					if (envOverrides.containsKey(property) && envOverrides.getProperty(property).equals(properties.getProperty(property))) {
 						envOverrides.clearProperty(property);
 					}
 				});
@@ -63,8 +70,6 @@ class EnvConfigLoader {
 				LOG.debug("Could not load configuration files. \n {}", e.getMessage());
 			}
 		}
-		LOG.debug("Loading properties from system.env");
-		this.configuration.addConfiguration(envOverrides);
 	}
 
 	private void loadFileConfigurations(final EnvConfigFileList fileList) {
