@@ -48,22 +48,15 @@ class EnvConfigLoader {
 		LOG.debug("Loading properties from system.properties");
 		this.configuration.addConfiguration(envVars.getSystemConfiguration());
 		final Configuration envOverrides = envVars.getEnvironmentConfiguration();
-
 		if (envs.size() > MIN_ENVIRONMENTS) {
-			try {
-				for (final File file : new EnvConfigFileList(configProperties.getConfigPath(EnvConfigUtils.CONFIG_ENV_DEFAULT)).listFiles()) {
-					final Configuration defaultConfig = new Configurations().properties(file);
-					defaultConfig.getKeys().forEachRemaining(property -> {
-						if (envOverrides.containsKey(property)
-								&& envOverrides.getProperty(property).equals(defaultConfig.getProperty(property))) {
-							envOverrides.clearProperty(property);
-						}
-					});
-				}
-			} catch (ConfigurationException e) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Could not load configuration files. \n {}", e.getMessage());
-				}
+			for (final File file : new EnvConfigFileList(configProperties.getConfigPath(EnvConfigUtils.CONFIG_ENV_DEFAULT)).listFiles()) {
+				final Configuration properties = getConfigurationProperties(file);
+				properties.getKeys().forEachRemaining(property -> {
+					if (envOverrides.containsKey(property)
+							&& envOverrides.getProperty(property).equals(properties.getProperty(property))) {
+						envOverrides.clearProperty(property);
+					}
+				});
 			}
 		}
 		LOG.debug("Loading properties from system.env");
@@ -80,18 +73,23 @@ class EnvConfigLoader {
 
 	private Map<String, Object> getFileConfigurationMap(final File file) {
 		final Map<String, Object> configurationMap = new HashMap<>();
-		try {
-			LOG.debug("Loading properties from {}", file);
-			final Configuration config = new Configurations().properties(file);
-			config.getKeys().forEachRemaining(key -> {
-				final Object value = config.getProperty(key);
-				configurationMap.put(key, value);
-				configurationMap.put(EnvConfigUtils.getProcessedEnvKey(key), value);
-			});
-		} catch (ConfigurationException e) {
-			throw new RuntimeException(e);
-		}
+		final Configuration properties = getConfigurationProperties(file);
+		properties.getKeys().forEachRemaining(key -> {
+			final Object value = properties.getProperty(key);
+			configurationMap.put(key, value);
+			configurationMap.put(EnvConfigUtils.getProcessedEnvKey(key), value);
+		});
 		return configurationMap;
 	}
 
+	private Configuration getConfigurationProperties(final File file) {
+		final Configuration configurationProperties;
+		try {
+			LOG.debug("Loading properties from {}", file);
+			configurationProperties = new Configurations().properties(file);
+		} catch (ConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		return configurationProperties;
+	}
 }
