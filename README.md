@@ -58,8 +58,8 @@ compile 'com.github.sitture:env-config:${version}'
 
 1. Java System properties - `System.getProperties()`
 2. OS environment variables - `System.getenv()`
-3. Environment profile properties - `config/${env.config.environment}/profile/*.properties`
-4. Default profile properties - `config/default/profile/*.properties`
+3. Environment profile properties - `config/${env.config.environment}/${env.config.profile}/*.properties`
+4. Default profile properties - `config/default/${env.config.profile}/*.properties`
 5. Environment specific properties - `config/${env.config.environment}/*.properties`
 6. Default properties - `config/default/*.properties`
 
