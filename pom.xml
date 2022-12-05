@@ -49,7 +49,7 @@
 		<commons-configuration2.version>2.8.0</commons-configuration2.version>
 		<slf4j.version>2.0.5</slf4j.version>
 		<maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
-		<maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
+		<maven-dependency-plugin.version>3.4.0</maven-dependency-plugin.version>
 		<maven-pmd-plugin.version>3.19.0</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
