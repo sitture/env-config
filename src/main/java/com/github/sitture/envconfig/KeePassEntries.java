@@ -7,6 +7,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +46,7 @@ class KeePassEntries {
         } else {
             try {
                 keepassFile = new File(resource.toURI());
-            } catch (final Exception e) {
+            } catch (final URISyntaxException e) {
                 keepassFile = new File(resource.getFile());
             }
         }

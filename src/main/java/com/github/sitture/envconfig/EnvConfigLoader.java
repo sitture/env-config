@@ -88,7 +88,7 @@ class EnvConfigLoader {
 			LOG.debug("Loading properties from {}", file);
 			configurationProperties = new Configurations().properties(file);
 		} catch (ConfigurationException e) {
-			throw new RuntimeException(e);
+			throw new EnvConfigException(e);
 		}
 		return configurationProperties;
 	}

@@ -12,30 +12,13 @@ public final class EnvConfig extends EnvConfigLoader {
 	private static EnvConfig config;
 
 	private EnvConfig() {
+		super();
 	}
 
 	static void reset() {
 		synchronized (EnvConfig.class) {
 			config = null;
 		}
-	}
-
-	/**
-	* Clears a property from the config.
-	*
-	* @param property Name of the property to clear
-	*/
-	public static void clear(final String property) {
-		getConfiguration().clearProperty(property);
-	}
-
-	/**
-	 * Returns the composite configuration.
-	 *
-	 * @return the configuration object.
-	 */
-	private static CompositeConfiguration getConfiguration() {
-		return getConfig().configuration;
 	}
 
 	/**
@@ -50,6 +33,24 @@ public final class EnvConfig extends EnvConfigLoader {
 			}
 		}
 		return config;
+	}
+
+	/**
+	 * Returns the composite configuration.
+	 *
+	 * @return the configuration object.
+	 */
+	private static CompositeConfiguration getConfiguration() {
+		return getConfig().configuration;
+	}
+
+	/**
+	 * Clears a property from the config.
+	 *
+	 * @param property Name of the property to clear
+	 */
+	public static void clear(final String property) {
+		getConfiguration().clearProperty(property);
 	}
 
 	/**
