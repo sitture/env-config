@@ -12,11 +12,11 @@
 		<exclude name="JUnitAssertionsShouldIncludeMessage" />
 		<exclude name="JUnitTestContainsTooManyAsserts" />
 	</rule>
+
 	<rule ref="category/java/codestyle.xml">
 		<exclude name="AtLeastOneConstructor" />
 		<exclude name="CommentDefaultAccessModifier" />
 		<exclude name="ConfusingTernary" />
-		<exclude name="CallSuperInConstructor" />
 	</rule>
 	<rule ref="category/java/codestyle.xml/LongVariable">
 		<properties>
@@ -26,44 +26,18 @@
 
 	<rule ref="category/java/design.xml">
 		<exclude name="LawOfDemeter" />
-		<exclude name="DataClass" />
 		<exclude name="TooManyMethods" />
-		<exclude name="SignatureDeclareThrowsException" />
-		<exclude name="AvoidCatchingGenericException" />
-		<exclude name="UseObjectForClearerAPI" />
 		<exclude name="LoosePackageCoupling" />
-		<exclude name="CyclomaticComplexity" />
-		<!-- TODO: remove the TooManyFields and ExcessiveParameterList, ExcessivePublicCount
-		once id-qa-eventsgenerator/src/main/java/imq/events/dtos/EventProfile.java is reworked -->
-		<exclude name="TooManyFields" />
-		<exclude name="ExcessiveParameterList" />
-		<exclude name="ExcessivePublicCount" />
-		<exclude name="AvoidThrowingRawExceptionTypes" />
-		<exclude name="ExcessiveMethodLength" />
-		<exclude name="NcssCount" />
-	</rule>
-	<rule ref="category/java/design.xml/ExcessiveImports">
-		<properties>
-			<property name="minimum" value="40.0" />
-		</properties>
 	</rule>
 
 	<rule ref="category/java/documentation.xml">
-		<exclude name="CommentContent" />
 		<exclude name="CommentRequired" />
-		<exclude name="CommentSize" />
-		<exclude name="UncommentedEmptyConstructor" />
-		<exclude name="UncommentedEmptyMethodBody" />
 	</rule>
 
 	<rule ref="category/java/errorprone.xml">
-		<exclude name="BeanMembersShouldSerialize" />
 		<exclude name="UseLocaleWithCaseConversions" />
-		<exclude name="DataflowAnomalyAnalysis" />
-		<exclude name="CloseResource" />
 		<exclude name="NullAssignment" />
 	</rule>
-
 	<rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
 		<properties>
 			<property name="maxDuplicateLiterals" value="10" />
@@ -75,10 +49,7 @@
 		<exclude name="UseConcurrentHashMap" />
 	</rule>
 
-	<rule ref="category/java/performance.xml">
-		<exclude name="AvoidInstantiatingObjectsInLoops" />
-
-	</rule>
-	<rule ref="category/java/security.xml" />
+	<rule ref="category/java/performance.xml"/>
+	<rule ref="category/java/security.xml"/>
 
 </ruleset>
