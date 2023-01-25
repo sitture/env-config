@@ -23,8 +23,8 @@ class EnvConfigLoader {
 	EnvConfigLoader() {
 		final List<String> environments = configProperties.getEnvironments();
 		final String configProfile = configProperties.getConfigProfile();
-		loadKeepassConfigurations(environments);
 		loadEnvConfigurations(environments);
+		loadKeepassConfigurations(environments);
 		if (!configProfile.isEmpty()) {
 			LOG.debug("Loading properties from profile {} under environments {}", configProfile, environments);
 			environments.forEach(env -> loadFileConfigurations(new EnvConfigProfileFileList(configProperties.getConfigProfilePath(env, configProfile))));
