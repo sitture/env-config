@@ -22,8 +22,12 @@ final class EnvConfigUtils {
     private EnvConfigUtils() {
     }
 
-    static String getProcessedEnvKey(final String envVar) {
+    static String getProcessedPropertyKey(final String envVar) {
         return envVar.replaceAll("_", ".").toLowerCase();
+    }
+
+    static String getProcessedEnvKey(final String property) {
+        return property.replaceAll("\\.", "_").toUpperCase();
     }
 
     static List<String> getListOfValues(final String value, final String delimiter) {

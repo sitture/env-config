@@ -79,7 +79,7 @@ class EnvConfigProperties {
 
     private String getEnvByPropertyKey(final String key) {
         LOG.debug("Getting {} from system.env", key);
-        return Optional.ofNullable(System.getenv(key.replace(".", "_").toUpperCase()))
+        return Optional.ofNullable(System.getenv(EnvConfigUtils.getProcessedEnvKey(key)))
                 .orElse(System.getenv(key));
     }
 

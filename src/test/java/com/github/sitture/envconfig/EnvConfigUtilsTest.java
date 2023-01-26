@@ -9,8 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class EnvConfigUtilsTest {
 
     @Test
+    void testCanGetProcessedPropertyKey() {
+        assertEquals("foo.key", EnvConfigUtils.getProcessedPropertyKey("FOO_KEY"));
+    }
+
+    @Test
     void testCanGetProcessedEnvVarKey() {
-        assertEquals("foo.key", EnvConfigUtils.getProcessedEnvKey("FOO_KEY"));
+        assertEquals("FOO_KEY", EnvConfigUtils.getProcessedEnvKey("Foo.Key"));
     }
 
     @Test

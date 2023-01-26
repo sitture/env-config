@@ -9,29 +9,29 @@ import java.util.Map;
 
 class EnvironmentVariables {
 
-	private final Configuration systemConfiguration;
-	private final Configuration environmentConfiguration;
+    private final Configuration systemConfiguration;
+    private final Configuration environmentConfiguration;
 
-	EnvironmentVariables() {
-		systemConfiguration = new SystemConfiguration();
-		environmentConfiguration = new MapConfiguration(getEnvMap());
-	}
+    EnvironmentVariables() {
+        systemConfiguration = new SystemConfiguration();
+        environmentConfiguration = new MapConfiguration(getEnvMap());
+    }
 
-	private static Map<String, String> getEnvMap() {
-		final Map<String, String> envMap = new HashMap<>();
-		System.getenv().forEach((key, value) -> {
-			envMap.put(key, value);
-			envMap.put(EnvConfigUtils.getProcessedEnvKey(key), value);
-		});
-		return envMap;
-	}
+    private static Map<String, String> getEnvMap() {
+        final Map<String, String> envMap = new HashMap<>();
+        System.getenv().forEach((key, value) -> {
+            envMap.put(key, value);
+            envMap.put(EnvConfigUtils.getProcessedPropertyKey(key), value);
+        });
+        return envMap;
+    }
 
-	protected Configuration getSystemConfiguration() {
-		return systemConfiguration;
-	}
+    protected Configuration getSystemConfiguration() {
+        return systemConfiguration;
+    }
 
-	protected Configuration getEnvironmentConfiguration() {
-		return environmentConfiguration;
-	}
+    protected Configuration getEnvironmentConfiguration() {
+        return environmentConfiguration;
+    }
 
 }

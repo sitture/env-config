@@ -130,7 +130,8 @@ class EnvConfigTest {
 
     @Test
     void testCanGetEntryWhenEnvVarAndDefaultValueSameWithParentEnv() {
-        environmentVariables.set("PROPERTY_FIVE", "default");
+        final String key = "PROPERTY_FIVE";
+        environmentVariables.set(key, "default");
         final String testEnv = "test-env";
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test," + testEnv);
         // when property.five is set as env variable
@@ -138,20 +139,21 @@ class EnvConfigTest {
         // and exists in test env with different value
         // and does not exist in test-env
         // then value in test env takes priority
-        Assertions.assertEquals("test", EnvConfig.get("property.five"));
+        Assertions.assertEquals("test", EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
+        Assertions.assertEquals("test", EnvConfig.get(key));
     }
 
     @Test
     void testCanGetEntryWhenEnvVarAndDefaultValueSameWithSingleEnv() {
         final var key = "PROPERTY_SEVEN";
+        // when PROPERTY_SEVEN=default is set as env variable
         environmentVariables.set(key, "default");
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, TEST_ENVIRONMENT);
-        // when PROPERTY_SEVEN=default is set as env variable
         // and exists in default env with same value as env var
         // and exists in test env with PROPERTY_SEVEN=test
-        // then value from env variable takes priority
-        Assertions.assertEquals("default", EnvConfig.get(key));
-        Assertions.assertEquals("default", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+        // then value test env takes priority
+        Assertions.assertEquals("test", EnvConfig.get(key));
+        Assertions.assertEquals(EnvConfig.get(key), EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
     }
 
     @Test
