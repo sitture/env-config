@@ -86,7 +86,7 @@ public final class EnvConfig extends EnvConfigLoader {
      */
     public static String getOrThrow(final String property) {
         return getProperty(property)
-                .orElseThrow(() -> new EnvConfigException("Missing required variable '" + property + "'"));
+                .orElseThrow(() -> new EnvConfigException("Missing required key '" + property + "'"));
     }
 
     /**
