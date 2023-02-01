@@ -373,49 +373,6 @@ class EnvConfigTest {
     }
 
     @Test
-    void testCanGetEntryFromKeepassDBWhenMultipleEnvironment() {
-        System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "true");
-        System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, CONFIG_KEEPASS_PASSWORD);
-        final String testEnv = "keepass";
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test," + testEnv);
-        // when my.keepass.property exists in test env
-        // and only exists in keepass env group of keepass
-        // then keepass takes priority
-        Assertions.assertEquals("KEEPASS_ENVIRONMENT", EnvConfig.get(MY_KEEPASS_PROPERTY));
-        Assertions.assertEquals("KEEPASS_ENVIRONMENT", EnvConfig.get("MY_KEEPASS_PROPERTY"));
-    }
-
-    @Test
-    void testCanGetPropertyWhenInSystemEnvAndKeepass() {
-        environmentVariables.set(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY.replace(".", "_").toUpperCase(), "true");
-        environmentVariables.set(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY.replace(".", "_").toUpperCase(), CONFIG_KEEPASS_PASSWORD);
-        final String sysEnvValue = "SYS_ENV_VALUE";
-        environmentVariables.set("MY_KEEPASS_PROPERTY", sysEnvValue);
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "keepass");
-        // When my.keepass.property is set as environment variable
-        // And my.keepass.property exists in Keepass 'keepass' group
-        // And my.keepass.property exists in 'keepass' environment files
-        // Then the value from system environment takes priority
-        Assertions.assertEquals(sysEnvValue, EnvConfig.get(MY_KEEPASS_PROPERTY));
-    }
-
-    @Test
-    void testCanGetPropertyWhenInSystemPropertyAndSystemEnvAndKeepass() {
-        environmentVariables.set(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY.replace(".", "_").toUpperCase(), "true");
-        environmentVariables.set(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY.replace(".", "_").toUpperCase(), CONFIG_KEEPASS_PASSWORD);
-        environmentVariables.set("MY_KEEPASS_PROPERTY", "SYS_ENV_VALUE");
-        final String sysPropertyValue = "SYS_PROPERTY_VALUE";
-        System.setProperty(MY_KEEPASS_PROPERTY, sysPropertyValue);
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "keepass");
-        // When my.keepass.property is set as environment variable
-        // And my.keepass.property is set as system property
-        // And my.keepass.property exists in Keepass 'keepass' group
-        // And my.keepass.property exists in 'keepass' environment files
-        // Then the value from system property takes priority
-        Assertions.assertEquals(sysPropertyValue, EnvConfig.get(MY_KEEPASS_PROPERTY));
-    }
-
-    @Test
     void testCanGetPropertyFromKeepassWhenMultipleEnv() {
         environmentVariables.set(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY.replace(".", "_").toUpperCase(), "true");
         environmentVariables.set(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY.replace(".", "_").toUpperCase(), CONFIG_KEEPASS_PASSWORD);

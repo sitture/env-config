@@ -20,42 +20,44 @@ class EnvConfigLoader {
     protected final EnvConfigProperties configProperties = new EnvConfigProperties();
 
     EnvConfigLoader() {
-        final List<String> environments = configProperties.getEnvironments();
-        final String configProfile = configProperties.getConfigProfile();
-        loadEnvConfigurations();
+        final List<String> environments = this.configProperties.getEnvironments();
+        final String configProfile = this.configProperties.getConfigProfile();
+        loadEnvConfigurations(environments);
         loadKeepassConfigurations(environments);
         if (!configProfile.isEmpty()) {
             LOG.debug("Loading properties from profile {} under environments {}", configProfile, environments);
-            environments.forEach(env -> loadFileConfigurations(new EnvConfigProfileFileList(configProperties.getConfigProfilePath(env, configProfile))));
+            environments.forEach(env -> loadFileConfigurations(new EnvConfigProfileFileList(this.configProperties.getConfigProfilePath(env, configProfile))));
         }
         LOG.debug("Loading properties from environment directories {}", environments);
-        environments.forEach(env -> loadFileConfigurations(new EnvConfigFileList(configProperties.getConfigPath(env))));
+        environments.forEach(env -> loadFileConfigurations(new EnvConfigFileList(this.configProperties.getConfigPath(env))));
     }
 
     private void loadKeepassConfigurations(final List<String> environments) {
-        if (configProperties.isConfigKeePassEnabled()) {
-            final String groupName = configProperties.getConfigKeePassFilename();
-            final String masterKey = configProperties.getConfigKeePassMasterKey();
+        if (this.configProperties.isConfigKeePassEnabled()) {
+            final String groupName = this.configProperties.getConfigKeePassFilename();
+            final String masterKey = this.configProperties.getConfigKeePassMasterKey();
             LOG.debug("Loading properties from keepass {}", groupName);
             final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
             environments.forEach(env -> this.configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
         }
     }
 
-    private void loadEnvConfigurations() {
+    private void loadEnvConfigurations(final List<String> environments) {
         final EnvironmentVariables envVars = new EnvironmentVariables();
         LOG.debug("Loading properties from system.properties");
         this.configuration.addConfiguration(envVars.getSystemConfiguration());
         final Configuration envOverrides = envVars.getEnvironmentConfiguration();
-        for (final File file : new EnvConfigFileList(configProperties.getConfigPath(EnvConfigUtils.CONFIG_ENV_DEFAULT)).listFiles()) {
-            final Map<String, Object> configurationMap = getFileConfigurationMap(file);
-            configurationMap.keySet().forEach(key -> {
-                if (envOverrides.containsKey(key)
-                        && configurationMap.get(key).equals(envOverrides.getProperty(key))) {
-                    envOverrides.clearProperty(key);
-                }
-            });
-        }
+        environments.forEach(env -> {
+            for (final File file : new EnvConfigFileList(this.configProperties.getConfigPath(env)).listFiles()) {
+                final Map<String, Object> configurationMap = getFileConfigurationMap(file);
+                configurationMap.keySet().forEach(key -> {
+                    if (envOverrides.containsKey(key)
+                            && configurationMap.get(key).equals(envOverrides.getProperty(key))) {
+                        envOverrides.clearProperty(key);
+                    }
+                });
+            }
+        });
         LOG.debug("Loading properties from system.env");
         this.configuration.addConfiguration(envOverrides);
     }
