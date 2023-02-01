@@ -12,7 +12,7 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigPrecedenceTest {
 
-    public static final String MY_KEEPASS_PROPERTY = "my.keepass.property";
+    public static final String PROPERTY_KEEPASS = "property.keepass";
     public static final String SYS_ENV_VALUE = "sys.env.value";
     public static final String SYS_PROPERTY_VALUE = "sys.property.value";
     private static final String CONFIG_KEEPASS_MASTERKEY = "envconfig";
@@ -56,12 +56,12 @@ class EnvConfigPrecedenceTest {
 
     @Test
     void testSystemVariablesTakesPriorityOverKeepass() {
-        final String key = MY_KEEPASS_PROPERTY;
+        final String key = PROPERTY_KEEPASS;
         // when keepass loading is enabled
         // and property exists in keepass
         setKeepassEnabled();
         // and property is set as system property
-        systemProperties.set(MY_KEEPASS_PROPERTY, SYS_PROPERTY_VALUE);
+        systemProperties.set(PROPERTY_KEEPASS, SYS_PROPERTY_VALUE);
         // and property is set as environment variable
         environmentVariables.set(EnvConfigUtils.getProcessedEnvKey(key), SYS_ENV_VALUE);
         // and property is set in environment file
@@ -73,7 +73,7 @@ class EnvConfigPrecedenceTest {
 
     @Test
     void testKeepassTakesPriorityOverFiles() {
-        final String key = MY_KEEPASS_PROPERTY;
+        final String key = PROPERTY_KEEPASS;
         // given property does not exist in config files
         // when keepass loading is enabled
         setKeepassEnabled();
@@ -92,13 +92,13 @@ class EnvConfigPrecedenceTest {
     }
 
     @Test
-    void testCanGetEntryWhenEnvVarAndDefaultValueSameWithSingleEnv() {
-        final var key = MY_KEEPASS_PROPERTY;
+    void testCanGetEntryWhenEnvVarAndDefaultValueSame() {
+        final var key = PROPERTY_KEEPASS;
         // when property does not exist in default files
         // and property exists in environment config files
         setEnvironment("test");
         // and property is also set as env var with same value as environment config file
-        environmentVariables.set(key, "my_value");
+        environmentVariables.set(key, "test");
         // when keepass loading is enabled
         setKeepassEnabled();
         // and property exists in keepass with different value

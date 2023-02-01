@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <!DOCTYPE suppressions PUBLIC
-    "-//Puppy Crawl//DTD Suppressions 1.1//EN"
-    "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+        "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+        "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-  <!-- Suppress various checks in the test packages (directory /test/) -->
-  <suppress checks="JavadocPackage" files="[\\/]test[\\/]"/>
-  <suppress checks="JavadocVariable" files="[\\/]test[\\/]"/>
-  <suppress checks="JavadocMethod" files="[\\/]test[\\/]"/>
-  <suppress checks="MultipleStringLiterals" files="[\\/]test[\\/]"/>
-  <!-- Suppress all checks on generated sources -->
-  <suppress checks=".*" files="[\\/]generated[\\/]" />
+    <!-- Suppress various checks in the test packages (directory /test/) -->
+    <suppress checks="JavadocPackage" files="[\\/]test[\\/]"/>
+    <suppress checks="JavadocVariable" files="[\\/]test[\\/]"/>
+    <suppress checks="JavadocMethod" files="[\\/]test[\\/]"/>
+    <suppress checks="MultipleStringLiterals" files="[\\/]test[\\/]"/>
+    <!-- Suppress all checks on generated sources -->
+    <suppress checks=".*" files="[\\/]generated[\\/]"/>
 </suppressions>
