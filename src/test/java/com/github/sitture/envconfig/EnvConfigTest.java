@@ -10,7 +10,6 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigTest {
@@ -168,12 +167,6 @@ class EnvConfigTest {
         // and exists in default env with different value to env var
         // then value in env var takes priority
         Assertions.assertEquals("env.default", EnvConfig.get("property.five"));
-    }
-
-    public static void main(String[] args) {
-        final String envs = "default,test,test-env";
-        final var a = envs.split(",");
-        Stream.of(a).forEach(System.out::println);
     }
 
     @Test

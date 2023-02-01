@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.3.0
+
+### Updated
+
+- Ignore env vars if key=value pair in env/properties are same
+
 ## 1.2.4
 
 ### Fixed

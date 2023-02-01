@@ -10,7 +10,7 @@ import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 @ExtendWith(SystemStubsExtension.class)
-public class EnvConfigPrecedenceTest {
+class EnvConfigPrecedenceTest {
 
     public static final String MY_KEEPASS_PROPERTY = "my.keepass.property";
     public static final String SYS_ENV_VALUE = "sys.env.value";
@@ -94,12 +94,15 @@ public class EnvConfigPrecedenceTest {
     @Test
     void testCanGetEntryWhenEnvVarAndDefaultValueSameWithSingleEnv() {
         final var key = MY_KEEPASS_PROPERTY;
-        // when PROPERTY_SEVEN=test is set as env variable
-        environmentVariables.set(key, "test");
+        // when property does not exist in default files
+        // and property exists in environment config files
         setEnvironment("test");
-        // and exists in default env with same value as env var
-        // and exists in test env with PROPERTY_SEVEN=test
-        // then value from test env takes priority
+        // and property is also set as env var with same value as environment config file
+        environmentVariables.set(key, "my_value");
+        // when keepass loading is enabled
+        setKeepassEnabled();
+        // and property exists in keepass with different value
+        // then value from keepass takes priority
         Assertions.assertEquals("KEEPASS_VALUE", EnvConfig.get(key));
         Assertions.assertEquals(EnvConfig.get(key), EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
     }
