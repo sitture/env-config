@@ -1,55 +1,55 @@
 <?xml version="1.0"?>
 
 <ruleset name="All Java Rules"
-		 xmlns="https://pmd.sourceforge.io/ruleset/2.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="https://pmd.sourceforge.io/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-	<description>Every Java Rule in PMD</description>
+         xmlns="https://pmd.sourceforge.io/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://pmd.sourceforge.io/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+    <description>Every Java Rule in PMD</description>
 
-	<!-- Default rulesets -->
-	<rule ref="category/java/bestpractices.xml">
-		<exclude name="UseVarargs" />
-		<exclude name="JUnitAssertionsShouldIncludeMessage" />
-		<exclude name="JUnitTestContainsTooManyAsserts" />
-	</rule>
+    <!-- Default rulesets -->
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="UseVarargs"/>
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
+    </rule>
 
-	<rule ref="category/java/codestyle.xml">
-		<exclude name="AtLeastOneConstructor" />
-		<exclude name="CommentDefaultAccessModifier" />
-		<exclude name="ConfusingTernary" />
-	</rule>
-	<rule ref="category/java/codestyle.xml/LongVariable">
-		<properties>
-			<property name="minimum" value="34" />
-		</properties>
-	</rule>
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="ConfusingTernary"/>
+    </rule>
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="34"/>
+        </properties>
+    </rule>
 
-	<rule ref="category/java/design.xml">
-		<exclude name="LawOfDemeter" />
-		<exclude name="TooManyMethods" />
-		<exclude name="LoosePackageCoupling" />
-	</rule>
+    <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="LoosePackageCoupling"/>
+    </rule>
 
-	<rule ref="category/java/documentation.xml">
-		<exclude name="CommentRequired" />
-	</rule>
+    <rule ref="category/java/documentation.xml">
+        <exclude name="CommentRequired"/>
+    </rule>
 
-	<rule ref="category/java/errorprone.xml">
-		<exclude name="UseLocaleWithCaseConversions" />
-		<exclude name="NullAssignment" />
-	</rule>
-	<rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
-		<properties>
-			<property name="maxDuplicateLiterals" value="10" />
-			<property name="minimumLength" value="5" />
-		</properties>
-	</rule>
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="UseLocaleWithCaseConversions"/>
+        <exclude name="NullAssignment"/>
+    </rule>
+    <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals">
+        <properties>
+            <property name="maxDuplicateLiterals" value="10"/>
+            <property name="minimumLength" value="5"/>
+        </properties>
+    </rule>
 
-	<rule ref="category/java/multithreading.xml">
-		<exclude name="UseConcurrentHashMap" />
-	</rule>
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="UseConcurrentHashMap"/>
+    </rule>
 
-	<rule ref="category/java/performance.xml"/>
-	<rule ref="category/java/security.xml"/>
+    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/security.xml"/>
 
 </ruleset>

@@ -86,7 +86,7 @@ public final class EnvConfig extends EnvConfigLoader {
      */
     public static String getOrThrow(final String property) {
         return getProperty(property)
-                .orElseThrow(() -> new EnvConfigException("Missing required variable '" + property + "'"));
+                .orElseThrow(() -> new EnvConfigException("Missing required key '" + property + "'"));
     }
 
     /**
@@ -124,8 +124,7 @@ public final class EnvConfig extends EnvConfigLoader {
      * Returns a key/value from a named config, parsed as Boolean.
      *
      * @param property the property
-     * @return a Boolean representing the value, false if the value not present or
-     * cannot be parsed as Boolean
+     * @return a Boolean representing the value, false if the value not present
      */
     public static boolean getBool(final String property) {
         return getProperty(property).map(Boolean::parseBoolean).orElse(false);
@@ -160,7 +159,7 @@ public final class EnvConfig extends EnvConfigLoader {
      * @return env property value.
      */
     public static String getEnvironment() {
-        return getConfig().configProperties.getEnvironments().get(0);
+        return getConfig().configProperties.getCurrentEnvironment();
     }
 
     public static Map<String, Object> asMap() {

@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.4.0
+
+### Updated
+
+- Adds additional test coverage for config precedence
+- Updates for following Gauge specific scenarios:
+  - when env var value and default config file value is same and does not contain in env config file then it should ignore the env var
+  - when env var value and env config file value is same and does not exist in default then value from env var takes priority
+
 ## 1.3.0
 
 ### Updated
@@ -20,7 +29,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- System environment should now take precedence over keepass 
+- System environment should now take precedence over keepass
 
 ## 1.2.2
 
@@ -118,7 +127,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Updated
 
-- Updating to latest version of checkstyle and pmd
+- Updating to the latest version of checkstyle and pmd
 
 ## 0.8.1
 
@@ -182,14 +191,14 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Updated
 
-- Migrating to use github actions
-- Publishing to both maven central and github packages
+- Migrating to use GitHub actions
+- Publishing to both maven central and GitHub packages
 
 ## 0.5.6
 
 ### Updated
 
-- Updates to latest version of checkstyle/pmd.
+- Updates to the latest version of checkstyle/pmd.
 - Updates the version of compiler plugin
 
 ## 0.5.5
@@ -208,7 +217,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Now adds the raw environments as well as processed lowercased keys
+- Now adds the raw environments as well as processed lowercase keys
 
 E.g. TEST_VAR can either be retrieved with `EnvConfig.get("TEST_VAR")` or `EnvConfig.get("test.var")`
 

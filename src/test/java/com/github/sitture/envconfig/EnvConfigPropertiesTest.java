@@ -43,14 +43,17 @@ class EnvConfigPropertiesTest {
         // when config.environment isn't specified
         System.clearProperty(EnvConfigUtils.CONFIG_ENV_KEY);
         Assertions.assertEquals(List.of("default"), new EnvConfigProperties().getEnvironments());
+        Assertions.assertEquals("default", new EnvConfigProperties().getCurrentEnvironment());
         // when a single environment is specified
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test ");
         Assertions.assertEquals(List.of("test", "default"), new EnvConfigProperties().getEnvironments());
+        Assertions.assertEquals("test", new EnvConfigProperties().getCurrentEnvironment());
         // when a multiple environments are specified
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test , test2");
+        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test , TEST2");
         Assertions.assertEquals(List.of("test2", "test", "default"), new EnvConfigProperties().getEnvironments());
+        Assertions.assertEquals("test2", new EnvConfigProperties().getCurrentEnvironment());
         // when a default specified in environments
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "default,alpha,zen");
+        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "DEFAULT,alpha,zen");
         Assertions.assertEquals(List.of("zen", "alpha", "default"), new EnvConfigProperties().getEnvironments());
         // when only default specified in environments
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "default");
