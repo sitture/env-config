@@ -34,6 +34,10 @@ class EnvConfigProperties {
         return environments;
     }
 
+    String getCurrentEnvironment() {
+        return environments.get(0);
+    }
+
     String getConfigProfile() {
         return getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILE_KEY, "");
     }
@@ -41,7 +45,7 @@ class EnvConfigProperties {
     private List<String> getEnvList() {
         final List<String> environments = new ArrayList<>();
         environments.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
-        environments.addAll(EnvConfigUtils.getListOfValues(getConfigurationProperty(EnvConfigUtils.CONFIG_ENV_KEY, EnvConfigUtils.CONFIG_ENV_DEFAULT), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
+        environments.addAll(EnvConfigUtils.getListOfValues(getConfigurationProperty(EnvConfigUtils.CONFIG_ENV_KEY, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
         Collections.reverse(environments);
         return environments.stream().distinct().collect(Collectors.toList());
     }

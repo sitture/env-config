@@ -144,19 +144,6 @@ class EnvConfigTest {
     }
 
     @Test
-    void testCanGetEntryWhenEnvVarAndDefaultValueSameWithSingleEnv() {
-        final var key = "PROPERTY_SEVEN";
-        // when PROPERTY_SEVEN=default is set as env variable
-        environmentVariables.set(key, "default");
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, TEST_ENVIRONMENT);
-        // and exists in default env with same value as env var
-        // and exists in test env with PROPERTY_SEVEN=test
-        // then value test env takes priority
-        Assertions.assertEquals("test", EnvConfig.get(key));
-        Assertions.assertEquals(EnvConfig.get(key), EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
-    }
-
-    @Test
     void testCanGetEntryWhenEnvVarAndDefaultValueDifferent() {
         environmentVariables.set("property.five", "env.default");
         final String testEnv = "test-env";
@@ -208,8 +195,8 @@ class EnvConfigTest {
     @Test
     void testCanGetEntryWhenEnvVarAndDefaultValueSameWithMultipleEnv() {
         final String key = "property.one";
-        // when property.env is set in default env
-        // and PROPERTY_ENV is set as env var to same value as default
+        // when property.one is set in default env
+        // and PROPERTY_ONE is set as env var to same value as default
         environmentVariables.set("PROPERTY_ONE", "default");
         // and property.one is also set in test-env and test env properties
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test,test-env");

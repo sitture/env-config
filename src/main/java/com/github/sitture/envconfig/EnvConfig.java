@@ -160,7 +160,7 @@ public final class EnvConfig extends EnvConfigLoader {
      * @return env property value.
      */
     public static String getEnvironment() {
-        return getConfig().configProperties.getEnvironments().get(0);
+        return getConfig().configProperties.getCurrentEnvironment();
     }
 
     public static Map<String, Object> asMap() {
