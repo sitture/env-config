@@ -125,7 +125,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Updated
 
-- Updating to latest version of checkstyle and pmd
+- Updating to the latest version of checkstyle and pmd
 
 ## 0.8.1
 
@@ -189,14 +189,14 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Updated
 
-- Migrating to use github actions
-- Publishing to both maven central and github packages
+- Migrating to use GitHub actions
+- Publishing to both maven central and GitHub packages
 
 ## 0.5.6
 
 ### Updated
 
-- Updates to latest version of checkstyle/pmd.
+- Updates to the latest version of checkstyle/pmd.
 - Updates the version of compiler plugin
 
 ## 0.5.5
@@ -215,7 +215,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Now adds the raw environments as well as processed lowercased keys
+- Now adds the raw environments as well as processed lowercase keys
 
 E.g. TEST_VAR can either be retrieved with `EnvConfig.get("TEST_VAR")` or `EnvConfig.get("test.var")`
 
