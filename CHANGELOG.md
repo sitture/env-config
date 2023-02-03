@@ -29,7 +29,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- System environment should now take precedence over keepass 
+- System environment should now take precedence over keepass
 
 ## 1.2.2
 

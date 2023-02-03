@@ -52,7 +52,7 @@ compile 'com.github.sitture:env-config:${version}'
 | `env.config.profile`           | `ENV_CONFIG_PROFILE`           | The profile to activate from the active environment directory.                                                                                            |
 | `env.config.keepass.enabled`   | `ENV_CONFIG_KEEPASS_ENABLED`   | Whether to load properties from a keepass file. **default:** `false`                                                                                      |
 | `env.config.keepass.filename`  | `ENV_CONFIG_KEEPASS_FILENAME`  | The keepass filename to load from the resources folder (src/main/resources). **default:** the root project directory name. i.e. `project.build.directory` |
-| `env.config.keepass.masterkey` | `ENV_CONFIG_KEEPASS_MASTERKEY` | The password to open the keepass file. This is required if `env.config.keepass.enabled=true`.                                                             |                                                                
+| `env.config.keepass.masterkey` | `ENV_CONFIG_KEEPASS_MASTERKEY` | The password to open the keepass file. This is required if `env.config.keepass.enabled=true`.                                                             |
 
 ## Configuration precedence
 

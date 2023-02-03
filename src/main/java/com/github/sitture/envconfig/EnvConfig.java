@@ -124,8 +124,7 @@ public final class EnvConfig extends EnvConfigLoader {
      * Returns a key/value from a named config, parsed as Boolean.
      *
      * @param property the property
-     * @return a Boolean representing the value, false if the value not present or
-     * cannot be parsed as Boolean
+     * @return a Boolean representing the value, false if the value not present
      */
     public static boolean getBool(final String property) {
         return getProperty(property).map(Boolean::parseBoolean).orElse(false);
