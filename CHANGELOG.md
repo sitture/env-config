@@ -9,7 +9,9 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ### Updated
 
 - Adds additional test coverage for config precedence
-- Caters for Gauge scenario when env var and default config file is same 
+- Updates for following Gauge specific scenarios:
+  - when env var value and default config file value is same and does not contain in env config file then it should ignore the env var
+  - when env var value and env config file value is same and does not exist in default then value from env var takes priority
 
 ## 1.3.0
 
