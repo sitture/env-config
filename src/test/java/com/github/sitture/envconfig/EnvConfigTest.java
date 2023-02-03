@@ -129,21 +129,6 @@ class EnvConfigTest {
     }
 
     @Test
-    void testCanGetEntryWhenEnvVarAndDefaultValueSameWithParentEnv() {
-        final String key = "PROPERTY_FIVE";
-        environmentVariables.set(key, "default");
-        final String testEnv = "test-env";
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test," + testEnv);
-        // when property.five is set as env variable
-        // and exists in default env with same value as env var
-        // and exists in test env with different value
-        // and does not exist in test-env
-        // then value in test env takes priority
-        Assertions.assertEquals("test", EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
-        Assertions.assertEquals("test", EnvConfig.get(key));
-    }
-
-    @Test
     void testCanGetEntryWhenEnvVarAndDefaultValueDifferent() {
         environmentVariables.set("property.five", "env.default");
         final String testEnv = "test-env";
@@ -190,18 +175,6 @@ class EnvConfigTest {
         // and exists in default env with different value i.e. PROPERTY_SEVEN=default
         // then i should be able to value from test env using the properties format
         Assertions.assertEquals("test", EnvConfig.get("property.seven"));
-    }
-
-    @Test
-    void testCanGetEntryWhenEnvVarAndDefaultValueSameWithMultipleEnv() {
-        final String key = "property.one";
-        // when property.one is set in default env
-        // and PROPERTY_ONE is set as env var to same value as default
-        environmentVariables.set("PROPERTY_ONE", "default");
-        // and property.one is also set in test-env and test env properties
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "test,test-env");
-        // then value in env test-env takes priority
-        Assertions.assertEquals("test-env", EnvConfig.get(key));
     }
 
     @Test
@@ -316,11 +289,11 @@ class EnvConfigTest {
     @Test
     void testCanGetEntryFromKeepassWhenFileNameSpecified() {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "env-config.kdbx");
-        enabledKeepass();
+        setKeepassEnabled();
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get(PROPERTY_KEEPASS));
     }
 
-    private void enabledKeepass() {
+    private void setKeepassEnabled() {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "true");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, CONFIG_KEEPASS_PASSWORD);
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, EnvConfigUtils.CONFIG_ENV_DEFAULT);
@@ -329,7 +302,7 @@ class EnvConfigTest {
     @Test
     void testCanGetFromKeepassWhenFileNameWithSpace() {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "env config.kdbx");
-        enabledKeepass();
+        setKeepassEnabled();
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get(PROPERTY_KEEPASS));
     }
 
@@ -352,7 +325,7 @@ class EnvConfigTest {
 
     @Test
     void testCanGetEntryFromKeepassDefaultGroup() {
-        enabledKeepass();
+        setKeepassEnabled();
         // when property.keepass does not exist in default env.
         // and only exists default group of keepass
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get(PROPERTY_KEEPASS));

@@ -75,12 +75,12 @@ class EnvConfigPrecedenceTest {
     }
 
     @Test
-    void testKeepassTakesPriorityOverFilesWhenNotInDefaultGroup2() {
+    void testKeepassTakesPriorityOverFilesWhenOnlyInDefaultFilesAndKeepass() {
         final String key = "property.eight";
         // given property only exists in default config files
         // and property is set as environment variable with same value as config files
         environmentVariables.set(key, "default");
-        // and property does not exist in environment config files
+        // and property does not exist in current environment config files
         setEnvironment("test");
         // when keepass loading is enabled
         setKeepassEnabled();
@@ -111,10 +111,10 @@ class EnvConfigPrecedenceTest {
     }
 
     @Test
-    void testKeepassTakesPriorityOverFilesWhenEnvVarAndDefaultValueSame() {
+    void testKeepassTakesPriorityOverFilesWhenNotInDefaultFilesWithEnvVarAndEnvFileValueSame() {
         final var key = PROPERTY_KEEPASS;
         // when property does not exist in default config files
-        // and property exists in environment config files
+        // and property exists in current environment config files
         setEnvironment("test");
         // and property is also set as env var with same value as environment config file
         environmentVariables.set(key, "test");
@@ -160,6 +160,34 @@ class EnvConfigPrecedenceTest {
         setEnvironment("test");
         // then value from environment variable takes priority
         Assertions.assertEquals("default", EnvConfig.get(key));
+        Assertions.assertEquals(EnvConfig.get(key), EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
+    }
+
+    @Test
+    void testCurrentEnvironmentTakesPriorityWhenEnvVarAndDefaultValueSame() {
+        final String key = "property.one";
+        // when property is set as environment variable
+        environmentVariables.set(key, "default");
+        // and exists in default config files with same value as env var
+        // and exists in parent environment config files with different value
+        // and exists in current environment config files with different value
+        setEnvironment("test,test-env");
+        // then value from current environment config files takes priority
+        Assertions.assertEquals("test-env", EnvConfig.get(key));
+        Assertions.assertEquals(EnvConfig.get(key), EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+    }
+
+    @Test
+    void testParentEnvironmentTakesPriorityWhenEnvVarAndDefaultValueSame() {
+        final String key = "PROPERTY_FIVE";
+        // when property is set as environment variable
+        environmentVariables.set(key, "default");
+        // and exists in default config files with same value as env var
+        // and exists in parent environment config files with different value
+        // and does not exist in current environment config files with different value
+        setEnvironment("test,test-env");
+        // then value from parent environment config files takes priority
+        Assertions.assertEquals("test", EnvConfig.get(key));
         Assertions.assertEquals(EnvConfig.get(key), EnvConfig.get(EnvConfigUtils.getProcessedPropertyKey(key)));
     }
 
