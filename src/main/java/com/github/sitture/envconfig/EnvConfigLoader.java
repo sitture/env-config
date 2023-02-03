@@ -77,6 +77,7 @@ class EnvConfigLoader {
                 env, getConfiguration(new EnvConfigProfileFileList(this.configProperties.getConfigProfilePath(env, configProfile)))));
         return configurationMap;
     }
+
     private Map<String, Configuration> getEnvironmentConfiguration(final List<String> environments) {
         final Map<String, Configuration> configurationMap = new HashMap<>();
         environments.forEach(env -> configurationMap.put(
