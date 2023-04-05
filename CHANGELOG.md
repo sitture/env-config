@@ -4,6 +4,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.5.0
+
+### Updated
+
+- Bump commons-configuration2 from 2.8.0 to 2.9.0
+- Bump slf4j.version from 2.0.6 to 2.0.7
+- Bump checkstyle from 10.6.0 to 10.9.3
+- Bump maven-surefire-plugin from 3.0.0-M8 to 3.0.0
+- Bump maven-compiler-plugin from 3.10.1 to 3.11.0
+
 ## 1.4.0
 
 ### Updated

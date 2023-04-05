@@ -91,11 +91,11 @@ class EnvConfigLoader {
         }
         final CompositeConfiguration configuration = new CompositeConfiguration();
         fileList.listFiles().forEach(file ->
-                configuration.addConfiguration(new MapConfiguration(getFileConfigurationMap(file))));
+                configuration.addConfiguration(getFileConfigurationMap(file)));
         return configuration;
     }
 
-    private Map<String, Object> getFileConfigurationMap(final File file) {
+    private Configuration getFileConfigurationMap(final File file) {
         final Map<String, Object> configurationMap = new HashMap<>();
         final Configuration properties = getConfigurationProperties(file);
         properties.getKeys().forEachRemaining(key -> {
@@ -103,7 +103,7 @@ class EnvConfigLoader {
             configurationMap.put(EnvConfigUtils.getProcessedPropertyKey(key), value);
             configurationMap.put(EnvConfigUtils.getProcessedEnvKey(key), value);
         });
-        return configurationMap;
+        return new MapConfiguration(configurationMap);
     }
 
     private Configuration getConfigurationProperties(final File file) {
