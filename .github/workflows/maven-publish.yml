@@ -15,7 +15,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: Cache
-        uses: actions/cache@v1.0.0
+        uses: actions/cache@v3.3.1
         with:
          path: ~/.m2/repository
          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
