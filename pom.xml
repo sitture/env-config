@@ -45,7 +45,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<project.build.outputTimestamp>2023-09-13T14:17:44Z</project.build.outputTimestamp>
+		<project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<commons-configuration2.version>2.9.0</commons-configuration2.version>
 		<slf4j.version>2.0.9</slf4j.version>
