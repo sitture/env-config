@@ -18,7 +18,7 @@ jobs:
           echo "on a tag -> set pom.xml <version> to ${GITHUB_REF##*/}"
           echo $GPG_SECRET_KEYS | base64 --decode | gpg --import
           echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-          mvn -B org.codehaus.mojo:versions-maven-plugin:2.5:set -DnewVersion=${GITHUB_REF##*/}
+          mvn -B versions:set -DgenerateBackupPoms=false -DnewVersion=${GITHUB_REF##*/}
           mvn -B -Pgithub deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
