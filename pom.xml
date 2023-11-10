@@ -51,12 +51,12 @@
 		<slf4j.version>2.0.9</slf4j.version>
 		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
-		<maven-pmd-plugin.version>3.21.0</maven-pmd-plugin.version>
+		<maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
 		<nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 		<junit.version>5.8.2</junit.version>
 	</properties>
@@ -74,7 +74,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.1</version>
+				<version>3.2.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -149,7 +149,7 @@
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
-				<version>5.10.0</version>
+				<version>5.10.1</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -191,13 +191,13 @@
 		<dependency>
 			<groupId>uk.org.webcompere</groupId>
 			<artifactId>system-stubs-core</artifactId>
-			<version>2.1.3</version>
+			<version>2.1.4</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>uk.org.webcompere</groupId>
 			<artifactId>system-stubs-jupiter</artifactId>
-			<version>2.1.3</version>
+			<version>2.1.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
