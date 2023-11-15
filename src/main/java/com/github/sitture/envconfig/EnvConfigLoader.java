@@ -5,6 +5,7 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ class EnvConfigLoader {
         final String configProfile = this.configProperties.getConfigProfile();
         final Map<String, Configuration> envConfiguration = getEnvironmentConfiguration(environments);
         loadEnvConfigurations(envConfiguration);
+        loadVaultConfigurations(environments);
         loadKeepassConfigurations(environments);
         if (!configProfile.isEmpty()) {
             final Map<String, Configuration> profileConfiguration = getEnvironmentProfileConfiguration(environments, configProfile);
@@ -33,6 +35,20 @@ class EnvConfigLoader {
         }
         LOG.debug("Loading config from environment directories {}", environments);
         environments.forEach(env -> this.configuration.addConfiguration(envConfiguration.get(env)));
+    }
+
+    private void loadVaultConfigurations(final List<String> environments) {
+        if (this.configProperties.isConfigVaultEnabled()) {
+            final String address = this.configProperties.getVaultAddress();
+            final String namespace = this.configProperties.getVaultNamespace();
+            LOG.debug("Loading config from vault {} namespace {}", address, namespace);
+            final VaultEntries vaultEntries = new VaultEntries(address, namespace, this.configProperties.getVaultToken());
+            environments.forEach(env -> {
+                final String secret = String.format("%s/%s", StringUtils.removeEnd(this.configProperties.getVaultSecretPath(), "/"), env);
+                LOG.debug("Loading config from vault secret {}", secret);
+                this.configuration.addConfiguration(vaultEntries.getEntriesConfiguration(secret));
+            });
+        }
     }
 
     private void loadKeepassConfigurations(final List<String> environments) {

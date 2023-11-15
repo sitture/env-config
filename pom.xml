@@ -54,6 +54,7 @@
 		<maven-pmd-plugin.version>3.21.2</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
+		<vault-java-driver.version>6.2.0</vault-java-driver.version>
 		<nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
@@ -161,6 +162,11 @@
 			<groupId>de.slackspace</groupId>
 			<artifactId>openkeepass</artifactId>
 			<version>${openkeepass.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.github.jopenlibs</groupId>
+			<artifactId>vault-java-driver</artifactId>
+			<version>${vault-java-driver.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-beanutils</groupId>

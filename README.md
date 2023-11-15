@@ -53,6 +53,11 @@ compile 'com.github.sitture:env-config:${version}'
 | `env.config.keepass.enabled`   | `ENV_CONFIG_KEEPASS_ENABLED`   | Whether to load properties from a keepass file. **default:** `false`                                                                                      |
 | `env.config.keepass.filename`  | `ENV_CONFIG_KEEPASS_FILENAME`  | The keepass filename to load from the resources folder (src/main/resources). **default:** the root project directory name. i.e. `project.build.directory` |
 | `env.config.keepass.masterkey` | `ENV_CONFIG_KEEPASS_MASTERKEY` | The password to open the keepass file. This is required if `env.config.keepass.enabled=true`.                                                             |
+| `env.config.vault.enabled`     | `ENV_CONFIG_VAULT_ENABLED`     | Whether to load properties from a keepass file. **default:** `false`                                                                                      |
+| `env.config.vault.address`     | `ENV_CONFIG_VAULT_ADDRESS`     | The host address of the vault instance. This is required if `env.config.vault.enabled=true`.                                                              |
+| `env.config.vault.namespace`   | `ENV_CONFIG_VAULT_NAMESPACE`   | The vault namespace to look for secrets. This is required if `env.config.vault.enabled=true`.                                                             |
+| `env.config.vault.secret.path` | `ENV_CONFIG_VAULT_SECRET_PATH` | The base secret path for the project. This is required if `env.config.vault.enabled=true`.                                                                |
+| `env.config.vault.token`       | `ENV_CONFIG_VAULT_TOKEN`       | The vault token used for authentication. This is required if `env.config.vault.enabled=true`.                                                             |
 
 ## Configuration precedence
 
