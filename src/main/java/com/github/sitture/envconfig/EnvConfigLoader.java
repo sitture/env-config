@@ -42,11 +42,11 @@ class EnvConfigLoader {
             final String address = this.configProperties.getVaultAddress();
             final String namespace = this.configProperties.getVaultNamespace();
             LOG.debug("Loading config from vault {} namespace {}", address, namespace);
-            final VaultEntries vaultEntries = new VaultEntries(address, namespace, this.configProperties.getVaultToken());
+            final VaultConfiguration entries = new VaultConfiguration(address, namespace, this.configProperties.getVaultToken());
             environments.forEach(env -> {
                 final String secret = String.format("%s/%s", StringUtils.removeEnd(this.configProperties.getVaultSecretPath(), "/"), env);
                 LOG.debug("Loading config from vault secret {}", secret);
-                this.configuration.addConfiguration(vaultEntries.getEntriesConfiguration(secret));
+                this.configuration.addConfiguration(entries.getConfiguration(secret));
             });
         }
     }
@@ -56,8 +56,8 @@ class EnvConfigLoader {
             final String groupName = this.configProperties.getConfigKeePassFilename();
             final String masterKey = this.configProperties.getConfigKeePassMasterKey();
             LOG.debug("Loading config from keepass {}", groupName);
-            final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
-            environments.forEach(env -> this.configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
+            final KeePassConfiguration entries = new KeePassConfiguration(masterKey, groupName);
+            environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
         }
     }
 

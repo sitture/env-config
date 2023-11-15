@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-class KeePassEntries {
+class KeePassConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
     private final KeePassFile keePassFile;
 
-    KeePassEntries(final String masterKey, final String groupName) {
+    KeePassConfiguration(final String masterKey, final String groupName) {
         final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
                 ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
                 : groupName;
@@ -30,7 +30,7 @@ class KeePassEntries {
         return envVar.replaceAll("_", ".").toLowerCase();
     }
 
-    public Configuration getEntriesConfiguration(final String env) {
+    public Configuration getConfiguration(final String env) {
         final String keePassGroupName = !keePassFile.getTopGroups().isEmpty()
                 ? keePassFile.getTopGroups().get(0).getName()
                 : "Root";
