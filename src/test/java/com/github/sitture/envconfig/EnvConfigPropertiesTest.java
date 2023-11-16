@@ -22,6 +22,7 @@ class EnvConfigPropertiesTest {
         System.clearProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY);
         System.clearProperty(EnvConfigUtils.CONFIG_PROFILE_KEY);
         System.clearProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY);
+        System.clearProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY);
     }
 
     @Test
@@ -130,39 +131,42 @@ class EnvConfigPropertiesTest {
     @Test
     void testCanGetConfigKeepassEnabled() {
         configProperties = new EnvConfigProperties();
-        Assertions.assertFalse(configProperties.isConfigKeePassEnabled(), "Incorrect keepass.enabled");
+        Assertions.assertFalse(configProperties.isConfigKeepassEnabled(), "Incorrect keepass.enabled");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "true");
-        Assertions.assertTrue(configProperties.isConfigKeePassEnabled(), "Incorrect keepass.enabled");
+        Assertions.assertTrue(configProperties.isConfigKeepassEnabled(), "Incorrect keepass.enabled");
     }
 
     @Test
     void testCanGetConfigKeepassFileName() {
         configProperties = new EnvConfigProperties();
+        System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals(new File(configProperties.getBuildDir()).getName(),
-                configProperties.getConfigKeePassFilename(), "Incorrect keepass.filename path");
+                configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
     }
 
     @Test
     void testCanGetConfigKeepassFileNameWhenRelative() {
         configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "foobar.kdbx");
+        System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals("foobar.kdbx",
-                configProperties.getConfigKeePassFilename(), "Incorrect keepass.filename path");
+                configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
     }
 
     @Test
     void testCanGetConfigKeepassFileNameWhenAbsolute() {
         configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "/dir/foobar.kdbx");
+        System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals("foobar.kdbx",
-                configProperties.getConfigKeePassFilename(), "Incorrect keepass.filename path");
+                configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
     }
 
     @Test
     void testThrowsExceptionWhenKeepassMasterKeyNotPresent() {
         configProperties = new EnvConfigProperties();
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                configProperties::getConfigKeePassMasterKey);
+                configProperties::getKeepassProperties);
         Assertions.assertEquals(String.format("Missing required variable '%s'", EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY),
                 exception.getMessage());
     }

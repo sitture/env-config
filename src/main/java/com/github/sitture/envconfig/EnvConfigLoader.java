@@ -25,6 +25,7 @@ class EnvConfigLoader {
         final String configProfile = this.configProperties.getConfigProfile();
         final Map<String, Configuration> envConfiguration = getEnvironmentConfiguration(environments);
         loadEnvConfigurations(envConfiguration);
+        loadVaultConfigurations(environments);
         loadKeepassConfigurations(environments);
         if (!configProfile.isEmpty()) {
             final Map<String, Configuration> profileConfiguration = getEnvironmentProfileConfiguration(environments, configProfile);
@@ -35,13 +36,24 @@ class EnvConfigLoader {
         environments.forEach(env -> this.configuration.addConfiguration(envConfiguration.get(env)));
     }
 
+    private void loadVaultConfigurations(final List<String> environments) {
+        if (this.configProperties.isConfigVaultEnabled()) {
+            final EnvConfigVaultProperties vaultProperties = this.configProperties.getVaultProperties();
+            final String address = vaultProperties.getAddress();
+            final String namespace = vaultProperties.getNamespace();
+            LOG.debug("Loading config from vault {} namespace {}", address, namespace);
+            final VaultConfiguration entries = new VaultConfiguration(vaultProperties);
+            environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
+        }
+    }
+
     private void loadKeepassConfigurations(final List<String> environments) {
-        if (this.configProperties.isConfigKeePassEnabled()) {
-            final String groupName = this.configProperties.getConfigKeePassFilename();
-            final String masterKey = this.configProperties.getConfigKeePassMasterKey();
+        if (this.configProperties.isConfigKeepassEnabled()) {
+            final EnvConfigKeepassProperties keepassProperties = this.configProperties.getKeepassProperties();
+            final String groupName = keepassProperties.getFilename();
             LOG.debug("Loading config from keepass {}", groupName);
-            final KeePassEntries keepassEntries = new KeePassEntries(masterKey, groupName);
-            environments.forEach(env -> this.configuration.addConfiguration(keepassEntries.getEntriesConfiguration(env)));
+            final KeepassConfiguration entries = new KeepassConfiguration(keepassProperties);
+            environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
         }
     }
 

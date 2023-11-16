@@ -87,17 +87,28 @@ class EnvConfigProperties {
                 .orElse(System.getenv(key));
     }
 
-    String getConfigKeePassFilename() {
-        return new File(getConfigurationProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, getBuildDir())).getName();
+    private String getRequiredConfigKey(final String key) {
+        return Optional.ofNullable(getConfigurationProperty(key, null))
+                .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key)));
     }
 
-    boolean isConfigKeePassEnabled() {
+    boolean isConfigKeepassEnabled() {
         return Boolean.parseBoolean(getConfigurationProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "false"));
     }
 
-    String getConfigKeePassMasterKey() {
-        final String key = EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY;
-        return Optional.ofNullable(getConfigurationProperty(key, null))
-                .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key)));
+    EnvConfigKeepassProperties getKeepassProperties() {
+        return new EnvConfigKeepassProperties(new File(getConfigurationProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, getBuildDir())).getName(),
+                getRequiredConfigKey(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY));
+    }
+
+    boolean isConfigVaultEnabled() {
+        return Boolean.parseBoolean(getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_ENABLED_KEY, "false"));
+    }
+
+    EnvConfigVaultProperties getVaultProperties() {
+        return new EnvConfigVaultProperties(getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_ADDRESS_KEY),
+                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_NAMESPACE_KEY),
+                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_TOKEN_KEY),
+                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY));
     }
 }
