@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 
@@ -21,6 +22,17 @@ class VaultConfigurationTest {
         final Configuration configuration = new VaultConfiguration(vaultProperties).getConfiguration("default");
         Assertions.assertEquals("value1", configuration.getString("key1"));
         Assertions.assertEquals("value2", configuration.getString("key2"));
+    }
+
+    @Test
+    void testExceptionWhenSecretNotFound() {
+        stubSelfLookupSuccess();
+        final String secret = "path/to/project/";
+        stubFor(get("/v1/path/data/to/project/default").willReturn(notFound()));
+        final EnvConfigVaultProperties vaultProperties = new EnvConfigVaultProperties("http://localhost:8999", "mock", "mock_token", secret);
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+                () -> new VaultConfiguration(vaultProperties).getConfiguration("default"));
+        Assertions.assertEquals("Could not find the vault secret: path/to/project/default", exception.getMessage());
     }
 
     private void stubGetSecretSuccess() {
