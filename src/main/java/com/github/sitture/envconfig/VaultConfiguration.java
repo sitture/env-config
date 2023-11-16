@@ -9,6 +9,7 @@ import org.apache.commons.configuration2.MapConfiguration;
 class VaultConfiguration {
 
     private final Vault vault;
+
     VaultConfiguration(final EnvConfigVaultProperties vaultProperties)  {
         try {
             final VaultConfig config = new VaultConfig()
