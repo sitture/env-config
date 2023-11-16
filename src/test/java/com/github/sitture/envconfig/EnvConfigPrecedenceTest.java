@@ -12,9 +12,9 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigPrecedenceTest {
 
-    public static final String PROPERTY_KEEPASS = "property.keepass";
-    public static final String SYS_ENV_VALUE = "sys.env.value";
-    public static final String SYS_PROPERTY_VALUE = "sys.property.value";
+    private static final String PROPERTY_KEEPASS = "property.keepass";
+    private static final String SYS_ENV_VALUE = "sys.env.value";
+    private static final String SYS_PROPERTY_VALUE = "sys.property.value";
     private static final String CONFIG_KEEPASS_MASTERKEY = "envconfig";
 
     @SystemStub

@@ -16,9 +16,9 @@ class VaultConfigurationTest {
     @Test
     void testCanGetConfigurationMapWithData() {
         stubSelfLookupSuccess();
-        final String secret = "path/to/project/";
+        final String secretPath = "path/to/project/";
         stubGetSecretSuccess();
-        final EnvConfigVaultProperties vaultProperties = new EnvConfigVaultProperties("http://localhost:8999", "mock", "mock_token", secret);
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties(secretPath);
         final Configuration configuration = new VaultConfiguration(vaultProperties).getConfiguration("default");
         Assertions.assertEquals("value1", configuration.getString("key1"));
         Assertions.assertEquals("value2", configuration.getString("key2"));
@@ -27,12 +27,16 @@ class VaultConfigurationTest {
     @Test
     void testExceptionWhenSecretNotFound() {
         stubSelfLookupSuccess();
-        final String secret = "path/to/project/";
+        final String secretPath = "path/to/project/";
         stubFor(get("/v1/path/data/to/project/default").willReturn(notFound()));
-        final EnvConfigVaultProperties vaultProperties = new EnvConfigVaultProperties("http://localhost:8999", "mock", "mock_token", secret);
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties(secretPath);
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
                 () -> new VaultConfiguration(vaultProperties).getConfiguration("default"));
         Assertions.assertEquals("Could not find the vault secret: path/to/project/default", exception.getMessage());
+    }
+
+    private EnvConfigVaultProperties getMockVaultProperties(final String secretPath) {
+        return new EnvConfigVaultProperties("http://localhost:8999", "mock", "mock_token", secretPath);
     }
 
     private void stubGetSecretSuccess() {
