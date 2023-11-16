@@ -15,32 +15,22 @@ class VaultConfigurationTest {
     @Test
     void testCanGetConfigurationMapWithData() {
         stubSelfLookupSuccess();
-        final String secret = "foo/bar";
+        final String secret = "path/to/project/";
         stubGetSecretSuccess();
         final EnvConfigVaultProperties vaultProperties = new EnvConfigVaultProperties("http://localhost:8999", "mock", "mock_token", secret);
-        final Configuration configuration = new VaultConfiguration(vaultProperties).getConfiguration(secret);
+        final Configuration configuration = new VaultConfiguration(vaultProperties).getConfiguration("default");
         Assertions.assertEquals("value1", configuration.getString("key1"));
         Assertions.assertEquals("value2", configuration.getString("key2"));
     }
 
     private void stubGetSecretSuccess() {
-        stubFor(get("/v1/foo/data/bar").willReturn(okJson("{\n"
+        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("{\n"
                 + "  \"data\": {\n"
                 + "    \"data\": {\n"
                 + "       \"key1\": \"value1\",\n"
                 + "       \"key2\": \"value2\"\n"
-                + "    },\n"
-                + "    \"metadata\": {\n"
-                + "      \"created_time\": \"2022-02-08T16:45:00.066783936Z\",\n"
-                + "      \"custom_metadata\": null,\n"
-                + "      \"deletion_time\": \"\",\n"
-                + "      \"destroyed\": false,\n"
-                + "      \"version\": 1\n"
                 + "    }\n"
-                + "  },\n"
-                + "  \"wrap_info\": null,\n"
-                + "  \"warnings\": null,\n"
-                + "  \"auth\": null\n"
+                + "  }\n"
                 + "}\n")));
     }
 
@@ -50,8 +40,7 @@ class VaultConfigurationTest {
                 + "    \"policies\": [\n"
                 + "      \"default\"\n"
                 + "    ]\n"
-                + "  },\n"
-                + "  \"auth\": null\n"
+                + "  }\n"
                 + "}")));
     }
 }

@@ -5,7 +5,6 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,11 +43,7 @@ class EnvConfigLoader {
             final String namespace = vaultProperties.getNamespace();
             LOG.debug("Loading config from vault {} namespace {}", address, namespace);
             final VaultConfiguration entries = new VaultConfiguration(vaultProperties);
-            environments.forEach(env -> {
-                final String secret = String.format("%s/%s", StringUtils.removeEnd(vaultProperties.getSecretPath(), "/"), env);
-                LOG.debug("Loading config from vault secret {}", secret);
-                this.configuration.addConfiguration(entries.getConfiguration(env));
-            });
+            environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
         }
     }
 
