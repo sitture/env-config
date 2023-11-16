@@ -39,24 +39,25 @@ class EnvConfigLoader {
 
     private void loadVaultConfigurations(final List<String> environments) {
         if (this.configProperties.isConfigVaultEnabled()) {
-            final String address = this.configProperties.getVaultAddress();
-            final String namespace = this.configProperties.getVaultNamespace();
+            final EnvConfigVaultProperties vaultProperties = this.configProperties.getVaultProperties();
+            final String address = vaultProperties.getAddress();
+            final String namespace = vaultProperties.getNamespace();
             LOG.debug("Loading config from vault {} namespace {}", address, namespace);
-            final VaultConfiguration entries = new VaultConfiguration(address, namespace, this.configProperties.getVaultToken());
+            final VaultConfiguration entries = new VaultConfiguration(vaultProperties);
             environments.forEach(env -> {
-                final String secret = String.format("%s/%s", StringUtils.removeEnd(this.configProperties.getVaultSecretPath(), "/"), env);
+                final String secret = String.format("%s/%s", StringUtils.removeEnd(vaultProperties.getSecretPath(), "/"), env);
                 LOG.debug("Loading config from vault secret {}", secret);
-                this.configuration.addConfiguration(entries.getConfiguration(secret));
+                this.configuration.addConfiguration(entries.getConfiguration(env));
             });
         }
     }
 
     private void loadKeepassConfigurations(final List<String> environments) {
-        if (this.configProperties.isConfigKeePassEnabled()) {
-            final String groupName = this.configProperties.getConfigKeePassFilename();
-            final String masterKey = this.configProperties.getConfigKeePassMasterKey();
+        if (this.configProperties.isConfigKeepassEnabled()) {
+            final EnvConfigKeepassProperties keepassProperties = this.configProperties.getKeepassProperties();
+            final String groupName = keepassProperties.getFilename();
             LOG.debug("Loading config from keepass {}", groupName);
-            final KeePassConfiguration entries = new KeePassConfiguration(masterKey, groupName);
+            final KeepassConfiguration entries = new KeepassConfiguration(keepassProperties);
             environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
         }
     }

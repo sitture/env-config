@@ -9,15 +9,14 @@ import org.apache.commons.configuration2.MapConfiguration;
 class VaultConfiguration {
 
     private final Vault vault;
-
-    VaultConfiguration(final String address, final String namespace, final String token)  {
+    VaultConfiguration(final EnvConfigVaultProperties vaultProperties)  {
         try {
             final VaultConfig config = new VaultConfig()
-                    .address(address)
-                    .nameSpace(namespace)
-                    .token(token)
+                    .address(vaultProperties.getAddress())
+                    .nameSpace(vaultProperties.getNamespace())
+                    .token(vaultProperties.getToken())
                     .build();
-            vault = Vault.create(config);
+            this.vault = Vault.create(config);
             // attempt to lookupSelf to validate token
             this.vault.auth().lookupSelf();
         } catch (VaultException e) {

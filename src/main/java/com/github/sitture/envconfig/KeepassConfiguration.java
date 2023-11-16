@@ -13,17 +13,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-class KeePassConfiguration {
+class KeepassConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
     private final KeePassFile keePassFile;
 
-    KeePassConfiguration(final String masterKey, final String groupName) {
+    KeepassConfiguration(final EnvConfigKeepassProperties keepassProperties) {
+        final String groupName = keepassProperties.getFilename();
         final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
                 ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
                 : groupName;
         keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)))
-                .openDatabase(masterKey);
+                .openDatabase(keepassProperties.getMasterKey());
     }
 
     private static String getProcessedPropertyKey(final String envVar) {
