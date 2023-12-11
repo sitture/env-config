@@ -58,7 +58,7 @@
 		<wiremock-standalone.version>3.3.1</wiremock-standalone.version>
 		<nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-		<maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
 		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 		<junit.version>5.8.2</junit.version>
 	</properties>
@@ -104,7 +104,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>10.12.5</version>
+						<version>10.12.6</version>
 					</dependency>
 				</dependencies>
 				<executions>
