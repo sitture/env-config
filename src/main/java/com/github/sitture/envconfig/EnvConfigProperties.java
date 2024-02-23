@@ -109,6 +109,7 @@ class EnvConfigProperties {
         return new EnvConfigVaultProperties(getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_ADDRESS_KEY),
                 getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_NAMESPACE_KEY),
                 getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_TOKEN_KEY),
-                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY));
+                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY),
+                Integer.parseInt(getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_VALIDATE_MAX_RETRIES, "5")));
     }
 }
