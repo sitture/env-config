@@ -52,8 +52,10 @@ class VaultConfigurationTest {
         final String secretPath = "path/to/project/";
         final EnvConfigVaultProperties vaultProperties = getMockVaultProperties(secretPath);
         final TestLogger testLogger = TestLoggerFactory.getTestLogger(VaultConfiguration.class);
-        testLogger.setEnabledLevels(Level.ERROR, Level.INFO);
-        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class, () -> new VaultConfiguration(vaultProperties).getConfiguration("default"));
+
+        final EnvConfigException exception = Assertions.assertThrows(
+                EnvConfigException.class, () -> new VaultConfiguration(vaultProperties).getConfiguration("default"));
+
         Assertions.assertEquals("Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (2) attempting to validate token", exception.getMessage());
         Assertions.assertEquals(412, ((VaultException) exception.getCause()).getHttpStatusCode());
         Assertions.assertEquals("Vault responded with HTTP status code: 412\nResponse body: ", exception.getCause().getMessage());
@@ -66,8 +68,6 @@ class VaultConfigurationTest {
                 event -> "An exception occurred validating the vault token, will retry in 0 seconds".equals(event.getMessage())));
         assertThat(testLogger).hasLogged(errorWithVault412Throwable.and(
                 event -> "An exception occurred validating the vault token, will retry in 2 seconds".equals(event.getMessage())));
-        assertThat(testLogger).hasLogged(errorWithVault412Throwable.and(
-                event -> "An exception occurred validating the vault token, will retry in 4 seconds".equals(event.getMessage())));
         assertThat(testLogger).hasLogged(errorWithVault412Throwable.and(
                 event -> "Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (2) attempting to validate token".equals(event.getMessage())));
     }

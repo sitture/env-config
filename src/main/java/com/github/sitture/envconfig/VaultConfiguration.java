@@ -34,7 +34,7 @@ class VaultConfiguration {
 
     private void validateToken() throws VaultException {
         final int validateTokenMaxRetries = this.vaultProperties.getValidateTokenMaxRetries();
-        for (int i = 0; i <= validateTokenMaxRetries; i++) {
+        for (int i = 0; i < validateTokenMaxRetries; i++) {
             try {
                 this.vault.auth().lookupSelf();
                 break;
@@ -46,7 +46,7 @@ class VaultConfiguration {
                 } catch (InterruptedException ex) {
                     logError("InterruptedException thrown whilst waiting to retry validating the vault token", ex);
                 }
-                if (i == validateTokenMaxRetries) {
+                if (i == validateTokenMaxRetries - 1) {
                     final String message = String.format("Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token", validateTokenMaxRetries);
                     logError(message, vaultException);
 
