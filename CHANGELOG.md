@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.7.0
+
+### Updated
+
+- Updates the Vault configuration to retry token validation which is prone to initial fail due to Vaults eventual consistency approach
+
 ## 1.6.0
 
 ### Added
