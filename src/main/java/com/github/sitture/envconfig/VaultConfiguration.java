@@ -44,15 +44,15 @@ class VaultConfiguration {
         }
     }
 
-    private static void retryUntilMaxMaxRetries(VaultException vaultException, int i, int validateTokenMaxRetries) {
-        final long retryInterval = i * 2L;
+    private static void retryUntilMaxMaxRetries(VaultException vaultException, int attempt, int validateTokenMaxRetries) {
+        final long retryInterval = attempt * 2L;
         logError(String.format("An exception occurred validating the vault token, will retry in %s seconds", retryInterval), vaultException);
         try {
             TimeUnit.SECONDS.sleep(retryInterval);
         } catch (InterruptedException ex) {
             logError("InterruptedException thrown whilst waiting to retry validating the vault token", ex);
         }
-        if (i == validateTokenMaxRetries - 1) {
+        if (attempt == validateTokenMaxRetries - 1) {
             final String message = String.format("Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token", validateTokenMaxRetries);
             logError(message, vaultException);
 
