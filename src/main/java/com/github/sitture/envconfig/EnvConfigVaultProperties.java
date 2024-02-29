@@ -6,12 +6,14 @@ class EnvConfigVaultProperties {
     private final String namespace;
     private final String token;
     private final String secretPath;
+    private final int validateTokenMaxRetries;
 
-    EnvConfigVaultProperties(final String address, final String namespace, final String token, final String secretPath) {
+    EnvConfigVaultProperties(final String address, final String namespace, final String token, final String secretPath, final int validateTokenMaxRetries) {
         this.address = address;
         this.namespace = namespace;
         this.token = token;
         this.secretPath = secretPath;
+        this.validateTokenMaxRetries = validateTokenMaxRetries;
     }
 
     String getAddress() {
@@ -30,4 +32,7 @@ class EnvConfigVaultProperties {
         return secretPath;
     }
 
+    int getValidateTokenMaxRetries() {
+        return validateTokenMaxRetries;
+    }
 }
