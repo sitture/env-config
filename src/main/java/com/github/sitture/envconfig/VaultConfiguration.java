@@ -44,7 +44,7 @@ class VaultConfiguration {
         }
     }
 
-    private static void retryUntilMaxMaxRetries(VaultException vaultException, int attempt, int validateTokenMaxRetries) {
+    private static void retryUntilMaxMaxRetries(final VaultException vaultException, final int attempt, final int validateTokenMaxRetries) {
         final long retryInterval = attempt * 2L;
         logError(String.format("An exception occurred validating the vault token, will retry in %s seconds", retryInterval), vaultException);
         try {
