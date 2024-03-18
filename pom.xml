@@ -47,7 +47,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
-		<commons-configuration2.version>2.9.0</commons-configuration2.version>
+		<commons-configuration2.version>2.10.0</commons-configuration2.version>
 		<slf4j.version>2.0.12</slf4j.version>
 		<maven-checkstyle-plugin.version>3.3.1</maven-checkstyle-plugin.version>
 		<maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
@@ -59,7 +59,7 @@
 		<nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
 		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
 		<maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
-		<maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
+		<maven-gpg-plugin.version>3.2.0</maven-gpg-plugin.version>
 		<junit.version>5.8.2</junit.version>
 	</properties>
 
@@ -104,7 +104,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>10.14.0</version>
+						<version>10.14.2</version>
 					</dependency>
 				</dependencies>
 				<executions>
