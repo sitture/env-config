@@ -12,11 +12,7 @@ import org.slf4j.event.Level;
 
 import java.util.function.Predicate;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.notFound;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.valfirst.slf4jtest.Assertions.assertThat;
 
 
@@ -28,7 +24,7 @@ class VaultConfigurationTest {
     void testCanGetConfigurationMapWithData() {
         stubSelfLookupSuccess();
         final String secretPath = "path/to/project/";
-        stubGetSecretSuccess();
+        stubReadSecretSuccess();
         final EnvConfigVaultProperties vaultProperties = getMockVaultProperties(secretPath);
         final Configuration configuration = new VaultConfiguration(vaultProperties).getConfiguration("default");
         Assertions.assertEquals("value1", configuration.getString("key1"));
@@ -44,6 +40,25 @@ class VaultConfigurationTest {
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
                 () -> new VaultConfiguration(vaultProperties).getConfiguration("default"));
         Assertions.assertEquals("Could not find the vault secret: path/to/project/default", exception.getMessage());
+    }
+
+    @Test
+    void testExceptionNotThrownWhenEnvNotDefault() {
+        stubSelfLookupSuccess();
+        final String secretPath = "path/to/project/";
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties(secretPath);
+        Assertions.assertDoesNotThrow(() -> new VaultConfiguration(vaultProperties).getConfiguration("test"));
+    }
+
+    @Test
+    void testExceptionWhenCannotReadSecret() {
+        stubSelfLookupSuccess();
+        final String secretPath = "path/to/project/";
+        stubFor(get("/v1/path/data/to/project/default").willReturn(serverError()));
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties(secretPath);
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+                () -> new VaultConfiguration(vaultProperties).getConfiguration("default"));
+        Assertions.assertEquals("Could not read data from vault.", exception.getMessage());
     }
 
     @Test
@@ -76,7 +91,7 @@ class VaultConfigurationTest {
         return new EnvConfigVaultProperties("http://localhost:8999", "mock", "mock_token", secretPath, 2);
     }
 
-    private void stubGetSecretSuccess() {
+    private void stubReadSecretSuccess() {
         stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("{\n"
                 + "  \"data\": {\n"
                 + "    \"data\": {\n"
