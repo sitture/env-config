@@ -112,7 +112,7 @@ class EnvConfigPrecedenceTest {
 
     @Test
     void testKeepassTakesPriorityOverFilesWhenNotInDefaultFilesWithEnvVarAndEnvFileValueSame() {
-        final var key = PROPERTY_KEEPASS;
+        final String key = PROPERTY_KEEPASS;
         // when property does not exist in default config files
         // and property exists in current environment config files
         setEnvironment("test");

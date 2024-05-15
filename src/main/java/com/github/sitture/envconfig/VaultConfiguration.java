@@ -67,16 +67,18 @@ class VaultConfiguration {
     }
 
     public Configuration getConfiguration(final String env) {
+        final String secret = String.format("%s/%s", StringUtils.removeEnd(this.vaultProperties.getSecretPath(), "/"), env);
+        final LogicalResponse response;
         try {
-            final String secret = String.format("%s/%s", StringUtils.removeEnd(this.vaultProperties.getSecretPath(), "/"), env);
-            final LogicalResponse response = this.vault.logical().read(secret);
-            if (response.getRestResponse().getStatus() != 200 && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
-                throw new EnvConfigException(String.format("Could not find the vault secret: %s", secret));
-            }
-            return new MapConfiguration(response.getData());
+            response = this.vault.logical().read(secret);
         } catch (VaultException e) {
             throw new EnvConfigException("Could not read data from vault.", e);
         }
+        if (null != response && response.getRestResponse().getStatus() != 200
+                && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
+            throw new EnvConfigException(String.format("Could not find the vault secret: %s", secret));
+        }
+        return new MapConfiguration(response.getData());
     }
 
 }

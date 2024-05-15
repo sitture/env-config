@@ -98,7 +98,7 @@ class EnvConfigLoader {
     }
 
     private Configuration getConfiguration(final EnvConfigFileList fileList) {
-        if (fileList.listFiles().isEmpty()) {
+        if (fileList.listFiles().isEmpty() && LOG.isDebugEnabled()) {
             LOG.debug("No property files found under {}", fileList.configPath);
         }
         final CompositeConfiguration configuration = new CompositeConfiguration();

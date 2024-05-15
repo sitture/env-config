@@ -57,7 +57,7 @@ class EnvConfigVaultTest {
     void testVaultTakesPriorityOverFiles() {
         final String key = "property.one";
         // given property exists in default config files
-        // when keepass loading is enabled
+        // when vault loading is enabled
         setVaultEnabled();
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();

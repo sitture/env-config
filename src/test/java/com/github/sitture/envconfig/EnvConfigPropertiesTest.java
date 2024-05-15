@@ -13,8 +13,6 @@ import java.util.List;
 
 class EnvConfigPropertiesTest {
 
-    private EnvConfigProperties configProperties;
-
     @AfterEach
     void tearDown() {
         System.clearProperty(EnvConfigUtils.CONFIG_PATH_KEY);
@@ -32,7 +30,7 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testCanGetConfigProfile() {
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         System.clearProperty(EnvConfigUtils.CONFIG_PROFILE_KEY);
         Assertions.assertEquals("", configProperties.getConfigProfile(), "invalid config-profile!");
         System.setProperty(EnvConfigUtils.CONFIG_PROFILE_KEY, "test-profile");
@@ -64,7 +62,7 @@ class EnvConfigPropertiesTest {
     @Test
     void testCanGetConfigAndProfilePath() {
         // when config.dir isn't specified
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/config/test"),
                 configProperties.getConfigPath("test"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/config/test/profile1"),
@@ -95,7 +93,7 @@ class EnvConfigPropertiesTest {
         directory.toFile().deleteOnExit();
         // when config.dir is set to relative path
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo"),
                 configProperties.getConfigPath("foo"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo", "prof"),
@@ -108,7 +106,7 @@ class EnvConfigPropertiesTest {
         directory.toFile().deleteOnExit();
         // when config.dir is set to absolute
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
                 configProperties.getConfigPath("foo"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
@@ -121,7 +119,7 @@ class EnvConfigPropertiesTest {
         directory.toFile().deleteOnExit();
         // when config.dir is set to absolute
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
                 configProperties.getConfigPath("foo"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
@@ -130,7 +128,7 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testCanGetConfigKeepassEnabled() {
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertFalse(configProperties.isConfigKeepassEnabled(), "Incorrect keepass.enabled");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "true");
         Assertions.assertTrue(configProperties.isConfigKeepassEnabled(), "Incorrect keepass.enabled");
@@ -138,7 +136,7 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testCanGetConfigKeepassFileName() {
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals(new File(configProperties.getBuildDir()).getName(),
                 configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
@@ -146,7 +144,7 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testCanGetConfigKeepassFileNameWhenRelative() {
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "foobar.kdbx");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals("foobar.kdbx",
@@ -155,7 +153,7 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testCanGetConfigKeepassFileNameWhenAbsolute() {
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "/dir/foobar.kdbx");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals("foobar.kdbx",
@@ -164,7 +162,7 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testThrowsExceptionWhenKeepassMasterKeyNotPresent() {
-        configProperties = new EnvConfigProperties();
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
                 configProperties::getKeepassProperties);
         Assertions.assertEquals(String.format("Missing required variable '%s'", EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY),
