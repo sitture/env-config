@@ -26,6 +26,17 @@ import static com.github.valfirst.slf4jtest.Assertions.assertThat;
 class VaultConfigurationTest {
 
     @Test
+    void testCanGetConfigurationMapWithMultiplePaths() {
+        stubSelfLookupSuccess();
+        stubReadSecretSuccessForPath("project1/", "key1", "value1");
+        stubReadSecretSuccessForPath("project2/", "key2", "value2");
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties("path/to/project1,path/to/project2");
+        final Configuration configuration = new VaultConfiguration(vaultProperties).getConfiguration("default");
+        Assertions.assertEquals("value1", configuration.getString("key1"));
+        Assertions.assertEquals("value2", configuration.getString("key2"));
+        }
+
+    @Test
     void testCanGetConfigurationMapWithData() {
         stubSelfLookupSuccess();
         final String secretPath = "path/to/project/";
@@ -119,5 +130,15 @@ class VaultConfigurationTest {
                 + "    ]\n"
                 + "  }\n"
                 + "}")));
+    }
+
+    private void stubReadSecretSuccessForPath(final String secretPath, final String key, final String value) {
+        stubFor(get("/v1/path/data/to/" + secretPath + "default").willReturn(okJson("{\n"
+                + "  \"data\": {\n"
+                + "    \"data\": {\n"
+                + "       \"" + key + "\": \"" + value + "\"\n"
+                + "    }\n"
+                + "  }\n"
+                + "}\n")));
     }
 }

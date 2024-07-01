@@ -9,7 +9,13 @@ import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 
 class VaultConfiguration {
 
@@ -66,19 +72,43 @@ class VaultConfiguration {
         }
     }
 
+
     public Configuration getConfiguration(final String env) {
-        final String secret = String.format("%s/%s", StringUtils.removeEnd(this.vaultProperties.getSecretPath(), "/"), env);
-        final LogicalResponse response;
-        try {
-            response = this.vault.logical().read(secret);
-        } catch (VaultException e) {
-            throw new EnvConfigException("Could not read data from vault.", e);
+        final List<String> paths = getSecretPaths();
+        final Map<String, Object> combinedData = new HashMap<>();
+        String secretNotFound = null;
+        final boolean defaultEnv = EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env);
+
+        for (final String path : paths) {
+            final String secret = formatSecretPath(path, env);
+            try {
+                final LogicalResponse response = this.vault.logical().read(secret);
+                if (response != null && response.getRestResponse().getStatus() == 200) {
+                    combinedData.putAll(response.getData());
+                } else if (defaultEnv) {
+                    secretNotFound = secret;
+                }
+            } catch (VaultException e) {
+                throw new EnvConfigException("Could not read data from vault.", e);
+            }
         }
-        if (null != response && response.getRestResponse().getStatus() != 200
-                && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
-            throw new EnvConfigException(String.format("Could not find the vault secret: %s", secret));
-        }
-        return new MapConfiguration(response.getData());
+
+        handleDefaultEnvCase(combinedData, defaultEnv, secretNotFound);
+
+        return new MapConfiguration(combinedData);
     }
 
+    private void handleDefaultEnvCase(final Map<String, Object> combinedData, final boolean defaultEnv, final String secretNotFound) {
+        if (combinedData.isEmpty() && defaultEnv) {
+            throw new EnvConfigException(String.format("Could not find the vault secret: %s", secretNotFound));
+        }
+    }
+
+    private List<String> getSecretPaths() {
+        return Arrays.asList(this.vaultProperties.getSecretPath().split("\\s*,\\s*"));
+    }
+
+    private String formatSecretPath(final String path, final String env) {
+        return String.format("%s/%s", StringUtils.removeEnd(path, "/"), env);
+    }
 }
