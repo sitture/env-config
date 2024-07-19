@@ -41,7 +41,7 @@ class KeepassConfiguration {
     private File getKeepassDatabaseFile(final String fileName) {
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         final URL resource = classLoader.getResource(fileName);
-        File keepassFile;
+        File keepassFile; // NOPMD
         if (null == resource) {
             throw new EnvConfigException(String.format("Database %s does not exist!", fileName));
         } else {
