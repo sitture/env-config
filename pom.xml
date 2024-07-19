@@ -51,7 +51,7 @@
 		<slf4j.version>2.0.13</slf4j.version>
 		<maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
 		<maven-dependency-plugin.version>3.7.1</maven-dependency-plugin.version>
-		<maven-pmd-plugin.version>3.23.0</maven-pmd-plugin.version>
+		<maven-pmd-plugin.version>3.24.0</maven-pmd-plugin.version>
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
 		<vault-java-driver.version>6.2.0</vault-java-driver.version>
