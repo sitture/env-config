@@ -1,5 +1,9 @@
 package com.github.sitture.envconfig;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +13,6 @@ import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
 import uk.org.webcompere.systemstubs.properties.SystemProperties;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 
 @ExtendWith(SystemStubsExtension.class)
 @WireMockTest(httpPort = 8999)
@@ -58,6 +58,7 @@ class EnvConfigVaultTest {
         final String key = "property.one";
         // given property exists in default config files
         // when vault loading is enabled
+        // and default
         setVaultEnabled();
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
@@ -65,6 +66,42 @@ class EnvConfigVaultTest {
         // then property from vault group takes priority
         Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(key));
         Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+    }
+
+    @Test
+    void testProjectVaultTakesPriorityOverVaultDefaultSecret() {
+        final String key = "property.one";
+        // given property exists in default config files
+        // when vault loading is enabled
+        setVaultEnabled();
+        // and default secret path is set
+        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, "path/to/common");
+        // setup wiremock stubs for vault
+        stubSelfLookupSuccess();
+        stubGetSecretSuccess();
+        stubGetCommonSecretSuccess();
+        // and property exists in both secret path and default path
+        // then property from secret path takes priority
+        Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(key));
+        Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+    }
+
+    @Test
+    void testVaultDefaultSecretTakesPriorityOverFiles() {
+        final String key = "property.two";
+        // given property exists in default config files
+        // when vault loading is enabled
+        setVaultEnabled();
+        // and default secret path is set
+        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, "path/to/common");
+        // setup wiremock stubs for vault
+        stubSelfLookupSuccess();
+        stubGetSecretSuccess();
+        stubGetCommonSecretSuccess();
+        // and property exists only in default path
+        // then property from default path takes priority
+        Assertions.assertEquals("VAULT_DEFAULT_VALUE", EnvConfig.get(key));
+        Assertions.assertEquals("VAULT_DEFAULT_VALUE", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
     }
 
     private void setVaultEnabled() {
@@ -81,24 +118,37 @@ class EnvConfigVaultTest {
 
     private void stubGetSecretSuccess() {
         stubFor(get("/v1/path/data/to/mock/default").willReturn(okJson("{\n"
-                + "  \"data\": {\n"
-                + "    \"data\": {\n"
-                + "       \"property.eight\": \"VAULT_VALUE\",\n"
-                + "       \"property.one\": \"VAULT_VALUE\",\n"
-                + "       \"PROPERTY_ONE\": \"VAULT_VALUE\"\n"
-                + "    }\n"
-                + "  }\n"
-                + "}\n")));
+            + "  \"data\": {\n"
+            + "    \"data\": {\n"
+            + "       \"property.eight\": \"VAULT_VALUE\",\n"
+            + "       \"property.one\": \"VAULT_VALUE\",\n"
+            + "       \"PROPERTY_ONE\": \"VAULT_VALUE\"\n"
+            + "    }\n"
+            + "  }\n"
+            + "}\n")));
+    }
+
+    private void stubGetCommonSecretSuccess() {
+        stubFor(get("/v1/path/data/to/common/default").willReturn(okJson("{\n"
+            + "  \"data\": {\n"
+            + "    \"data\": {\n"
+            + "       \"property.one\": \"VAULT_DEFAULT_VALUE\",\n"
+            + "       \"PROPERTY_ONE\": \"VAULT_DEFAULT_VALUE\",\n"
+            + "       \"property.two\": \"VAULT_DEFAULT_VALUE\",\n"
+            + "       \"PROPERTY_TWO\": \"VAULT_DEFAULT_VALUE\"\n"
+            + "    }\n"
+            + "  }\n"
+            + "}\n")));
     }
 
     private void stubSelfLookupSuccess() {
         stubFor(get("/v1/auth/token/lookup-self").willReturn(okJson("{\n"
-                + "  \"data\": {\n"
-                + "    \"policies\": [\n"
-                + "      \"default\"\n"
-                + "    ]\n"
-                + "  }\n"
-                + "}")));
+            + "  \"data\": {\n"
+            + "    \"policies\": [\n"
+            + "      \"default\"\n"
+            + "    ]\n"
+            + "  }\n"
+            + "}")));
     }
 
 }

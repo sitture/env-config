@@ -148,7 +148,7 @@ class EnvConfigProfileTest {
         setProfile("empty-profile");
         // then an exception is thrown
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> EnvConfig.getOrThrow("non.existing"));
+            () -> EnvConfig.getOrThrow("non.existing"));
         Assertions.assertTrue(exception.getMessage().startsWith("No property files found under"), exception.getMessage());
         Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/default/empty-profile'"));
     }

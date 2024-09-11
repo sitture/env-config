@@ -1,8 +1,5 @@
 package com.github.sitture.envconfig;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class EnvConfigProperties {
 
@@ -27,7 +26,7 @@ class EnvConfigProperties {
 
     String getBuildDir() {
         return Paths.get(Optional.ofNullable(System.getProperty("project.build.directory"))
-                .orElse(System.getProperty("user.dir"))).toString();
+            .orElse(System.getProperty("user.dir"))).toString();
     }
 
     List<String> getEnvironments() {
@@ -70,26 +69,26 @@ class EnvConfigProperties {
         final File configDir = configPath.toFile();
         if (!configDir.exists() || !configDir.isDirectory()) {
             throw new EnvConfigException(
-                    "'" + configPath + "' does not exist or not a valid config directory!");
+                "'" + configPath + "' does not exist or not a valid config directory!");
         }
         return configPath;
     }
 
     private String getConfigurationProperty(final String key, final String defaultValue) {
         return Optional.ofNullable(System.getProperty(key))
-                .orElse(Optional.ofNullable(getEnvByPropertyKey(key))
-                        .orElse(defaultValue));
+            .orElse(Optional.ofNullable(getEnvByPropertyKey(key))
+                .orElse(defaultValue));
     }
 
     private String getEnvByPropertyKey(final String key) {
         LOG.debug("Getting {} from system.env", key);
         return Optional.ofNullable(System.getenv(EnvConfigUtils.getProcessedEnvKey(key)))
-                .orElse(System.getenv(key));
+            .orElse(System.getenv(key));
     }
 
     private String getRequiredConfigKey(final String key) {
         return Optional.ofNullable(getConfigurationProperty(key, null))
-                .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key)));
+            .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key)));
     }
 
     boolean isConfigKeepassEnabled() {
@@ -98,7 +97,7 @@ class EnvConfigProperties {
 
     EnvConfigKeepassProperties getKeepassProperties() {
         return new EnvConfigKeepassProperties(new File(getConfigurationProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, getBuildDir())).getName(),
-                getRequiredConfigKey(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY));
+            getRequiredConfigKey(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY));
     }
 
     boolean isConfigVaultEnabled() {
@@ -107,9 +106,10 @@ class EnvConfigProperties {
 
     EnvConfigVaultProperties getVaultProperties() {
         return new EnvConfigVaultProperties(getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_ADDRESS_KEY),
-                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_NAMESPACE_KEY),
-                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_TOKEN_KEY),
-                getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY),
-                Integer.parseInt(getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_VALIDATE_MAX_RETRIES, "5")));
+            getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_NAMESPACE_KEY),
+            getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_TOKEN_KEY),
+            getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY),
+            getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, null),
+            Integer.parseInt(getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_VALIDATE_MAX_RETRIES, "5")));
     }
 }

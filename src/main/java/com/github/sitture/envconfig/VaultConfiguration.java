@@ -4,12 +4,12 @@ import io.github.jopenlibs.vault.Vault;
 import io.github.jopenlibs.vault.VaultConfig;
 import io.github.jopenlibs.vault.VaultException;
 import io.github.jopenlibs.vault.response.LogicalResponse;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.concurrent.TimeUnit;
 
 class VaultConfiguration {
 
@@ -21,10 +21,10 @@ class VaultConfiguration {
         this.vaultProperties = vaultProperties;
         try {
             final VaultConfig config = new VaultConfig()
-                    .address(vaultProperties.getAddress())
-                    .nameSpace(vaultProperties.getNamespace())
-                    .token(vaultProperties.getToken())
-                    .build();
+                .address(vaultProperties.getAddress())
+                .nameSpace(vaultProperties.getNamespace())
+                .token(vaultProperties.getToken())
+                .build();
             this.vault = Vault.create(config);
             validateToken();
         } catch (VaultException vaultException) {
@@ -66,16 +66,17 @@ class VaultConfiguration {
         }
     }
 
-    public Configuration getConfiguration(final String env) {
-        final String secret = String.format("%s/%s", StringUtils.removeEnd(this.vaultProperties.getSecretPath(), "/"), env);
+    public Configuration getConfiguration(final String env, final String path) {
+        final String secret = String.format("%s/%s", StringUtils.removeEnd(path, "/"), env);
         final LogicalResponse response;
         try {
+            LOG.debug("Loading config from secret {}", secret);
             response = this.vault.logical().read(secret);
         } catch (VaultException e) {
             throw new EnvConfigException("Could not read data from vault.", e);
         }
         if (null != response && response.getRestResponse().getStatus() != 200
-                && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
+            && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
             throw new EnvConfigException(String.format("Could not find the vault secret: %s", secret));
         }
         return new MapConfiguration(response.getData());

@@ -1,15 +1,14 @@
 package com.github.sitture.envconfig;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 class EnvConfigPropertiesTest {
 
@@ -64,27 +63,27 @@ class EnvConfigPropertiesTest {
         // when config.dir isn't specified
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/config/test"),
-                configProperties.getConfigPath("test"), "Incorrect config path");
+            configProperties.getConfigPath("test"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/config/test/profile1"),
-                configProperties.getConfigProfilePath("test", "profile1"), "Incorrect config profile path");
+            configProperties.getConfigProfilePath("test", "profile1"), "Incorrect config profile path");
     }
 
     @Test
     void testExceptionWhenConfigPathDoesNotExist() {
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, "/non/existing/dir");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> new EnvConfigProperties().getConfigPath("env"));
+            () -> new EnvConfigProperties().getConfigPath("env"));
         Assertions.assertEquals("'/non/existing/dir' does not exist or not a valid config directory!",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
     void testExceptionWhenConfigProfilePathDoesNotExist() {
         System.setProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, "/non/existing/dir");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> new EnvConfigProperties().getConfigProfilePath("env", "profile"));
+            () -> new EnvConfigProperties().getConfigProfilePath("env", "profile"));
         Assertions.assertEquals("'/non/existing/dir' does not exist or not a valid config directory!",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
@@ -95,9 +94,9 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo"),
-                configProperties.getConfigPath("foo"), "Incorrect config path");
+            configProperties.getConfigPath("foo"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo", "prof"),
-                configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
+            configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
     @Test
@@ -108,9 +107,9 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
-                configProperties.getConfigPath("foo"), "Incorrect config path");
+            configProperties.getConfigPath("foo"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
-                configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
+            configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
     @Test
@@ -121,9 +120,9 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigUtils.CONFIG_PATH_KEY, directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
-                configProperties.getConfigPath("foo"), "Incorrect config path");
+            configProperties.getConfigPath("foo"), "Incorrect config path");
         Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
-                configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
+            configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
     @Test
@@ -139,7 +138,7 @@ class EnvConfigPropertiesTest {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals(new File(configProperties.getBuildDir()).getName(),
-                configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
     }
 
     @Test
@@ -148,7 +147,7 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "foobar.kdbx");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals("foobar.kdbx",
-                configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
     }
 
     @Test
@@ -157,16 +156,16 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "/dir/foobar.kdbx");
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, "foo");
         Assertions.assertEquals("foobar.kdbx",
-                configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
     }
 
     @Test
     void testThrowsExceptionWhenKeepassMasterKeyNotPresent() {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                configProperties::getKeepassProperties);
+            configProperties::getKeepassProperties);
         Assertions.assertEquals(String.format("Missing required variable '%s'", "env.config.keepass.masterkey"),
-                exception.getMessage());
+            exception.getMessage());
     }
 
 }

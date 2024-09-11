@@ -21,6 +21,7 @@ final class EnvConfigUtils {
     public static final String CONFIG_VAULT_ENABLED_KEY = CONFIG_PREFIX + "vault.enabled";
     public static final String CONFIG_VAULT_ADDRESS_KEY = CONFIG_PREFIX + "vault.address";
     public static final String CONFIG_VAULT_NAMESPACE_KEY = CONFIG_PREFIX + "vault.namespace";
+    public static final String CONFIG_VAULT_DEFAULT_PATH_KEY = CONFIG_PREFIX + "vault.default.secret.path";
     public static final String CONFIG_VAULT_SECRET_PATH_KEY = CONFIG_PREFIX + "vault.secret.path";
     public static final String CONFIG_VAULT_TOKEN_KEY = CONFIG_PREFIX + "vault.token";
     public static final String CONFIG_VAULT_VALIDATE_MAX_RETRIES = CONFIG_PREFIX + "vault.validate.token.max.retries";
@@ -38,10 +39,10 @@ final class EnvConfigUtils {
 
     static List<String> getListOfValues(final String value, final String delimiter) {
         return null == value
-                ? Collections.emptyList()
-                : Stream.of(value.split(delimiter))
-                .map(String::trim)
-                .collect(Collectors.toList());
+            ? Collections.emptyList()
+            : Stream.of(value.split(delimiter))
+            .map(String::trim)
+            .collect(Collectors.toList());
     }
 
 }

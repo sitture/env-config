@@ -1,5 +1,7 @@
 package com.github.sitture.envconfig;
 
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,9 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
-
-import java.util.Arrays;
-import java.util.List;
 
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigTest {
@@ -63,9 +62,9 @@ class EnvConfigTest {
     void testExceptionWhenEnvMissing() {
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "default, non-existing ");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                EnvConfig::getEnvironment);
+            EnvConfig::getEnvironment);
         Assertions.assertTrue(exception.getMessage()
-                .endsWith("/env-config/config/non-existing' does not exist or not a valid config directory!"));
+            .endsWith("/env-config/config/non-existing' does not exist or not a valid config directory!"));
     }
 
     @Test
@@ -80,7 +79,7 @@ class EnvConfigTest {
         System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, "empty-env");
         // then an exception is thrown
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> EnvConfig.getOrThrow("non.existing"));
+            () -> EnvConfig.getOrThrow("non.existing"));
         Assertions.assertTrue(exception.getMessage().startsWith("No property files found under"), exception.getMessage());
         Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/empty-env'"), exception.getMessage());
     }
@@ -250,7 +249,7 @@ class EnvConfigTest {
     @Test
     void testEnvConfigExceptionThrown() {
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> EnvConfig.getOrThrow("non.existing"));
+            () -> EnvConfig.getOrThrow("non.existing"));
         Assertions.assertEquals("Missing required key 'non.existing'", exception.getMessage());
     }
 
@@ -310,7 +309,7 @@ class EnvConfigTest {
     void testExceptionWhenKeepassFileMissing() {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, "non-existing");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                this::testCanGetEntryFromKeepassDefaultGroup);
+            this::testCanGetEntryFromKeepassDefaultGroup);
         Assertions.assertEquals("Database non-existing.kdbx does not exist!", exception.getMessage());
     }
 
@@ -318,7 +317,7 @@ class EnvConfigTest {
     void testExceptionWhenKeepassMasterKeyMissing() {
         System.setProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "true");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> EnvConfig.get(PROPERTY_KEEPASS));
+            () -> EnvConfig.get(PROPERTY_KEEPASS));
         Assertions.assertEquals(String.format("Missing required variable '%s'", "env.config.keepass.masterkey"),
             exception.getMessage());
     }

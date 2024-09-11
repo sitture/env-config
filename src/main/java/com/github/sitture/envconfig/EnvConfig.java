@@ -1,11 +1,10 @@
 package com.github.sitture.envconfig;
 
-import org.apache.commons.configuration2.CompositeConfiguration;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import org.apache.commons.configuration2.CompositeConfiguration;
 
 public final class EnvConfig extends EnvConfigLoader {
 
@@ -86,7 +85,7 @@ public final class EnvConfig extends EnvConfigLoader {
      */
     public static String getOrThrow(final String property) {
         return getProperty(property)
-                .orElseThrow(() -> new EnvConfigException("Missing required key '" + property + "'"));
+            .orElseThrow(() -> new EnvConfigException("Missing required key '" + property + "'"));
     }
 
     /**
