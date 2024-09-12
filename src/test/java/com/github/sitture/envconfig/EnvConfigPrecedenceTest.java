@@ -192,12 +192,12 @@ class EnvConfigPrecedenceTest {
     }
 
     private void setKeepassEnabled() {
-        systemProperties.set(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, true);
-        systemProperties.set(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, CONFIG_KEEPASS_MASTERKEY);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_MASTERKEY);
     }
 
     private void setEnvironment(final String environment) {
-        systemProperties.set(EnvConfigUtils.CONFIG_ENV_KEY, environment);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), environment);
     }
 
 }

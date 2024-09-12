@@ -47,7 +47,7 @@ class EnvConfigVaultTest {
         // and property is set as environment variable
         environmentVariables.set(EnvConfigUtils.getProcessedEnvKey(key), SYS_ENV_VALUE);
         // and property is set in environment file
-        setEnvironment("test");
+        setEnvironment();
         // then value from system property and environment variable takes priority
         Assertions.assertEquals(SYS_PROPERTY_VALUE, EnvConfig.get(key));
         Assertions.assertEquals(SYS_ENV_VALUE, EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
@@ -58,59 +58,58 @@ class EnvConfigVaultTest {
         final String key = "property.one";
         // given property exists in default config files
         // when vault loading is enabled
-        // and default
         setVaultEnabled();
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
         stubGetSecretSuccess();
         // then property from vault group takes priority
-        Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(key));
-        Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+        Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(key));
+        Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
     }
 
     @Test
-    void testProjectVaultTakesPriorityOverVaultDefaultSecret() {
+    void testProjectVaultTakesPriorityOverVaultDefaultPath() {
         final String key = "property.one";
         // given property exists in default config files
         // when vault loading is enabled
         setVaultEnabled();
         // and default secret path is set
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, "path/to/common");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_DEFAULT_PATH.getProperty(), "path/to/common");
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
         stubGetSecretSuccess();
         stubGetCommonSecretSuccess();
         // and property exists in both secret path and default path
         // then property from secret path takes priority
-        Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(key));
-        Assertions.assertEquals("VAULT_VALUE", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+        Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(key));
+        Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
     }
 
     @Test
-    void testVaultDefaultSecretTakesPriorityOverFiles() {
+    void testVaultDefaultPathTakesPriorityOverFiles() {
         final String key = "property.two";
         // given property exists in default config files
         // when vault loading is enabled
         setVaultEnabled();
         // and default secret path is set
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, "path/to/common");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_DEFAULT_PATH.getProperty(), "path/to/common");
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
         stubGetSecretSuccess();
         stubGetCommonSecretSuccess();
         // and property exists only in default path
         // then property from default path takes priority
-        Assertions.assertEquals("VAULT_DEFAULT_VALUE", EnvConfig.get(key));
-        Assertions.assertEquals("VAULT_DEFAULT_VALUE", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+        Assertions.assertEquals("VAULT_COMMON_DEFAULT", EnvConfig.get(key));
+        Assertions.assertEquals("VAULT_COMMON_DEFAULT", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
     }
 
     @Test
-    void testVaultDefaultSecretTakesPriorityOverFiles2() {
+    void testVaultPrecedenceWhenBothPathAndDefaultPathAreSet() {
         setVaultEnabled();
         // Given default secret path is set
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, "path/to/common");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_DEFAULT_PATH.getProperty(), "path/to/common");
         // And environment is set to test
-        setEnvironment("test");
+        setEnvironment();
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
         // project/default
@@ -171,24 +170,24 @@ class EnvConfigVaultTest {
     }
 
     private void setVaultEnabled() {
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_ENABLED_KEY, true);
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_ADDRESS_KEY, "http://localhost:8999");
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_NAMESPACE_KEY, "mock");
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY, "path/to/project");
-        systemProperties.set(EnvConfigUtils.CONFIG_VAULT_TOKEN_KEY, "mock");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_ADDRESS.getProperty(), "http://localhost:8999");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_NAMESPACE.getProperty(), "mock");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_SECRET_PATH.getProperty(), "path/to/project");
+        systemProperties.set(EnvConfigKey.CONFIG_VAULT_TOKEN.getProperty(), "mock");
     }
 
-    private void setEnvironment(final String environment) {
-        systemProperties.set(EnvConfigUtils.CONFIG_ENV_KEY, environment);
+    private void setEnvironment() {
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test");
     }
 
     private void stubGetSecretSuccess() {
         stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("{\n"
             + "  \"data\": {\n"
             + "    \"data\": {\n"
-            + "       \"property.eight\": \"VAULT_VALUE\",\n"
-            + "       \"property.one\": \"VAULT_VALUE\",\n"
-            + "       \"PROPERTY_ONE\": \"VAULT_VALUE\"\n"
+            + "       \"property.eight\": \"VAULT_PROJECT_DEFAULT\",\n"
+            + "       \"property.one\": \"VAULT_PROJECT_DEFAULT\",\n"
+            + "       \"PROPERTY_ONE\": \"VAULT_PROJECT_DEFAULT\"\n"
             + "    }\n"
             + "  }\n"
             + "}\n")));
@@ -198,10 +197,10 @@ class EnvConfigVaultTest {
         stubFor(get("/v1/path/data/to/common/default").willReturn(okJson("{\n"
             + "  \"data\": {\n"
             + "    \"data\": {\n"
-            + "       \"property.one\": \"VAULT_DEFAULT_VALUE\",\n"
-            + "       \"PROPERTY_ONE\": \"VAULT_DEFAULT_VALUE\",\n"
-            + "       \"property.two\": \"VAULT_DEFAULT_VALUE\",\n"
-            + "       \"PROPERTY_TWO\": \"VAULT_DEFAULT_VALUE\"\n"
+            + "       \"property.one\": \"VAULT_COMMON_DEFAULT\",\n"
+            + "       \"PROPERTY_ONE\": \"VAULT_COMMON_DEFAULT\",\n"
+            + "       \"property.two\": \"VAULT_COMMON_DEFAULT\",\n"
+            + "       \"PROPERTY_TWO\": \"VAULT_COMMON_DEFAULT\"\n"
             + "    }\n"
             + "  }\n"
             + "}\n")));

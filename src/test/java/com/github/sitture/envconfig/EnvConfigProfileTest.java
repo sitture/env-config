@@ -22,8 +22,8 @@ class EnvConfigProfileTest {
 
     @AfterEach
     void tearDown() {
-        System.clearProperty(EnvConfigUtils.CONFIG_PROFILE_KEY);
-        System.clearProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY);
+        System.clearProperty(EnvConfigKey.CONFIG_PROFILE.getProperty());
+        System.clearProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty());
     }
 
     @Test
@@ -154,15 +154,15 @@ class EnvConfigProfileTest {
     }
 
     private void setEnvironment(final String environment) {
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, environment);
+        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), environment);
     }
 
     private void setProfile(final String profile) {
-        System.setProperty(EnvConfigUtils.CONFIG_PROFILE_KEY, profile);
+        System.setProperty(EnvConfigKey.CONFIG_PROFILE.getProperty(), profile);
     }
 
     private void setProfilePath(final String path) {
-        System.setProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, path);
+        System.setProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), path);
     }
 
 }

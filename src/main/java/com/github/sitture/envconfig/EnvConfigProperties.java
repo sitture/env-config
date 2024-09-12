@@ -38,13 +38,13 @@ class EnvConfigProperties {
     }
 
     String getConfigProfile() {
-        return getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILE_KEY, "");
+        return getConfigProperty(EnvConfigKey.CONFIG_PROFILE, "");
     }
 
     private List<String> getEnvList() {
         final List<String> environments = new ArrayList<>();
         environments.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
-        environments.addAll(EnvConfigUtils.getListOfValues(getConfigurationProperty(EnvConfigUtils.CONFIG_ENV_KEY, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
+        environments.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
         Collections.reverse(environments);
         return environments.stream().distinct().collect(Collectors.toList());
     }
@@ -54,7 +54,7 @@ class EnvConfigProperties {
     }
 
     private Path getConfigPath() {
-        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PATH_KEY, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
+        return getPath(Paths.get(getConfigProperty(EnvConfigKey.CONFIG_PATH, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
     }
 
     Path getConfigProfilePath(final String env, final String configProfile) {
@@ -62,7 +62,7 @@ class EnvConfigProperties {
     }
 
     private Path getConfigProfilePath() {
-        return getPath(Paths.get(getConfigurationProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, this.configDir.toString())).toAbsolutePath());
+        return getPath(Paths.get(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDir.toString())).toAbsolutePath());
     }
 
     private Path getPath(final Path configPath) {
@@ -74,42 +74,42 @@ class EnvConfigProperties {
         return configPath;
     }
 
-    private String getConfigurationProperty(final String key, final String defaultValue) {
-        return Optional.ofNullable(System.getProperty(key))
+    private String getConfigProperty(final EnvConfigKey key, final String defaultValue) {
+        return Optional.ofNullable(System.getProperty(key.getProperty()))
             .orElse(Optional.ofNullable(getEnvByPropertyKey(key))
                 .orElse(defaultValue));
     }
 
-    private String getEnvByPropertyKey(final String key) {
+    private String getEnvByPropertyKey(final EnvConfigKey key) {
         LOG.debug("Getting {} from system.env", key);
-        return Optional.ofNullable(System.getenv(EnvConfigUtils.getProcessedEnvKey(key)))
-            .orElse(System.getenv(key));
+        return Optional.ofNullable(System.getenv(EnvConfigUtils.getProcessedEnvKey(key.getProperty())))
+            .orElse(System.getenv(key.getProperty()));
     }
 
-    private String getRequiredConfigKey(final String key) {
-        return Optional.ofNullable(getConfigurationProperty(key, null))
-            .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key)));
+    private String getRequiredConfigProperty(final EnvConfigKey key) {
+        return Optional.ofNullable(getConfigProperty(key, null))
+            .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key.getProperty())));
     }
 
     boolean isConfigKeepassEnabled() {
-        return Boolean.parseBoolean(getConfigurationProperty(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, "false"));
+        return Boolean.parseBoolean(getConfigProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED, "false"));
     }
 
     EnvConfigKeepassProperties getKeepassProperties() {
-        return new EnvConfigKeepassProperties(new File(getConfigurationProperty(EnvConfigUtils.CONFIG_KEEPASS_FILENAME_KEY, getBuildDir())).getName(),
-            getRequiredConfigKey(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY));
+        return new EnvConfigKeepassProperties(new File(getConfigProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME, getBuildDir())).getName(),
+            getRequiredConfigProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY));
     }
 
     boolean isConfigVaultEnabled() {
-        return Boolean.parseBoolean(getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_ENABLED_KEY, "false"));
+        return Boolean.parseBoolean(getConfigProperty(EnvConfigKey.CONFIG_VAULT_ENABLED, "false"));
     }
 
     EnvConfigVaultProperties getVaultProperties() {
-        return new EnvConfigVaultProperties(getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_ADDRESS_KEY),
-            getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_NAMESPACE_KEY),
-            getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_TOKEN_KEY),
-            getRequiredConfigKey(EnvConfigUtils.CONFIG_VAULT_SECRET_PATH_KEY),
-            getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_DEFAULT_PATH_KEY, null),
-            Integer.parseInt(getConfigurationProperty(EnvConfigUtils.CONFIG_VAULT_VALIDATE_MAX_RETRIES, "5")));
+        return new EnvConfigVaultProperties(getRequiredConfigProperty(EnvConfigKey.CONFIG_VAULT_ADDRESS),
+            getRequiredConfigProperty(EnvConfigKey.CONFIG_VAULT_NAMESPACE),
+            getRequiredConfigProperty(EnvConfigKey.CONFIG_VAULT_TOKEN),
+            getRequiredConfigProperty(EnvConfigKey.CONFIG_VAULT_SECRET_PATH),
+            getConfigProperty(EnvConfigKey.CONFIG_VAULT_DEFAULT_PATH, null),
+            Integer.parseInt(getConfigProperty(EnvConfigKey.CONFIG_VAULT_VALIDATE_MAX_RETRIES, "5")));
     }
 }
