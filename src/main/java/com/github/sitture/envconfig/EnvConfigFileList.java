@@ -18,7 +18,7 @@ class EnvConfigFileList {
         final File configDir = configPath.toFile();
         if (!configDir.exists() || !configDir.isDirectory()) {
             throw new EnvConfigException(
-                    "'" + configPath + "' does not exist or not a valid config directory!");
+                "'" + configPath + "' does not exist or not a valid config directory!");
         }
         return getConfigProperties(configDir);
     }

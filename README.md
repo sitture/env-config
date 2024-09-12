@@ -44,20 +44,21 @@ compile 'com.github.sitture:env-config:${version}'
 
 ## Configuration
 
-| system property                | environment variable           | description                                                                                                                                               |
-|--------------------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `env.config.path`              | `ENV_CONFIG_PATH`              | The base directory where the configuration files are lived. **default:** `config` directory under the project.                                            |
-| `env.config.environment`       | `ENV_CONFIG_ENVIRONMENT`       | The environment to activate. **default:** `default` directory under the base configuration directory.                                                     |
-| `env.config.profiles.path`     | `ENV_CONFIG_PROFILES_PATH`     | The base directory where the profile based configuration files are lived. **default:** `${env.config.path}/${env.config.environment}/`                    |
-| `env.config.profile`           | `ENV_CONFIG_PROFILE`           | The profile to activate from the active environment directory.                                                                                            |
-| `env.config.keepass.enabled`   | `ENV_CONFIG_KEEPASS_ENABLED`   | Whether to load properties from a keepass file. **default:** `false`                                                                                      |
-| `env.config.keepass.filename`  | `ENV_CONFIG_KEEPASS_FILENAME`  | The keepass filename to load from the resources folder (src/main/resources). **default:** the root project directory name. i.e. `project.build.directory` |
-| `env.config.keepass.masterkey` | `ENV_CONFIG_KEEPASS_MASTERKEY` | The password to open the keepass file. This is required if `env.config.keepass.enabled=true`.                                                             |
-| `env.config.vault.enabled`     | `ENV_CONFIG_VAULT_ENABLED`     | Whether to load properties from a vault secret. **default:** `false`                                                                                      |
-| `env.config.vault.address`     | `ENV_CONFIG_VAULT_ADDRESS`     | The host address of the vault instance. This is required if `env.config.vault.enabled=true`.                                                              |
-| `env.config.vault.namespace`   | `ENV_CONFIG_VAULT_NAMESPACE`   | The vault namespace to look for secrets. This is required if `env.config.vault.enabled=true`.                                                             |
-| `env.config.vault.secret.path` | `ENV_CONFIG_VAULT_SECRET_PATH` | The base secret path for the project. This is required if `env.config.vault.enabled=true`.                                                                |
-| `env.config.vault.token`       | `ENV_CONFIG_VAULT_TOKEN`       | The vault token used for authentication. This is required if `env.config.vault.enabled=true`.                                                             |
+| system property                        | environment variable                   | description                                                                                                                                               |
+|----------------------------------------|----------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `env.config.path`                      | `ENV_CONFIG_PATH`                      | The base directory where the configuration files are lived. **default:** `config` directory under the project.                                            |
+| `env.config.environment`               | `ENV_CONFIG_ENVIRONMENT`               | The environment to activate. **default:** `default` directory under the base configuration directory.                                                     |
+| `env.config.profiles.path`             | `ENV_CONFIG_PROFILES_PATH`             | The base directory where the profile based configuration files are lived. **default:** `${env.config.path}/${env.config.environment}/`                    |
+| `env.config.profile`                   | `ENV_CONFIG_PROFILE`                   | The profile to activate from the active environment directory.                                                                                            |
+| `env.config.keepass.enabled`           | `ENV_CONFIG_KEEPASS_ENABLED`           | Whether to load properties from a keepass file. **default:** `false`                                                                                      |
+| `env.config.keepass.filename`          | `ENV_CONFIG_KEEPASS_FILENAME`          | The keepass filename to load from the resources folder (src/main/resources). **default:** the root project directory name. i.e. `project.build.directory` |
+| `env.config.keepass.masterkey`         | `ENV_CONFIG_KEEPASS_MASTERKEY`         | The password to open the keepass file. This is required if `env.config.keepass.enabled=true`.                                                             |
+| `env.config.vault.enabled`             | `ENV_CONFIG_VAULT_ENABLED`             | Whether to load properties from a vault secret. **default:** `false`                                                                                      |
+| `env.config.vault.address`             | `ENV_CONFIG_VAULT_ADDRESS`             | The host address of the vault instance. This is required if `env.config.vault.enabled=true`.                                                              |
+| `env.config.vault.namespace`           | `ENV_CONFIG_VAULT_NAMESPACE`           | The vault namespace to look for secrets. This is required if `env.config.vault.enabled=true`.                                                             |
+| `env.config.vault.default.secret.path` | `ENV_CONFIG_VAULT_DEFAULT_SECRET_PATH` | The base secret path for the project. This is optional when there's a shared secret across multiple projects.                                             |
+| `env.config.vault.secret.path`         | `ENV_CONFIG_VAULT_SECRET_PATH`         | The base secret path for the project. This is required if `env.config.vault.enabled=true`.                                                                |
+| `env.config.vault.token`               | `ENV_CONFIG_VAULT_TOKEN`               | The vault token used for authentication. This is required if `env.config.vault.enabled=true`.                                                             |
 
 ## Configuration precedence
 

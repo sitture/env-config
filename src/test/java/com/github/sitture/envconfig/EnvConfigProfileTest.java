@@ -22,8 +22,8 @@ class EnvConfigProfileTest {
 
     @AfterEach
     void tearDown() {
-        System.clearProperty(EnvConfigUtils.CONFIG_PROFILE_KEY);
-        System.clearProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY);
+        System.clearProperty(EnvConfigKey.CONFIG_PROFILE.getProperty());
+        System.clearProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty());
     }
 
     @Test
@@ -148,21 +148,21 @@ class EnvConfigProfileTest {
         setProfile("empty-profile");
         // then an exception is thrown
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-                () -> EnvConfig.getOrThrow("non.existing"));
+            () -> EnvConfig.getOrThrow("non.existing"));
         Assertions.assertTrue(exception.getMessage().startsWith("No property files found under"), exception.getMessage());
         Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/default/empty-profile'"));
     }
 
     private void setEnvironment(final String environment) {
-        System.setProperty(EnvConfigUtils.CONFIG_ENV_KEY, environment);
+        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), environment);
     }
 
     private void setProfile(final String profile) {
-        System.setProperty(EnvConfigUtils.CONFIG_PROFILE_KEY, profile);
+        System.setProperty(EnvConfigKey.CONFIG_PROFILE.getProperty(), profile);
     }
 
     private void setProfilePath(final String path) {
-        System.setProperty(EnvConfigUtils.CONFIG_PROFILES_PATH_KEY, path);
+        System.setProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), path);
     }
 
 }

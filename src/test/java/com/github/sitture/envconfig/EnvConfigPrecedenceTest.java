@@ -33,10 +33,10 @@ class EnvConfigPrecedenceTest {
         final String key = "property.one";
         // when property is set as system property
         systemProperties.set(key, SYS_PROPERTY_VALUE)
-                .set(EnvConfigUtils.getProcessedEnvKey(key), SYS_PROPERTY_VALUE);
+            .set(EnvConfigUtils.getProcessedEnvKey(key), SYS_PROPERTY_VALUE);
         // and property is set as environment variable
         environmentVariables.set(EnvConfigUtils.getProcessedEnvKey(key), SYS_ENV_VALUE)
-                .set(key, SYS_ENV_VALUE);
+            .set(key, SYS_ENV_VALUE);
         // and exists in default env with different value
         // then value from system property takes priority
         Assertions.assertEquals(SYS_PROPERTY_VALUE, EnvConfig.get(key));
@@ -192,12 +192,12 @@ class EnvConfigPrecedenceTest {
     }
 
     private void setKeepassEnabled() {
-        systemProperties.set(EnvConfigUtils.CONFIG_KEEPASS_ENABLED_KEY, true);
-        systemProperties.set(EnvConfigUtils.CONFIG_KEEPASS_MASTERKEY_KEY, CONFIG_KEEPASS_MASTERKEY);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_MASTERKEY);
     }
 
     private void setEnvironment(final String environment) {
-        systemProperties.set(EnvConfigUtils.CONFIG_ENV_KEY, environment);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), environment);
     }
 
 }
