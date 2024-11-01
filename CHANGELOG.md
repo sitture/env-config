@@ -7,7 +7,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 ## 1.12.0
 
 ### Updates
-- 
+
 - Excluding commons-collections dependency to resolve vulnerabilities
 
 ## 1.11.0
