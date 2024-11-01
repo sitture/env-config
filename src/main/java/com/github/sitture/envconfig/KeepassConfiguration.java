@@ -1,29 +1,36 @@
 package com.github.sitture.envconfig;
 
-import de.slackspace.openkeepass.KeePassDatabase;
-import de.slackspace.openkeepass.domain.Group;
-import de.slackspace.openkeepass.domain.KeePassFile;
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
+import org.linguafranca.pwdb.Database;
+import org.linguafranca.pwdb.kdbx.KdbxCreds;
+import org.linguafranca.pwdb.kdbx.jackson.JacksonDatabase;
+import org.linguafranca.pwdb.kdbx.jackson.JacksonEntry;
+import org.linguafranca.pwdb.kdbx.jackson.JacksonGroup;
+import org.linguafranca.pwdb.kdbx.jackson.JacksonIcon;
 
 class KeepassConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
-    private final KeePassFile keePassFile;
+    private final Database<JacksonDatabase, JacksonGroup, JacksonEntry, JacksonIcon> database;
 
     KeepassConfiguration(final EnvConfigKeepassProperties keepassProperties) {
         final String groupName = keepassProperties.getFilename();
         final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
             ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
             : groupName;
-        keePassFile = KeePassDatabase.getInstance(getKeepassDatabaseFile(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)))
-            .openDatabase(keepassProperties.getMasterKey());
+        try {
+            database = JacksonDatabase.load(new KdbxCreds(keepassProperties.getMasterKey().getBytes(StandardCharsets.UTF_8)),
+                getKeepassDatabase(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)));
+        } catch (IOException e) {
+            throw new EnvConfigException("Error opening database!", e);
+        }
     }
 
     private static String getProcessedPropertyKey(final String envVar) {
@@ -31,35 +38,27 @@ class KeepassConfiguration {
     }
 
     public Configuration getConfiguration(final String env) {
-        final String keePassGroupName = !keePassFile.getTopGroups().isEmpty()
-            ? keePassFile.getTopGroups().get(0).getName()
+        final String keePassGroupName = !database.getRootGroup().getGroups().isEmpty()
+            ? database.getRootGroup().getGroups().get(0).getName()
             : "Root";
         return new MapConfiguration(getEntriesMap(keePassGroupName, env));
     }
 
-    private File getKeepassDatabaseFile(final String fileName) {
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        final URL resource = classLoader.getResource(fileName);
-        File keepassFile; // NOPMD
+    private InputStream getKeepassDatabase(final String fileName) {
+        final InputStream resource = ClassLoader.getSystemResourceAsStream(fileName);
         if (null == resource) {
             throw new EnvConfigException(String.format("Database %s does not exist!", fileName));
-        } else {
-            try {
-                keepassFile = new File(resource.toURI());
-            } catch (final URISyntaxException e) {
-                keepassFile = new File(resource.getFile());
-            }
         }
-        return keepassFile;
+        return resource;
     }
 
     private Map<String, String> getEntriesMap(final String groupName, final String env) {
-        final Optional<Group> projectGroup = keePassFile.getTopGroups().stream()
+        final Optional<JacksonGroup> projectGroup = database.getRootGroup().getGroups().stream()
             .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (projectGroup.isEmpty()) {
             throw new IllegalArgumentException(String.format("Group %s not found in the database!", groupName));
         }
-        final Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
+        final Optional<JacksonGroup> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
         final Map<String, String> entriesMap = new HashMap<>();
         envGroup.ifPresent(group -> group.getEntries()
             .forEach(entry -> {
