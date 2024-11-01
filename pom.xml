@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>1.9.0</version>
+	<version>1.10.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -247,9 +247,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>de.slackspace</groupId>
-			<artifactId>openkeepass</artifactId>
-			<version>${openkeepass.version}</version>
+			<groupId>org.linguafranca.pwdb</groupId>
+			<artifactId>KeePassJava2-jackson</artifactId>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>io.github.jopenlibs</groupId>
