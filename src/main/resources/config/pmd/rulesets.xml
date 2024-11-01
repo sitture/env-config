@@ -9,8 +9,8 @@
     <!-- Default rulesets -->
     <rule ref="category/java/bestpractices.xml">
         <exclude name="UseVarargs"/>
-        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
-        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <exclude name="UnitTestAssertionsShouldIncludeMessage"/>
+        <exclude name="UnitTestContainsTooManyAsserts"/>
     </rule>
 
     <rule ref="category/java/codestyle.xml">
@@ -48,6 +48,7 @@
 
     <rule ref="category/java/multithreading.xml">
         <exclude name="UseConcurrentHashMap"/>
+        <exclude name="AvoidSynchronizedStatement"/>
     </rule>
 
     <rule ref="category/java/performance.xml"/>
