@@ -1,5 +1,8 @@
 package com.github.sitture.envconfig;
 
+import static com.github.sitture.envconfig.EnvConfigUtils.getConfigProperty;
+import static com.github.sitture.envconfig.EnvConfigUtils.getRequiredConfigProperty;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,12 +11,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 class EnvConfigProperties {
 
-    private static final Logger LOG = LoggerFactory.getLogger(EnvConfigProperties.class);
     private final List<String> environments;
     private final Path configDir;
     private final Path configProfilesPath;
@@ -72,23 +72,6 @@ class EnvConfigProperties {
                 "'" + configPath + "' does not exist or not a valid config directory!");
         }
         return configPath;
-    }
-
-    private String getConfigProperty(final EnvConfigKey key, final String defaultValue) {
-        return Optional.ofNullable(System.getProperty(key.getProperty()))
-            .orElse(Optional.ofNullable(getEnvByPropertyKey(key))
-                .orElse(defaultValue));
-    }
-
-    private String getEnvByPropertyKey(final EnvConfigKey key) {
-        LOG.debug("Getting {} from system.env", key);
-        return Optional.ofNullable(System.getenv(EnvConfigUtils.getProcessedEnvKey(key.getProperty())))
-            .orElse(System.getenv(key.getProperty()));
-    }
-
-    private String getRequiredConfigProperty(final EnvConfigKey key) {
-        return Optional.ofNullable(getConfigProperty(key, null))
-            .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key.getProperty())));
     }
 
     boolean isConfigKeepassEnabled() {

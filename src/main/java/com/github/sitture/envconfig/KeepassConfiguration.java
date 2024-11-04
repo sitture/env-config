@@ -33,10 +33,6 @@ class KeepassConfiguration {
         }
     }
 
-    private static String getProcessedPropertyKey(final String envVar) {
-        return envVar.replaceAll("_", ".").toLowerCase();
-    }
-
     public Configuration getConfiguration(final String env) {
         final String keePassGroupName = !database.getRootGroup().getGroups().isEmpty()
             ? database.getRootGroup().getGroups().get(0).getName()
@@ -63,7 +59,7 @@ class KeepassConfiguration {
         envGroup.ifPresent(group -> group.getEntries()
             .forEach(entry -> {
                 entriesMap.put(entry.getTitle().trim(), entry.getPassword());
-                entriesMap.put(getProcessedPropertyKey(entry.getTitle().trim()), entry.getPassword());
+                entriesMap.put(EnvConfigUtils.getProcessedPropertyKey(entry.getTitle().trim()), entry.getPassword());
             }));
         return entriesMap;
     }
