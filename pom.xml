@@ -52,7 +52,7 @@
 		<system-rules.version>1.19.0</system-rules.version>
 		<openkeepass.version>0.8.2</openkeepass.version>
 		<vault-java-driver.version>6.2.0</vault-java-driver.version>
-		<wiremock-standalone.version>3.9.2</wiremock-standalone.version>
+		<wiremock-standalone.version>3.10.0</wiremock-standalone.version>
 		<junit.version>5.8.2</junit.version>
 	</properties>
 
