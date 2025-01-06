@@ -292,6 +292,20 @@ class EnvConfigTest {
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get(PROPERTY_KEEPASS));
     }
 
+    @Test
+    void testCanGetEntryFromKeepassWithKdbx3() {
+        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "kdbx3.kdbx");
+        setKeepassEnabled();
+        Assertions.assertEquals("KDBX3_VALUE", EnvConfig.get(PROPERTY_KEEPASS));
+    }
+
+    @Test
+    void testCanGetEntryFromKeepassWithKdbx4() {
+        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "kdbx4.kdbx");
+        setKeepassEnabled();
+        Assertions.assertEquals("KDBX4_VALUE", EnvConfig.get(PROPERTY_KEEPASS));
+    }
+
     private void setKeepassEnabled() {
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
