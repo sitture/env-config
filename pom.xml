@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>1.12.1</version>
+	<version>1.13.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -25,7 +25,7 @@
 	<licenses>
 		<license>
 			<name>MIT License</name>
-			<url>http://www.opensource.org/licenses/mit-license.php</url>
+			<url>https://opensource.org/license/mit</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -49,8 +49,6 @@
 		<commons-beanutils.version>1.9.4</commons-beanutils.version>
 		<commons-configuration2.version>2.11.0</commons-configuration2.version>
 		<slf4j.version>2.0.16</slf4j.version>
-		<system-rules.version>1.19.0</system-rules.version>
-		<openkeepass.version>0.8.2</openkeepass.version>
 		<vault-java-driver.version>6.2.0</vault-java-driver.version>
 		<wiremock-standalone.version>3.10.0</wiremock-standalone.version>
 		<junit.version>5.8.2</junit.version>
