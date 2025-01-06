@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 1.13.1
+
+### Updated
+
+- Excludes org.linguafranca.pwdb:util dependency
+
+## 1.13.0
+
+### Fixes
+
+- Updates to jorabin/KeePassJava2 2.2.3 to resolve https://github.com/jorabin/KeePassJava2/issues/70
+
 ## 1.12.1
 
 ### Fixes 

@@ -253,6 +253,10 @@
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-classic</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.linguafranca.pwdb</groupId>
+					<artifactId>util</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
