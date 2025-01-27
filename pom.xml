@@ -52,6 +52,9 @@
 		<vault-java-driver.version>6.2.0</vault-java-driver.version>
 		<wiremock-standalone.version>3.10.0</wiremock-standalone.version>
 		<junit.version>5.8.2</junit.version>
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
 	<build>
@@ -143,9 +146,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<release>11</release>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -190,7 +190,7 @@
 					<dependency>
 						<groupId>com.puppycrawl.tools</groupId>
 						<artifactId>checkstyle</artifactId>
-						<version>10.21.1</version>
+						<version>10.21.2</version>
 					</dependency>
 				</dependencies>
 				<executions>
@@ -304,7 +304,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.27.2</version>
+			<version>3.27.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
