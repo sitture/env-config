@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
@@ -19,6 +20,12 @@ class EnvConfigUtilsTest {
 
     @SystemStub
     private final SystemProperties systemProperties = new SystemProperties();
+
+    @BeforeEach
+    void setUp() {
+        systemProperties.remove(EnvConfigKey.CONFIG_ENV.getProperty());
+        environmentVariables.remove(EnvConfigKey.CONFIG_ENV.getEnvProperty());
+    }
 
     @Test
     void testCanGetProcessedPropertyKey() {
