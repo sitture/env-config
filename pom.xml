@@ -48,7 +48,7 @@
 		<project.build.outputTimestamp>2023-01-01T00:00:00Z</project.build.outputTimestamp>
 		<commons-beanutils.version>1.10.1</commons-beanutils.version>
 		<commons-configuration2.version>2.11.0</commons-configuration2.version>
-		<slf4j.version>2.0.16</slf4j.version>
+		<slf4j.version>2.0.17</slf4j.version>
 		<vault-java-driver.version>6.2.0</vault-java-driver.version>
 		<wiremock-standalone.version>3.12.1</wiremock-standalone.version>
 		<junit.version>5.8.2</junit.version>
