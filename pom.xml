@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>1.13.0</version>
+	<version>1.15.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -53,6 +53,7 @@
 		<wiremock-standalone.version>3.13.0</wiremock-standalone.version>
 		<junit.version>5.8.2</junit.version>
 		<java.version>11</java.version>
+		<maven.compiler.release>${java.version}</maven.compiler.release>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
