@@ -1,7 +1,10 @@
 package com.github.sitture.envconfig;
 
+import java.io.Serial;
+
 public class EnvConfigException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

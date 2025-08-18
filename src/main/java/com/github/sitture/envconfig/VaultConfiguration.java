@@ -46,14 +46,14 @@ class VaultConfiguration {
 
     private static void retryUntilMaxMaxRetries(final VaultException vaultException, final int attempt, final int validateTokenMaxRetries) {
         final long retryInterval = attempt * 2L;
-        logError(String.format("An exception occurred validating the vault token, will retry in %s seconds", retryInterval), vaultException);
+        logError("An exception occurred validating the vault token, will retry in %s seconds".formatted(retryInterval), vaultException);
         try {
             TimeUnit.SECONDS.sleep(retryInterval);
         } catch (InterruptedException ex) {
             logError("InterruptedException thrown whilst waiting to retry validating the vault token", ex);
         }
         if (attempt == validateTokenMaxRetries - 1) {
-            final String message = String.format("Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token", validateTokenMaxRetries);
+            final String message = "Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token".formatted(validateTokenMaxRetries);
             logError(message, vaultException);
 
             throw new EnvConfigException(message, vaultException);
@@ -67,7 +67,7 @@ class VaultConfiguration {
     }
 
     public Configuration getConfiguration(final String env, final String path) {
-        final String secret = String.format("%s/%s", StringUtils.removeEnd(path, "/"), env);
+        final String secret = "%s/%s".formatted(StringUtils.removeEnd(path, "/"), env);
         final LogicalResponse response;
         try {
             LOG.debug("Loading config from secret {}", secret);
@@ -77,7 +77,7 @@ class VaultConfiguration {
         }
         if (null != response && response.getRestResponse().getStatus() != 200
             && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
-            throw new EnvConfigException(String.format("Could not find the vault secret: %s", secret));
+            throw new EnvConfigException("Could not find the vault secret: %s".formatted(secret));
         }
         return new MapConfiguration(response.getData());
     }

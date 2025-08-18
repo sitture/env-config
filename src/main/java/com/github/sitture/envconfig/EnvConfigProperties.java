@@ -5,7 +5,6 @@ import static com.github.sitture.envconfig.EnvConfigUtils.getRequiredConfigPrope
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +24,7 @@ class EnvConfigProperties {
     }
 
     String getBuildDir() {
-        return Paths.get(Optional.ofNullable(System.getProperty("project.build.directory"))
+        return Path.of(Optional.ofNullable(System.getProperty("project.build.directory"))
             .orElse(System.getProperty("user.dir"))).toString();
     }
 
@@ -50,19 +49,19 @@ class EnvConfigProperties {
     }
 
     Path getConfigPath(final String env) {
-        return Paths.get(this.configDir.toString(), env);
+        return Path.of(this.configDir.toString(), env);
     }
 
     private Path getConfigPath() {
-        return getPath(Paths.get(getConfigProperty(EnvConfigKey.CONFIG_PATH, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
+        return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PATH, EnvConfigUtils.CONFIG_PATH_DEFAULT)).toAbsolutePath());
     }
 
     Path getConfigProfilePath(final String env, final String configProfile) {
-        return Paths.get(this.configProfilesPath.toString(), env, configProfile);
+        return Path.of(this.configProfilesPath.toString(), env, configProfile);
     }
 
     private Path getConfigProfilePath() {
-        return getPath(Paths.get(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDir.toString())).toAbsolutePath());
+        return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDir.toString())).toAbsolutePath());
     }
 
     private Path getPath(final Path configPath) {

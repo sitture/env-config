@@ -95,14 +95,16 @@ class VaultConfigurationTest {
     }
 
     private void stubReadSecretSuccess() {
-        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"key1\": \"value1\",\n"
-            + "       \"key2\": \"value2\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "key1": "value1",
+                   "key2": "value2"
+                }
+              }
+            }
+            """)));
     }
 
     private void stubSelfLookupFailure() {
@@ -110,12 +112,14 @@ class VaultConfigurationTest {
     }
 
     private void stubSelfLookupSuccess() {
-        stubFor(get("/v1/auth/token/lookup-self").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"policies\": [\n"
-            + "      \"default\"\n"
-            + "    ]\n"
-            + "  }\n"
-            + "}")));
+        stubFor(get("/v1/auth/token/lookup-self").willReturn(okJson("""
+            {
+              "data": {
+                "policies": [
+                  "default"
+                ]
+              }
+            }\
+            """)));
     }
 }

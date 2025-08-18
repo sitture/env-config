@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -62,9 +61,9 @@ class EnvConfigPropertiesTest {
     void testCanGetConfigAndProfilePath() {
         // when config.dir isn't specified
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/config/test"),
+        Assertions.assertEquals(Path.of(configProperties.getBuildDir() + "/config/test"),
             configProperties.getConfigPath("test"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get(configProperties.getBuildDir() + "/config/test/profile1"),
+        Assertions.assertEquals(Path.of(configProperties.getBuildDir() + "/config/test/profile1"),
             configProperties.getConfigProfilePath("test", "profile1"), "Incorrect config profile path");
     }
 
@@ -88,14 +87,14 @@ class EnvConfigPropertiesTest {
 
     @Test
     void testCanGetConfigPathWhenRelative() throws IOException {
-        final Path directory = Files.createTempDirectory(Paths.get("config"), "sample-dir");
+        final Path directory = Files.createTempDirectory(Path.of("config"), "sample-dir");
         directory.toFile().deleteOnExit();
         // when config.dir is set to relative path
         System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo"),
+        Assertions.assertEquals(Path.of(directory.toAbsolutePath().toString(), "foo"),
             configProperties.getConfigPath("foo"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get(directory.toAbsolutePath().toString(), "foo", "prof"),
+        Assertions.assertEquals(Path.of(directory.toAbsolutePath().toString(), "foo", "prof"),
             configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
@@ -106,9 +105,9 @@ class EnvConfigPropertiesTest {
         // when config.dir is set to absolute
         System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
+        Assertions.assertEquals(Path.of(directory.toString(), "foo"),
             configProperties.getConfigPath("foo"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
+        Assertions.assertEquals(Path.of(directory.toString(), "foo", "prof"),
             configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
@@ -119,9 +118,9 @@ class EnvConfigPropertiesTest {
         // when config.dir is set to absolute
         System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        Assertions.assertEquals(Paths.get(directory.toString(), "foo"),
+        Assertions.assertEquals(Path.of(directory.toString(), "foo"),
             configProperties.getConfigPath("foo"), "Incorrect config path");
-        Assertions.assertEquals(Paths.get(directory.toString(), "foo", "prof"),
+        Assertions.assertEquals(Path.of(directory.toString(), "foo", "prof"),
             configProperties.getConfigProfilePath("foo", "prof"), "Incorrect config path");
     }
 
@@ -164,7 +163,7 @@ class EnvConfigPropertiesTest {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             configProperties::getKeepassProperties);
-        Assertions.assertEquals(String.format("Missing required variable '%s'", "env.config.keepass.masterkey"),
+        Assertions.assertEquals("Missing required variable '%s'".formatted("env.config.keepass.masterkey"),
             exception.getMessage());
     }
 
