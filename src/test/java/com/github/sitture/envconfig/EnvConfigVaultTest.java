@@ -113,45 +113,53 @@ class EnvConfigVaultTest {
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
         // project/default
-        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"property.one\": \"VAULT_PROJECT_DEFAULT\",\n"
-            + "       \"property.two\": \"VAULT_PROJECT_DEFAULT\",\n"
-            + "       \"property.three\": \"VAULT_PROJECT_DEFAULT\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "property.one": "VAULT_PROJECT_DEFAULT",
+                   "property.two": "VAULT_PROJECT_DEFAULT",
+                   "property.three": "VAULT_PROJECT_DEFAULT"
+                }
+              }
+            }
+            """)));
         // project/test
-        stubFor(get("/v1/path/data/to/project/test").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"property.one\": \"VAULT_PROJECT_TEST\",\n"
-            + "       \"property.four\": \"VAULT_PROJECT_TEST\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/project/test").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "property.one": "VAULT_PROJECT_TEST",
+                   "property.four": "VAULT_PROJECT_TEST"
+                }
+              }
+            }
+            """)));
         // common/default
-        stubFor(get("/v1/path/data/to/common/default").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"property.one\": \"VAULT_COMMON_DEFAULT\",\n"
-            + "       \"property.two\": \"VAULT_COMMON_DEFAULT\",\n"
-            + "       \"property.three\": \"VAULT_COMMON_DEFAULT\",\n"
-            + "       \"property.five\": \"VAULT_COMMON_DEFAULT\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/common/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "property.one": "VAULT_COMMON_DEFAULT",
+                   "property.two": "VAULT_COMMON_DEFAULT",
+                   "property.three": "VAULT_COMMON_DEFAULT",
+                   "property.five": "VAULT_COMMON_DEFAULT"
+                }
+              }
+            }
+            """)));
         // common/test
-        stubFor(get("/v1/path/data/to/common/test").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"property.one\": \"VAULT_COMMON_TEST\",\n"
-            + "       \"property.three\": \"VAULT_COMMON_TEST\",\n"
-            + "       \"property.four\": \"VAULT_COMMON_TEST\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/common/test").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "property.one": "VAULT_COMMON_TEST",
+                   "property.three": "VAULT_COMMON_TEST",
+                   "property.four": "VAULT_COMMON_TEST"
+                }
+              }
+            }
+            """)));
         // when property in project/default, project/test, common/default, common/test
         // then value from project/test should take priority
         Assertions.assertEquals("VAULT_PROJECT_TEST", EnvConfig.get("property.one"));
@@ -182,38 +190,44 @@ class EnvConfigVaultTest {
     }
 
     private void stubGetSecretSuccess() {
-        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"property.eight\": \"VAULT_PROJECT_DEFAULT\",\n"
-            + "       \"property.one\": \"VAULT_PROJECT_DEFAULT\",\n"
-            + "       \"PROPERTY_ONE\": \"VAULT_PROJECT_DEFAULT\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "property.eight": "VAULT_PROJECT_DEFAULT",
+                   "property.one": "VAULT_PROJECT_DEFAULT",
+                   "PROPERTY_ONE": "VAULT_PROJECT_DEFAULT"
+                }
+              }
+            }
+            """)));
     }
 
     private void stubGetCommonSecretSuccess() {
-        stubFor(get("/v1/path/data/to/common/default").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"data\": {\n"
-            + "       \"property.one\": \"VAULT_COMMON_DEFAULT\",\n"
-            + "       \"PROPERTY_ONE\": \"VAULT_COMMON_DEFAULT\",\n"
-            + "       \"property.two\": \"VAULT_COMMON_DEFAULT\",\n"
-            + "       \"PROPERTY_TWO\": \"VAULT_COMMON_DEFAULT\"\n"
-            + "    }\n"
-            + "  }\n"
-            + "}\n")));
+        stubFor(get("/v1/path/data/to/common/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "property.one": "VAULT_COMMON_DEFAULT",
+                   "PROPERTY_ONE": "VAULT_COMMON_DEFAULT",
+                   "property.two": "VAULT_COMMON_DEFAULT",
+                   "PROPERTY_TWO": "VAULT_COMMON_DEFAULT"
+                }
+              }
+            }
+            """)));
     }
 
     private void stubSelfLookupSuccess() {
-        stubFor(get("/v1/auth/token/lookup-self").willReturn(okJson("{\n"
-            + "  \"data\": {\n"
-            + "    \"policies\": [\n"
-            + "      \"default\"\n"
-            + "    ]\n"
-            + "  }\n"
-            + "}")));
+        stubFor(get("/v1/auth/token/lookup-self").willReturn(okJson("""
+            {
+              "data": {
+                "policies": [
+                  "default"
+                ]
+              }
+            }
+            """)));
     }
 
 }

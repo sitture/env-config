@@ -38,7 +38,7 @@ final class EnvConfigUtils {
 
     static String getRequiredConfigProperty(final EnvConfigKey key) {
         return Optional.ofNullable(getConfigProperty(key, null))
-            .orElseThrow(() -> new EnvConfigException(String.format("Missing required variable '%s'", key.getProperty())));
+            .orElseThrow(() -> new EnvConfigException("Missing required variable '%s'".formatted(key.getProperty())));
     }
 
 }

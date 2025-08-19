@@ -64,7 +64,7 @@ class EnvConfigUtilsTest {
     void testExceptionWhenRequiredConfigMissing() {
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             () -> EnvConfigUtils.getRequiredConfigProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED));
-        assertEquals(String.format("Missing required variable '%s'", EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty()), exception.getMessage());
+        assertEquals("Missing required variable '%s'".formatted(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty()), exception.getMessage());
     }
 
 }

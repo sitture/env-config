@@ -332,7 +332,7 @@ class EnvConfigTest {
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             () -> EnvConfig.get(PROPERTY_KEEPASS));
-        Assertions.assertEquals(String.format("Missing required variable '%s'", "env.config.keepass.masterkey"),
+        Assertions.assertEquals("Missing required variable '%s'".formatted("env.config.keepass.masterkey"),
             exception.getMessage());
     }
 

@@ -43,7 +43,7 @@ class KeepassConfiguration {
     private InputStream getKeepassDatabase(final String fileName) {
         final InputStream resource = ClassLoader.getSystemResourceAsStream(fileName);
         if (null == resource) {
-            throw new EnvConfigException(String.format("Database %s does not exist!", fileName));
+            throw new EnvConfigException("Database %s does not exist!".formatted(fileName));
         }
         return resource;
     }
@@ -52,7 +52,7 @@ class KeepassConfiguration {
         final Optional<JacksonGroup> projectGroup = database.getRootGroup().getGroups().stream()
             .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (projectGroup.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Group %s not found in the database!", groupName));
+            throw new IllegalArgumentException("Group %s not found in the database!".formatted(groupName));
         }
         final Optional<JacksonGroup> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
         final Map<String, String> entriesMap = new HashMap<>();
