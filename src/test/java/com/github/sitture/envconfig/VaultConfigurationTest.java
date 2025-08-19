@@ -119,7 +119,7 @@ class VaultConfigurationTest {
                   "default"
                 ]
               }
-            }\
+            }
             """)));
     }
 }

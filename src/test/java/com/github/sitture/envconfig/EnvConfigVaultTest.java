@@ -226,7 +226,7 @@ class EnvConfigVaultTest {
                   "default"
                 ]
               }
-            }\
+            }
             """)));
     }
 
