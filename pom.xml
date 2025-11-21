@@ -49,7 +49,7 @@
 		<commons-beanutils.version>1.11.0</commons-beanutils.version>
 		<commons-configuration2.version>2.12.0</commons-configuration2.version>
 		<slf4j.version>2.0.17</slf4j.version>
-		<vault-java-driver.version>6.2.0</vault-java-driver.version>
+		<vault-java-driver.version>6.2.1</vault-java-driver.version>
 		<wiremock-standalone.version>3.13.2</wiremock-standalone.version>
 		<junit.version>5.8.2</junit.version>
 		<java.version>17</java.version>
