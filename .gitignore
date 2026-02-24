@@ -39,7 +39,3 @@ build.log
 # switch to regexp syntax.
 #  syntax: regexp
 #  ^\.pc/
-
-# output not in target directory
-build.log
-

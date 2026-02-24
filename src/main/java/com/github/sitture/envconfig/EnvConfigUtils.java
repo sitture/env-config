@@ -3,7 +3,6 @@ package com.github.sitture.envconfig;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 final class EnvConfigUtils {
@@ -28,7 +27,7 @@ final class EnvConfigUtils {
             ? Collections.emptyList()
             : Stream.of(value.split(delimiter))
             .map(String::trim)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     static String getConfigProperty(final EnvConfigKey key, final String defaultValue) {
