@@ -16,8 +16,8 @@ class EnvironmentVariables {
         environmentConfiguration = new MapConfiguration(getEnvMap());
     }
 
-    private static Map<String, String> getEnvMap() {
-        final Map<String, String> envMap = new HashMap<>();
+    private static Map<String, Object> getEnvMap() {
+        final Map<String, Object> envMap = new HashMap<>(System.getenv().size());
         System.getenv().forEach((key, value) -> {
             envMap.put(key, value);
             envMap.put(EnvConfigUtils.getProcessedPropertyKey(key), value);

@@ -2,6 +2,7 @@ package com.github.sitture.envconfig;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -15,11 +16,11 @@ final class EnvConfigUtils {
     }
 
     static String getProcessedPropertyKey(final String envVar) {
-        return envVar.replaceAll("_", ".").toLowerCase();
+        return envVar.replace("_", ".").toLowerCase(Locale.ROOT);
     }
 
     static String getProcessedEnvKey(final String property) {
-        return property.replaceAll("\\.", "_").toUpperCase();
+        return property.replace(".", "_").toUpperCase(Locale.ROOT);
     }
 
     static List<String> getListOfValues(final String value, final String delimiter) {

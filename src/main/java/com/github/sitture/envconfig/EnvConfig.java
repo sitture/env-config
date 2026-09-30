@@ -169,7 +169,7 @@ public final class EnvConfig extends EnvConfigLoader {
 
     @Override
     public String toString() {
-        return asMap().toString().replaceAll(", ", "\n");
+        return asMap().toString().replace(", ", "\n");
     }
 
 }
