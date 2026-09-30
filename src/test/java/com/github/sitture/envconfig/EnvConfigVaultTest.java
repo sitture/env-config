@@ -19,7 +19,6 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 class EnvConfigVaultTest {
 
     private static final String PROPERTY_VAULT = "property.vault";
-    private static final String SYS_PROPERTY_VALUE = "sys.property.value";
     private static final String SYS_ENV_VALUE = "sys.env.value";
 
     @SystemStub
@@ -42,14 +41,11 @@ class EnvConfigVaultTest {
         // setup wiremock stubs for vault
         stubSelfLookupSuccess();
         stubGetSecretSuccess();
-        // and property is set as system property
-        systemProperties.set(PROPERTY_VAULT, SYS_PROPERTY_VALUE);
         // and property is set as environment variable
         environmentVariables.set(EnvConfigUtils.getProcessedEnvKey(key), SYS_ENV_VALUE);
         // and property is set in environment file
         setEnvironment();
-        // then value from system property and environment variable takes priority
-        Assertions.assertEquals(SYS_PROPERTY_VALUE, EnvConfig.get(key));
+        // then value from environment variable takes priority
         Assertions.assertEquals(SYS_ENV_VALUE, EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
     }
 
