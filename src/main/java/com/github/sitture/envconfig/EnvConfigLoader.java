@@ -100,13 +100,13 @@ class EnvConfigLoader {
     }
 
     private Configuration getConfiguration(final EnvConfigFileList fileList) {
-        if (fileList.listFiles().isEmpty() && LOG.isDebugEnabled()) {
+        final List<File> files = fileList.listFiles();
+        if (files.isEmpty() && LOG.isDebugEnabled()) {
             LOG.debug("No property files found under {}", fileList.configPath);
         }
-        final CompositeConfiguration configuration = new CompositeConfiguration();
-        fileList.listFiles().forEach(file ->
-            configuration.addConfiguration(getFileConfigurationMap(file)));
-        return configuration;
+        final CompositeConfiguration fileConfiguration = new CompositeConfiguration();
+        files.forEach(file -> fileConfiguration.addConfiguration(getFileConfigurationMap(file)));
+        return fileConfiguration;
     }
 
     private Configuration getFileConfigurationMap(final File file) {
