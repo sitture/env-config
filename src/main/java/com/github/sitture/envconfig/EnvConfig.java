@@ -169,7 +169,10 @@ public final class EnvConfig extends EnvConfigLoader {
 
     public static Map<String, Object> asMap() {
         final Map<String, Object> propertiesMap = new TreeMap<>();
-        getConfiguration().getKeys().forEachRemaining(key -> propertiesMap.put(key, get(key)));
+        getConfiguration().getKeys().forEachRemaining(key -> {
+            final String normalizedKey = EnvConfigUtils.getProcessedPropertyKey(key);
+            propertiesMap.put(normalizedKey, get(normalizedKey));
+        });
         return propertiesMap;
     }
 
