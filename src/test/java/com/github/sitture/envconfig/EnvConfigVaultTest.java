@@ -19,7 +19,9 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 class EnvConfigVaultTest {
 
     private static final String PROPERTY_VAULT = "property.vault";
+    private static final String PROPERTY_PRECEDENCE = "property.precedence";
     private static final String SYS_ENV_VALUE = "sys.env.value";
+    private static final String SYS_PROPERTY_VALUE = "sys.property.value";
 
     @SystemStub
     private final SystemProperties systemProperties = new SystemProperties();
@@ -50,6 +52,32 @@ class EnvConfigVaultTest {
     }
 
     @Test
+    void testSystemPropertiesTakesPriorityOverVault() {
+        // when vault loading is enabled
+        setVaultEnabled();
+        // setup wiremock stubs for vault
+        stubSelfLookupSuccess();
+        stubGetSecretSuccess();
+        // and property is set as system property
+        systemProperties.set(PROPERTY_PRECEDENCE, SYS_PROPERTY_VALUE);
+        // then value from system property takes priority
+        Assertions.assertEquals(SYS_PROPERTY_VALUE, EnvConfig.get(PROPERTY_PRECEDENCE));
+    }
+
+    @Test
+    void testEnvironmentVariablesTakesPriorityOverVault() {
+        // when vault loading is enabled
+        setVaultEnabled();
+        // setup wiremock stubs for vault
+        stubSelfLookupSuccess();
+        stubGetSecretSuccess();
+        // and property is set as environment variable
+        environmentVariables.set(EnvConfigUtils.getProcessedEnvKey(PROPERTY_PRECEDENCE), SYS_ENV_VALUE);
+        // then value from environment variable takes priority
+        Assertions.assertEquals(SYS_ENV_VALUE, EnvConfig.get(PROPERTY_PRECEDENCE));
+    }
+
+    @Test
     void testVaultTakesPriorityOverFiles() {
         final String key = "property.one";
         // given property exists in default config files
@@ -61,6 +89,20 @@ class EnvConfigVaultTest {
         // then property from vault group takes priority
         Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(key));
         Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
+    }
+
+    @Test
+    void testVaultTakesPriorityOverKeepass() {
+        // when vault loading is enabled
+        setVaultEnabled();
+        // and keepass loading is enabled
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "envconfig");
+        // setup wiremock stubs for vault
+        stubSelfLookupSuccess();
+        stubGetSecretSuccess();
+        // then value from vault takes priority over keepass
+        Assertions.assertEquals("VAULT_PROJECT_DEFAULT", EnvConfig.get(PROPERTY_PRECEDENCE));
     }
 
     @Test
@@ -192,7 +234,8 @@ class EnvConfigVaultTest {
                 "data": {
                    "property.eight": "VAULT_PROJECT_DEFAULT",
                    "property.one": "VAULT_PROJECT_DEFAULT",
-                   "PROPERTY_ONE": "VAULT_PROJECT_DEFAULT"
+                   "PROPERTY_ONE": "VAULT_PROJECT_DEFAULT",
+                   "property.precedence": "VAULT_PROJECT_DEFAULT"
                 }
               }
             }
