@@ -4,12 +4,42 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 2.5.0
+
+### Updated
+
+- Refreshed runtime and build dependencies.
+- Bump `org.slf4j:slf4j-api` from `2.0.18` to `2.0.20`.
+- Bump `io.github.jopenlibs:vault-java-driver` from `6.2.2` to `6.2.3`.
+- Bump `org.junit:junit-bom` from `6.1.0` to `6.1.3`.
+- Bump `org.apache.maven.plugins:maven-compiler-plugin` from `3.15.0` to `3.16.0`.
+- Bump `org.apache.maven.plugins:maven-jar-plugin` from `3.5.0` to `3.5.1`.
+- Bump `org.apache.maven.plugins:maven-surefire-plugin` from `3.5.6` to `3.6.0`.
+- Bump `org.codehaus.mojo:versions-maven-plugin` from `2.21.0` to `2.22.0`.
+- Adds `com.fasterxml.jackson:jackson-bom` override to address [GHSA-72hv-8253-57qq](https://github.com/advisories/GHSA-72hv-8253-57qq).
+- Updates `org.bouncycastle:bcpkix-jdk18on` from `1.84` to `1.86` to address [CVE-2025-8916](https://www.cve.org/CVERecord?id=CVE-2025-8916).
+- Updates GitHub Actions workflow dependencies:
+  - `actions/checkout` from `v6` to `v7`
+  - `actions/setup-java` from `v5` to `v6`
+
+## 2.4.0
+
+### Updated
+
+- Refreshed project dependencies.
+- Bump `org.apache.commons:commons-configuration2` from `2.13.0` to `2.15.0`.
+- Bump `org.slf4j:slf4j-api` from `2.0.17` to `2.0.18`.
+- Bump `io.github.jopenlibs:vault-java-driver` from `6.2.1` to `6.2.2`.
+- Bump `org.junit:junit-bom` from `6.0.3` to `6.1.0`.
+- Bump `org.bouncycastle:bcpkix-jdk18on` from `1.83` to `1.84`.
+- Bump `org.apache.maven.plugins:maven-dependency-plugin` from `3.10.0` to `3.11.0`.
+- Bump `org.apache.maven.plugins:maven-surefire-plugin` from `3.5.5` to `3.5.6`.
+
 ## 2.3.0
 
 ### Updated
 
 - overriding bcpkix-jdk18on to address [CVE-2025-8916](https://www.cve.org/CVERecord?id=CVE-2025-8916).
-
 
 ## 1.13.1
 
