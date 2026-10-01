@@ -1,6 +1,5 @@
 package com.github.sitture.envconfig;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.configuration2.CompositeConfiguration;
@@ -16,15 +15,14 @@ class EnvConfigLoader {
     protected final EnvConfigProperties configProperties = new EnvConfigProperties();
 
     EnvConfigLoader() {
-        final List<String> environments = this.configProperties.getEnvironments();
-        final String configProfile = this.configProperties.getConfigProfile();
-
-        final Map<String, Configuration> envConfiguration = getEnvironmentConfiguration(environments);
+        final Map<String, Configuration> envConfiguration = new EnvConfigFileConfiguration(this.configProperties).getConfiguration();
         loadEnvConfigurations(envConfiguration);
+        final List<String> environments = this.configProperties.getEnvironments();
         loadVaultConfigurations(environments);
         loadKeepassConfigurations(environments);
+        final String configProfile = this.configProperties.getConfigProfile();
         if (!configProfile.isEmpty()) {
-            final Map<String, Configuration> profileConfiguration = getEnvironmentProfileConfiguration(environments);
+            final Map<String, Configuration> profileConfiguration = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
             LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
             environments.forEach(env -> this.configuration.addConfiguration(profileConfiguration.get(env)));
         }
@@ -80,19 +78,5 @@ class EnvConfigLoader {
         }
         LOG.debug("Loading config from system.env");
         this.configuration.addConfiguration(envOverrides);
-    }
-
-    private Map<String, Configuration> getEnvironmentProfileConfiguration(final List<String> environments) {
-        final Map<String, Configuration> configurationMap = new HashMap<>();
-        environments.forEach(env -> configurationMap.put(
-            env, new EnvConfigProfileFileConfiguration(this.configProperties.getConfigProfilePath(env)).getConfiguration(this.configProperties.getConfigProfilePath(env))));
-        return configurationMap;
-    }
-
-    private Map<String, Configuration> getEnvironmentConfiguration(final List<String> environments) {
-        final Map<String, Configuration> configurationMap = new HashMap<>();
-        environments.forEach(env -> configurationMap.put(
-            env, new EnvConfigFileConfiguration(this.configProperties.getConfigPath(env)).getConfiguration(this.configProperties.getConfigPath(env))));
-        return configurationMap;
     }
 }

@@ -15,23 +15,16 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EnvConfigFileConfiguration {
+class EnvConfigFileConfiguration implements EnvConfigConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(EnvConfigFileConfiguration.class);
-    protected final Path configDirPath;
-    private final EnvConfigProperties configProperties;
-
-    EnvConfigFileConfiguration(final Path configDirPath) {
-        this.configDirPath = configDirPath;
-        this.configProperties = new EnvConfigProperties();
-    }
+    protected final EnvConfigProperties configProperties;
 
     EnvConfigFileConfiguration(final EnvConfigProperties configProperties) {
-        this.configDirPath = null;
-        this.configProperties = new EnvConfigProperties();
+        this.configProperties = configProperties;
     }
 
-    protected List<File> getConfigFiles(final Path configDirPath) {
+    List<File> getConfigFiles(final Path configDirPath) {
         final File configDirPathFile = configDirPath.toFile();
         if (!configDirPathFile.exists() || !configDirPathFile.isDirectory()) {
             throw new EnvConfigException(
@@ -40,7 +33,7 @@ class EnvConfigFileConfiguration {
         return getConfigProperties(configDirPathFile);
     }
 
-    protected List<File> getConfigProperties(final File configDir) {
+    List<File> getConfigProperties(final File configDir) {
         final List<File> files = Arrays.asList(Objects.requireNonNull(configDir.listFiles(new EnvConfigFileFilter())));
         if (files.isEmpty()) {
             throw new EnvConfigException("No property files found under '" + configDir.getPath() + "'");
@@ -48,7 +41,7 @@ class EnvConfigFileConfiguration {
         return files;
     }
 
-    public Configuration getConfiguration(final Path configDirPath) {
+    Configuration getConfiguration(final Path configDirPath) {
         final List<File> files = getConfigFiles(configDirPath);
         if (files.isEmpty() && LOG.isDebugEnabled()) {
             LOG.debug("No property files found under {}", configDirPath);
@@ -58,11 +51,7 @@ class EnvConfigFileConfiguration {
         return fileConfiguration;
     }
 
-    public Configuration getConfiguration() {
-        return getConfiguration(this.configDirPath);
-    }
-
-    public Map<String, Configuration> getEnvironmentConfiguration() {
+    public Map<String, Configuration> getConfiguration() {
         final Map<String, Configuration> configurationMap = new HashMap<>();
         this.configProperties.getEnvironments().forEach(env -> configurationMap.put(
             env, getConfiguration(this.configProperties.getConfigPath(env))));
