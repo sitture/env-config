@@ -22,7 +22,7 @@ import org.slf4j.event.Level;
 
 @SuppressWarnings("PMD.TooManyStaticImports")
 @WireMockTest(httpPort = 8999)
-class VaultConfigurationTest {
+class EnvConfigVaultConfigurationTest {
 
     @Test
     void testCanGetConfigurationMapWithData() {
@@ -65,7 +65,7 @@ class VaultConfigurationTest {
     void testRetriesWhenSelfLookupFails() {
         stubSelfLookupFailure();
         final EnvConfigVaultProperties vaultProperties = getMockVaultProperties();
-        final TestLogger testLogger = TestLoggerFactory.getTestLogger(VaultConfiguration.class);
+        final TestLogger testLogger = TestLoggerFactory.getTestLogger(EnvConfigVaultConfiguration.class);
 
         final EnvConfigException exception = Assertions.assertThrows(
             EnvConfigException.class, () -> getVaultConfiguration(vaultProperties, "default"));
@@ -87,7 +87,7 @@ class VaultConfigurationTest {
     }
 
     private Configuration getVaultConfiguration(final EnvConfigVaultProperties vaultProperties, final String env) {
-        return new VaultConfiguration(vaultProperties).getConfiguration(env, vaultProperties.getSecretPath());
+        return new EnvConfigVaultConfiguration(vaultProperties).getConfiguration(env, vaultProperties.getSecretPath());
     }
 
     private EnvConfigVaultProperties getMockVaultProperties() {

@@ -6,12 +6,12 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.configuration2.SystemConfiguration;
 
-class EnvironmentVariables {
+class EnvConfigSystemConfiguration {
 
     private final Configuration systemConfiguration;
     private final Configuration environmentConfiguration;
 
-    EnvironmentVariables() {
+    EnvConfigSystemConfiguration() {
         systemConfiguration = new SystemConfiguration();
         environmentConfiguration = new MapConfiguration(getEnvMap());
     }

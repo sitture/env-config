@@ -5,15 +5,15 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
-class EnvConfigProfileFileList extends EnvConfigFileList {
+class EnvConfigProfileFileConfiguration extends EnvConfigFileConfiguration {
 
-    EnvConfigProfileFileList(final Path configPath) {
-        super(configPath);
+    EnvConfigProfileFileConfiguration(final Path configDirPath) {
+        super(configDirPath);
     }
 
     @Override
     public List<File> listFiles() {
-        final File configDir = configPath.toFile();
+        final File configDir = configDirPath.toFile();
         return configDir.exists() ? getConfigProperties(configDir) : Collections.emptyList();
     }
 }

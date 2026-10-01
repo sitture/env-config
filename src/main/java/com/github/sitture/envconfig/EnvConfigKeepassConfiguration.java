@@ -15,18 +15,18 @@ import org.linguafranca.pwdb.kdbx.jackson.JacksonEntry;
 import org.linguafranca.pwdb.kdbx.jackson.JacksonGroup;
 import org.linguafranca.pwdb.kdbx.jackson.JacksonIcon;
 
-class KeepassConfiguration {
+class EnvConfigKeepassConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
     private final Database<JacksonDatabase, JacksonGroup, JacksonEntry, JacksonIcon> database;
 
-    KeepassConfiguration(final EnvConfigKeepassProperties keepassProperties) {
-        final String groupName = keepassProperties.getFilename();
+    EnvConfigKeepassConfiguration(final EnvConfigKeepassProperties keepassProperties) {
+        final String groupName = keepassProperties.filename();
         final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
             ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
             : groupName;
         try {
-            database = JacksonDatabase.load(new KdbxCreds(keepassProperties.getMasterKey().getBytes(StandardCharsets.UTF_8)),
+            database = JacksonDatabase.load(new KdbxCreds(keepassProperties.masterKey().getBytes(StandardCharsets.UTF_8)),
                 getKeepassDatabase(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)));
         } catch (IOException e) {
             throw new EnvConfigException("Error opening database!", e);

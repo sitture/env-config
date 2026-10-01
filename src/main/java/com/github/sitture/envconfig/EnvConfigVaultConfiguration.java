@@ -11,13 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class VaultConfiguration {
+class EnvConfigVaultConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VaultConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EnvConfigVaultConfiguration.class);
     private final Vault vault;
     private final EnvConfigVaultProperties vaultProperties;
 
-    VaultConfiguration(final EnvConfigVaultProperties vaultProperties) {
+    EnvConfigVaultConfiguration(final EnvConfigVaultProperties vaultProperties) {
         this.vaultProperties = vaultProperties;
         try {
             final VaultConfig config = new VaultConfig()

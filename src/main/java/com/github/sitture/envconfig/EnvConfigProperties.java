@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 class EnvConfigProperties {
 
@@ -41,11 +40,11 @@ class EnvConfigProperties {
     }
 
     private List<String> getEnvList() {
-        final List<String> environments = new ArrayList<>();
-        environments.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
-        environments.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
-        Collections.reverse(environments);
-        return environments.stream().distinct().collect(Collectors.toList());
+        final List<String> environmentsList = new ArrayList<>();
+        environmentsList.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        environmentsList.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
+        Collections.reverse(environmentsList);
+        return environmentsList.stream().distinct().toList();
     }
 
     Path getConfigPath(final String env) {
@@ -65,8 +64,8 @@ class EnvConfigProperties {
     }
 
     private Path getPath(final Path configPath) {
-        final File configDir = configPath.toFile();
-        if (!configDir.exists() || !configDir.isDirectory()) {
+        final File configDirFile = configPath.toFile();
+        if (!configDirFile.exists() || !configDirFile.isDirectory()) {
             throw new EnvConfigException(
                 "'" + configPath + "' does not exist or not a valid config directory!");
         }

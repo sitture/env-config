@@ -137,7 +137,7 @@ class EnvConfigPropertiesTest {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
         Assertions.assertEquals(new File(configProperties.getBuildDir()).getName(),
-            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().filename(), "Incorrect keepass.filename path");
     }
 
     @Test
@@ -146,7 +146,7 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "foobar.kdbx");
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
         Assertions.assertEquals("foobar.kdbx",
-            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().filename(), "Incorrect keepass.filename path");
     }
 
     @Test
@@ -155,7 +155,7 @@ class EnvConfigPropertiesTest {
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "/dir/foobar.kdbx");
         System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
         Assertions.assertEquals("foobar.kdbx",
-            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().filename(), "Incorrect keepass.filename path");
     }
 
     @Test
