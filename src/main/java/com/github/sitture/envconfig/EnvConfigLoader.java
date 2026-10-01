@@ -21,13 +21,15 @@ class EnvConfigLoader {
         loadVaultConfiguration(environments);
         loadKeepassConfiguration(environments);
         final String configProfile = this.configProperties.getConfigProfile();
-        if (!configProfile.isEmpty()) {
-            final Map<String, Configuration> profileConfigurationMap = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
-            LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
-            environments.forEach(env -> this.configuration.addConfiguration(profileConfigurationMap.get(env)));
-        }
-        LOG.debug("Loading config from environment directories {}", environments);
-        environments.forEach(env -> this.configuration.addConfiguration(fileConfigurationMap.get(env)));
+        final Map<String, Configuration> profileConfigurationMap = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
+        environments.forEach(env -> {
+            if (!configProfile.isEmpty()) {
+                LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
+                this.configuration.addConfiguration(profileConfigurationMap.get(env));
+            }
+            LOG.debug("Loading config from environment directories {}", environments);
+            this.configuration.addConfiguration(fileConfigurationMap.get(env));
+        });
     }
 
     private void loadVaultConfiguration(final List<String> environments) {
@@ -47,8 +49,7 @@ class EnvConfigLoader {
     private void loadKeepassConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigKeepassEnabled()) {
             final EnvConfigKeepassProperties keepassProperties = this.configProperties.getKeepassProperties();
-            final String groupName = keepassProperties.filename();
-            LOG.debug("Loading config from keepass {}", groupName);
+            LOG.debug("Loading config from keepass {}", keepassProperties.filename());
             final EnvConfigKeepassConfiguration entries = new EnvConfigKeepassConfiguration(keepassProperties);
             environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
         }
