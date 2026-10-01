@@ -12,7 +12,7 @@ class EnvConfigProfileFileConfiguration extends EnvConfigFileConfiguration {
     }
 
     @Override
-    public List<File> listFiles() {
+    protected List<File> getConfigFiles(final Path configDirPath) {
         final File configDir = configDirPath.toFile();
         return configDir.exists() ? getConfigProperties(configDir) : Collections.emptyList();
     }

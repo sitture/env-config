@@ -26,7 +26,12 @@ class EnvConfigFileConfiguration {
         this.configProperties = new EnvConfigProperties();
     }
 
-    public List<File> listFiles() {
+    EnvConfigFileConfiguration(final EnvConfigProperties configProperties) {
+        this.configDirPath = null;
+        this.configProperties = new EnvConfigProperties();
+    }
+
+    protected List<File> getConfigFiles(final Path configDirPath) {
         final File configDirPathFile = configDirPath.toFile();
         if (!configDirPathFile.exists() || !configDirPathFile.isDirectory()) {
             throw new EnvConfigException(
@@ -43,8 +48,8 @@ class EnvConfigFileConfiguration {
         return files;
     }
 
-    public Configuration getConfiguration() {
-        final List<File> files = listFiles();
+    public Configuration getConfiguration(final Path configDirPath) {
+        final List<File> files = getConfigFiles(configDirPath);
         if (files.isEmpty() && LOG.isDebugEnabled()) {
             LOG.debug("No property files found under {}", configDirPath);
         }
@@ -53,10 +58,14 @@ class EnvConfigFileConfiguration {
         return fileConfiguration;
     }
 
-    private Map<String, Configuration> getEnvironmentConfiguration(final List<String> environments) {
+    public Configuration getConfiguration() {
+        return getConfiguration(this.configDirPath);
+    }
+
+    public Map<String, Configuration> getEnvironmentConfiguration() {
         final Map<String, Configuration> configurationMap = new HashMap<>();
-        environments.forEach(env -> configurationMap.put(
-            env, new EnvConfigFileConfiguration(this.configProperties.getConfigPath(env)).getConfiguration()));
+        this.configProperties.getEnvironments().forEach(env -> configurationMap.put(
+            env, getConfiguration(this.configProperties.getConfigPath(env))));
         return configurationMap;
     }
 

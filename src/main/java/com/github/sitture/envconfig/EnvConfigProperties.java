@@ -59,6 +59,10 @@ class EnvConfigProperties {
         return Path.of(this.configProfilesPath.toString(), env, configProfile);
     }
 
+    Path getConfigProfilePath(final String env) {
+        return getConfigProfilePath(env, getConfigProfile());
+    }
+
     private Path getConfigProfilePath() {
         return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDir.toString())).toAbsolutePath());
     }

@@ -24,7 +24,7 @@ class EnvConfigLoader {
         loadVaultConfigurations(environments);
         loadKeepassConfigurations(environments);
         if (!configProfile.isEmpty()) {
-            final Map<String, Configuration> profileConfiguration = getEnvironmentProfileConfiguration(environments, configProfile);
+            final Map<String, Configuration> profileConfiguration = getEnvironmentProfileConfiguration(environments);
             LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
             environments.forEach(env -> this.configuration.addConfiguration(profileConfiguration.get(env)));
         }
@@ -82,17 +82,17 @@ class EnvConfigLoader {
         this.configuration.addConfiguration(envOverrides);
     }
 
-    private Map<String, Configuration> getEnvironmentProfileConfiguration(final List<String> environments, final String configProfile) {
+    private Map<String, Configuration> getEnvironmentProfileConfiguration(final List<String> environments) {
         final Map<String, Configuration> configurationMap = new HashMap<>();
         environments.forEach(env -> configurationMap.put(
-            env, new EnvConfigProfileFileConfiguration(this.configProperties.getConfigProfilePath(env, configProfile)).getConfiguration()));
+            env, new EnvConfigProfileFileConfiguration(this.configProperties.getConfigProfilePath(env)).getConfiguration(this.configProperties.getConfigProfilePath(env))));
         return configurationMap;
     }
 
     private Map<String, Configuration> getEnvironmentConfiguration(final List<String> environments) {
         final Map<String, Configuration> configurationMap = new HashMap<>();
         environments.forEach(env -> configurationMap.put(
-            env, new EnvConfigFileConfiguration(this.configProperties.getConfigPath(env)).getConfiguration()));
+            env, new EnvConfigFileConfiguration(this.configProperties.getConfigPath(env)).getConfiguration(this.configProperties.getConfigPath(env))));
         return configurationMap;
     }
 }
