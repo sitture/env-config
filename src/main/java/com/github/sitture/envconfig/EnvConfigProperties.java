@@ -13,11 +13,11 @@ import java.util.Optional;
 class EnvConfigProperties {
 
     private final List<String> environments;
-    private final Path configDir;
+    private final Path configDirPath;
     private final Path configProfilesPath;
 
     EnvConfigProperties() {
-        configDir = getConfigPath();
+        configDirPath = getConfigPath();
         configProfilesPath = getConfigProfilePath();
         environments = getEnvList();
     }
@@ -48,7 +48,7 @@ class EnvConfigProperties {
     }
 
     Path getConfigPath(final String env) {
-        return Path.of(this.configDir.toString(), env);
+        return Path.of(this.configDirPath.toString(), env);
     }
 
     private Path getConfigPath() {
@@ -64,7 +64,7 @@ class EnvConfigProperties {
     }
 
     private Path getConfigProfilePath() {
-        return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDir.toString())).toAbsolutePath());
+        return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDirPath.toString())).toAbsolutePath());
     }
 
     private Path getPath(final Path configPath) {
