@@ -79,5 +79,3 @@ class EnvConfigFileProfileConfigurationTest {
         Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/default/empty-profile'"), exception.getMessage());
     }
 }
-
-

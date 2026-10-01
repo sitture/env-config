@@ -128,9 +128,9 @@ class EnvConfigFileConfigurationTest {
     private record ThrowingGetConfigProperties(File configDir) {
 
         private void invoke() {
-                new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigProperties(this.configDir);
-            }
+            new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigProperties(this.configDir);
         }
+    }
 }
 
 
