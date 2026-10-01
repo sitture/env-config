@@ -80,6 +80,4 @@ class EnvConfigFileConfiguration implements EnvConfigConfiguration {
         }
         return configurationProperties;
     }
-
-
 }
