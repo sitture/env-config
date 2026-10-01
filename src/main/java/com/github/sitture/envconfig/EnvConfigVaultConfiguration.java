@@ -7,7 +7,7 @@ import io.github.jopenlibs.vault.response.LogicalResponse;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +67,7 @@ class EnvConfigVaultConfiguration {
     }
 
     public Configuration getConfiguration(final String env, final String path) {
-        final String secret = "%s/%s".formatted(StringUtils.removeEnd(path, "/"), env);
+        final String secret = "%s/%s".formatted(Strings.CS.removeEnd(path, "/"), env);
         final LogicalResponse response;
         try {
             LOG.debug("Loading config from secret {}", secret);
