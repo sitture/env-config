@@ -1,5 +1,6 @@
 package com.github.sitture.envconfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,7 +53,7 @@ class EnvConfigFileConfigurationTest {
         Files.createDirectories(this.tempDir.resolve("nested"));
         Files.writeString(this.tempDir.resolve("nested").resolve("nested.properties"), "property.one=nested");
 
-        final List<java.io.File> files = new EnvConfigFileConfiguration(new EnvConfigProperties())
+        final List<File> files = new EnvConfigFileConfiguration(new EnvConfigProperties())
             .getConfigProperties(this.tempDir.toFile());
 
         Assertions.assertEquals(1, files.size());
@@ -62,7 +63,7 @@ class EnvConfigFileConfigurationTest {
     @Test
     void testGetConfigPropertiesThrowsExceptionWhenNoPropertiesFilesArePresent() {
         final Path emptyConfigPath = getTestConfigPath("empty-env");
-        final java.io.File emptyConfigDir = emptyConfigPath.toFile();
+        final File emptyConfigDir = emptyConfigPath.toFile();
         final ThrowingGetConfigProperties throwingGetConfigProperties = new ThrowingGetConfigProperties(emptyConfigDir);
 
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
@@ -124,18 +125,12 @@ class EnvConfigFileConfigurationTest {
         return configPath;
     }
 
-    private static final class ThrowingGetConfigProperties {
-
-        private final java.io.File configDir;
-
-        private ThrowingGetConfigProperties(final java.io.File configDir) {
-            this.configDir = configDir;
-        }
+    private record ThrowingGetConfigProperties(File configDir) {
 
         private void invoke() {
-            new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigProperties(this.configDir);
+                new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigProperties(this.configDir);
+            }
         }
-    }
 }
 
 

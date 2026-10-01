@@ -1,5 +1,6 @@
 package com.github.sitture.envconfig;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +28,7 @@ class EnvConfigFileProfileConfigurationTest {
     void testProfileConfigurationReturnsEmptyFileListWhenEnvironmentProfileDirectoryDoesNotExist() {
         final Path missingProfilePath = this.tempDir.resolve("missing-profile");
 
-        final List<java.io.File> files = new EnvConfigFileProfileConfiguration(new EnvConfigProperties()).getConfigFiles(missingProfilePath);
+        final List<File> files = new EnvConfigFileProfileConfiguration(new EnvConfigProperties()).getConfigFiles(missingProfilePath);
 
         Assertions.assertTrue(files.isEmpty());
     }
