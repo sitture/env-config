@@ -1,6 +1,5 @@
 package com.github.sitture.envconfig;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,22 +7,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigProfileTest {
 
     @SystemStub
-    EnvironmentVariables environmentVariables;
+    private final EnvironmentVariables environmentVariables = new EnvironmentVariables();
+
+    @SystemStub
+    private final SystemProperties systemProperties = new SystemProperties();
 
     @BeforeEach
     void setUp() {
         EnvConfig.reset();
-    }
-
-    @AfterEach
-    void tearDown() {
-        System.clearProperty(EnvConfigKey.CONFIG_PROFILE.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty());
     }
 
     @Test
@@ -42,7 +39,7 @@ class EnvConfigProfileTest {
         // given env is default and prof1.one exists in env properties
         setEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
         // when profiles path is different to config.path
-        setProfilePath("config/sample-profiles");
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "config/sample-profiles");
         // when an existing profile is set
         // and prof1.one also exists with a different value
         setProfile("prof1");
@@ -77,7 +74,7 @@ class EnvConfigProfileTest {
         // given env is test and prof1.one exists in test/test.properties
         setEnvironment("test");
         // when profiles path is different to config.path
-        setProfilePath("config/sample-profiles");
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "config/sample-profiles");
         // when an existing profile is set in default env only
         // and prof1.one also exists with a different value
         setProfile("prof1");
@@ -154,15 +151,11 @@ class EnvConfigProfileTest {
     }
 
     private void setEnvironment(final String environment) {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), environment);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), environment);
     }
 
     private void setProfile(final String profile) {
-        System.setProperty(EnvConfigKey.CONFIG_PROFILE.getProperty(), profile);
-    }
-
-    private void setProfilePath(final String path) {
-        System.setProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), path);
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILE.getProperty(), profile);
     }
 
 }

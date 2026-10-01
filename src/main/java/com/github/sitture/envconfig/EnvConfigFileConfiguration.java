@@ -51,6 +51,7 @@ class EnvConfigFileConfiguration implements EnvConfigConfiguration {
         return fileConfiguration;
     }
 
+    @Override
     public Map<String, Configuration> getConfiguration() {
         final Map<String, Configuration> configurationMap = new HashMap<>();
         this.configProperties.getEnvironments().forEach(env -> configurationMap.put(

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigTest {
@@ -23,12 +24,11 @@ class EnvConfigTest {
     @SystemStub
     private final EnvironmentVariables environmentVariables = new EnvironmentVariables();
 
+    @SystemStub
+    private final SystemProperties systemProperties = new SystemProperties();
+
     @BeforeEach
     void setUp() {
-        System.clearProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty());
-        System.clearProperty(PROPERTY_KEEPASS);
         EnvConfig.reset();
     }
 
@@ -39,28 +39,28 @@ class EnvConfigTest {
 
     @Test
     void testCanGetDefaultEnvironment() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), EnvConfigUtils.CONFIG_ENV_DEFAULT);
         Assertions.assertEquals(EnvConfigUtils.CONFIG_ENV_DEFAULT, EnvConfig.getEnvironment());
         // when env not set
-        System.clearProperty(EnvConfigKey.CONFIG_ENV.getProperty());
+        systemProperties.remove(EnvConfigKey.CONFIG_ENV.getProperty());
         Assertions.assertEquals(EnvConfigUtils.CONFIG_ENV_DEFAULT, EnvConfig.getEnvironment());
     }
 
     @Test
     void testCanGetEnvironment() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertEquals(TEST_ENVIRONMENT, EnvConfig.getEnvironment());
     }
 
     @Test
     void testCanGetEnvironmentWhenMultiple() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "default , test");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "default , test");
         Assertions.assertEquals(TEST_ENVIRONMENT, EnvConfig.getEnvironment());
     }
 
     @Test
     void testExceptionWhenEnvMissing() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "default, non-existing ");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "default, non-existing ");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             EnvConfig::getEnvironment);
         Assertions.assertTrue(exception.getMessage()
@@ -69,14 +69,14 @@ class EnvConfigTest {
 
     @Test
     void testCanGetEnvironmentWithASpace() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT + " ");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT + " ");
         Assertions.assertEquals(TEST_ENVIRONMENT, EnvConfig.getEnvironment());
     }
 
     @Test
     void testThrowsExceptionWhenNoPropertiesInEnv() {
         // given env is default and empty-profile exists in env properties
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "empty-env");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "empty-env");
         // then an exception is thrown
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             () -> EnvConfig.getOrThrow("non.existing"));
@@ -86,13 +86,13 @@ class EnvConfigTest {
 
     @Test
     void testCanGetProperty() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertEquals("test", EnvConfig.get("property.one"));
     }
 
     @Test
     void testCanGetPropertyUsingBothFormats() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         // when PROPERTY_SEVEN exists in test environment
         // then should be able to get key using both properties and env var formats
 
@@ -102,20 +102,20 @@ class EnvConfigTest {
 
     @Test
     void testCanGetPropertyFromGetOrThrow() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertEquals("test", EnvConfig.getOrThrow("property.one"));
     }
 
     @Test
     void testDoesNotGetsPropertyFromSubDirs() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), EnvConfigUtils.CONFIG_ENV_DEFAULT);
         Assertions.assertNull(EnvConfig.get("property.sub.dir"));
     }
 
     @Test
     void testCanGetPropertyWhenMultipleEnv() {
         final String testEnv = "test-env";
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
         Assertions.assertEquals(testEnv, EnvConfig.getEnvironment());
         // When a property.one exists in all environments, including default
         Assertions.assertEquals(testEnv, EnvConfig.get("property.one"));
@@ -131,7 +131,7 @@ class EnvConfigTest {
     void testCanGetEntryWhenEnvVarAndDefaultValueDifferent() {
         environmentVariables.set("property.five", "env.default");
         final String testEnv = "test-env";
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
         // when property.five is set as env variable
         // and does not exist in test-env
         // and exists in test env
@@ -144,7 +144,7 @@ class EnvConfigTest {
     void testCanGetEntryWhenEnvVarSet() {
         environmentVariables.set("property.six", "env.property.six");
         final String testEnv = "test-env";
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
         // when property.six is set as env variable
         // and exists in test-env env
         // and exists in test env
@@ -158,7 +158,7 @@ class EnvConfigTest {
         final String key = "property.precedence";
         final String value = "SYS_PROPERTY_VALUE";
         environmentVariables.set(key, "SYS_ENV_VALUE");
-        System.setProperty(key, value);
+        systemProperties.set(key, value);
         // when property.precedence is set as env variable
         // and property.precedence is set system property
         // then value from system property takes priority
@@ -168,7 +168,7 @@ class EnvConfigTest {
     @Test
     void testCanGetEntryWhenEnvVarSetInMultiEnvs() {
         final String testEnv = "test-env";
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test," + testEnv);
         // when property.seven is not set in test-env
         // and exists in test env in environment variable format. i.e. PROPERTY_SEVEN=test
         // and exists in default env with different value i.e. PROPERTY_SEVEN=default
@@ -178,7 +178,7 @@ class EnvConfigTest {
 
     @Test
     void testCanGetPropertyFromEnvVars() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         environmentVariables.set("MY_ENV_PROPERTY", "my_env_value");
         Assertions.assertEquals("my_env_value", EnvConfig.get("my.env.property"));
         Assertions.assertEquals("my_env_value", EnvConfig.get("MY_ENV_PROPERTY"));
@@ -188,27 +188,27 @@ class EnvConfigTest {
 
     @Test
     void testCanGetParsedInt() {
-        System.setProperty(TEST_PROPERTY, "123");
+        systemProperties.set(TEST_PROPERTY, "123");
         Assertions.assertEquals(123, EnvConfig.getInt(TEST_PROPERTY));
     }
 
     @Test
     void testCanGetParsedBoolean() {
-        System.setProperty(TEST_PROPERTY, "true");
+        systemProperties.set(TEST_PROPERTY, "true");
         Assertions.assertTrue(EnvConfig.getBool(TEST_PROPERTY));
-        System.setProperty(TEST_PROPERTY, "false");
+        systemProperties.set(TEST_PROPERTY, "false");
         Assertions.assertFalse(EnvConfig.getBool(TEST_PROPERTY));
-        System.setProperty(TEST_PROPERTY, "falssse");
+        systemProperties.set(TEST_PROPERTY, "falssse");
         Assertions.assertFalse(EnvConfig.getBool(TEST_PROPERTY));
     }
 
     @Test
     void testCanGetParsedList() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertTrue(EnvConfig.getList(TEST_PROPERTY).isEmpty());
-        System.setProperty(TEST_PROPERTY, "env");
+        systemProperties.set(TEST_PROPERTY, "env");
         Assertions.assertEquals(1, EnvConfig.getList(TEST_PROPERTY).size());
-        System.setProperty(TEST_PROPERTY, "env, config");
+        systemProperties.set(TEST_PROPERTY, "env, config");
         final List<String> actualList = EnvConfig.getList(TEST_PROPERTY);
         Assertions.assertEquals(2, actualList.size());
         final List<String> expectedList = Arrays.asList("env", "config");
@@ -220,9 +220,9 @@ class EnvConfigTest {
         final String delimiter = ";";
         final String property = "test.property";
         Assertions.assertTrue(EnvConfig.getList(property, delimiter).isEmpty());
-        System.setProperty(property, "env;");
+        systemProperties.set(property, "env;");
         Assertions.assertEquals(1, EnvConfig.getList(property, delimiter).size());
-        System.setProperty(property, "env;config ");
+        systemProperties.set(property, "env;config ");
         final List<String> actualList = EnvConfig.getList(property, delimiter);
         Assertions.assertEquals(2, actualList.size());
         final List<String> expectedList = Arrays.asList("env", "config");
@@ -231,7 +231,7 @@ class EnvConfigTest {
 
     @Test
     void testCanGetDefaultForNonExistingProperty() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertEquals("test", EnvConfig.get("non.existing", "test"));
     }
 
@@ -242,7 +242,7 @@ class EnvConfigTest {
 
     @Test
     void testNullForNonExistingProperty() {
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertNull(EnvConfig.get("non.existing"));
     }
 
@@ -268,7 +268,7 @@ class EnvConfigTest {
 
     @Test
     void testCanSetProperty() {
-        System.setProperty(TEST_PROPERTY, TEST_VALUE);
+        systemProperties.set(TEST_PROPERTY, TEST_VALUE);
         Assertions.assertEquals(TEST_VALUE, EnvConfig.get(TEST_PROPERTY));
         // re-assign to an existing property
         EnvConfig.set(TEST_PROPERTY, "updatedValue");
@@ -280,48 +280,48 @@ class EnvConfigTest {
 
     @Test
     void testCanClearProperty() {
-        System.setProperty(TEST_PROPERTY, TEST_VALUE);
+        systemProperties.set(TEST_PROPERTY, TEST_VALUE);
         EnvConfig.clear(TEST_PROPERTY);
         Assertions.assertNull(System.getProperty(TEST_PROPERTY));
     }
 
     @Test
     void testCanGetEntryFromKeepassWhenFileNameSpecified() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "env-config.kdbx");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "env-config.kdbx");
         setKeepassEnabled();
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get(PROPERTY_KEEPASS));
     }
 
     @Test
     void testCanGetEntryFromKeepassWithKdbx3() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "kdbx3.kdbx");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "kdbx3.kdbx");
         setKeepassEnabled();
         Assertions.assertEquals("KDBX3_VALUE", EnvConfig.get(PROPERTY_KEEPASS));
     }
 
     @Test
     void testCanGetEntryFromKeepassWithKdbx4() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "kdbx4.kdbx");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "kdbx4.kdbx");
         setKeepassEnabled();
         Assertions.assertEquals("KDBX4_VALUE", EnvConfig.get(PROPERTY_KEEPASS));
     }
 
     private void setKeepassEnabled() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), EnvConfigUtils.CONFIG_ENV_DEFAULT);
     }
 
     @Test
     void testCanGetFromKeepassWhenFileNameWithSpace() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "env config.kdbx");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "env config.kdbx");
         setKeepassEnabled();
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get(PROPERTY_KEEPASS));
     }
 
     @Test
     void testExceptionWhenKeepassFileMissing() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "non-existing");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "non-existing");
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             this::testCanGetEntryFromKeepassDefaultGroup);
         Assertions.assertEquals("Database non-existing.kdbx does not exist!", exception.getMessage());
@@ -329,7 +329,7 @@ class EnvConfigTest {
 
     @Test
     void testExceptionWhenKeepassMasterKeyMissing() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
             () -> EnvConfig.get(PROPERTY_KEEPASS));
         Assertions.assertEquals("Missing required variable '%s'".formatted("env.config.keepass.masterkey"),
@@ -350,7 +350,7 @@ class EnvConfigTest {
         environmentVariables.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getEnvProperty(), "true");
         environmentVariables.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getEnvProperty(), CONFIG_KEEPASS_PASSWORD);
         final String testEnv = "test-no-keepass";
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "keepass," + testEnv);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "keepass," + testEnv);
         Assertions.assertEquals(testEnv, EnvConfig.getEnvironment());
         // When property.keepass exists in Keepass 'keepass' group
         // And property.keepass exists in 'keepass' environment files
@@ -360,9 +360,9 @@ class EnvConfigTest {
 
     @Test
     void testCanGetEntryFromKeepassDB() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         // when property.keepass exists in test env
         // and only exists in default group of keepass
         // then keepass takes priority
@@ -372,9 +372,9 @@ class EnvConfigTest {
 
     @Test
     void testCanGetEntryFromKeepassDisabled() {
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "false");
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), false);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), CONFIG_KEEPASS_PASSWORD);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         // when property.keepass exists in test env
         // and only exists in default group of keepass
         // then keepass takes priority
@@ -385,7 +385,7 @@ class EnvConfigTest {
     void testCanGetKeepassOnlyEntry() {
         environmentVariables.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getEnvProperty(), "true");
         environmentVariables.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getEnvProperty(), CONFIG_KEEPASS_PASSWORD);
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         // when another.property does not exist in test env
         // and exists in test group of keepass
         Assertions.assertEquals("ANOTHER_PROPERTY", EnvConfig.get("another.property"));
@@ -395,7 +395,7 @@ class EnvConfigTest {
     void testCanGetKeepassOnlyEntryWhenEntryWithTrailingSpace() {
         environmentVariables.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getEnvProperty(), "true");
         environmentVariables.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getEnvProperty(), CONFIG_KEEPASS_PASSWORD);
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         // when another.property does not exist in test env
         // and exists in test group of keepass
         Assertions.assertEquals(KEEPASS_VALUE, EnvConfig.get("trailing.space.property"));
