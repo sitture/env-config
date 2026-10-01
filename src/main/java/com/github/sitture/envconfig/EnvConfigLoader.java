@@ -15,22 +15,22 @@ class EnvConfigLoader {
     protected final EnvConfigProperties configProperties = new EnvConfigProperties();
 
     EnvConfigLoader() {
-        final Map<String, Configuration> envConfiguration = new EnvConfigFileConfiguration(this.configProperties).getConfiguration();
-        loadEnvConfigurations(envConfiguration);
+        final Map<String, Configuration> fileConfigurationMap = new EnvConfigFileConfiguration(this.configProperties).getConfiguration();
+        loadSystemConfiguration(fileConfigurationMap);
         final List<String> environments = this.configProperties.getEnvironments();
-        loadVaultConfigurations(environments);
-        loadKeepassConfigurations(environments);
+        loadVaultConfiguration(environments);
+        loadKeepassConfiguration(environments);
         final String configProfile = this.configProperties.getConfigProfile();
         if (!configProfile.isEmpty()) {
-            final Map<String, Configuration> profileConfiguration = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
+            final Map<String, Configuration> profileConfigurationMap = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
             LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
-            environments.forEach(env -> this.configuration.addConfiguration(profileConfiguration.get(env)));
+            environments.forEach(env -> this.configuration.addConfiguration(profileConfigurationMap.get(env)));
         }
         LOG.debug("Loading config from environment directories {}", environments);
-        environments.forEach(env -> this.configuration.addConfiguration(envConfiguration.get(env)));
+        environments.forEach(env -> this.configuration.addConfiguration(fileConfigurationMap.get(env)));
     }
 
-    private void loadVaultConfigurations(final List<String> environments) {
+    private void loadVaultConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigVaultEnabled()) {
             final EnvConfigVaultProperties vaultProperties = this.configProperties.getVaultProperties();
             final String address = vaultProperties.getAddress();
@@ -44,7 +44,7 @@ class EnvConfigLoader {
         }
     }
 
-    private void loadKeepassConfigurations(final List<String> environments) {
+    private void loadKeepassConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigKeepassEnabled()) {
             final EnvConfigKeepassProperties keepassProperties = this.configProperties.getKeepassProperties();
             final String groupName = keepassProperties.filename();
@@ -54,11 +54,11 @@ class EnvConfigLoader {
         }
     }
 
-    private void loadEnvConfigurations(final Map<String, Configuration> configurationMap) {
-        final EnvConfigSystemConfiguration variables = new EnvConfigSystemConfiguration();
+    private void loadSystemConfiguration(final Map<String, Configuration> configurationMap) {
+        final EnvConfigSystemConfiguration systemConfiguration = new EnvConfigSystemConfiguration();
         LOG.debug("Loading config from system.properties");
-        this.configuration.addConfiguration(variables.getSystemConfiguration());
-        final Configuration envOverrides = variables.getEnvironmentConfiguration();
+        this.configuration.addConfiguration(systemConfiguration.getSystemConfiguration());
+        final Configuration envOverrides = systemConfiguration.getEnvironmentConfiguration();
         final Configuration currentEnvironment = configurationMap.get(this.configProperties.getCurrentEnvironment());
         currentEnvironment.getKeys().forEachRemaining(key -> {
             if (envOverrides.containsKey(key)
