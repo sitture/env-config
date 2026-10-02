@@ -38,11 +38,8 @@ class EnvConfigLoader {
             final String address = vaultProperties.getAddress();
             final String namespace = vaultProperties.getNamespace();
             LOG.debug("Loading config from vault {} namespace {}", address, namespace);
-            final EnvConfigVaultConfiguration entries = new EnvConfigVaultConfiguration(vaultProperties);
-            environments.forEach(env -> {
-                this.configuration.addConfiguration(entries.getConfiguration(env, vaultProperties.getSecretPath()));
-                vaultProperties.getDefaultPath().ifPresent(path -> this.configuration.addConfiguration(entries.getConfiguration(env, path)));
-            });
+            final Map<String, Configuration> vaultConfigurationMap = new EnvConfigVaultConfiguration(this.configProperties).getConfiguration();
+            environments.forEach(env -> this.configuration.addConfiguration(vaultConfigurationMap.get(env)));
         }
     }
 

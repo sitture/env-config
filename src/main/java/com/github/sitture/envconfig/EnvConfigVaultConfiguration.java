@@ -4,21 +4,37 @@ import io.github.jopenlibs.vault.Vault;
 import io.github.jopenlibs.vault.VaultConfig;
 import io.github.jopenlibs.vault.VaultException;
 import io.github.jopenlibs.vault.response.LogicalResponse;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EnvConfigVaultConfiguration {
+class EnvConfigVaultConfiguration implements EnvConfigConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(EnvConfigVaultConfiguration.class);
     private final Vault vault;
     private final EnvConfigVaultProperties vaultProperties;
+    private final List<String> environments;
+
+    EnvConfigVaultConfiguration(final EnvConfigProperties configProperties) {
+        this(configProperties.getVaultProperties(), configProperties.getEnvironments());
+    }
 
     EnvConfigVaultConfiguration(final EnvConfigVaultProperties vaultProperties) {
+        this(vaultProperties, List.of(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+    }
+
+    private EnvConfigVaultConfiguration(final EnvConfigVaultProperties vaultProperties,
+                                        final List<String> environments) {
         this.vaultProperties = vaultProperties;
+        this.environments = environments;
         try {
             final VaultConfig config = new VaultConfig()
                 .address(vaultProperties.getAddress())
@@ -66,20 +82,46 @@ class EnvConfigVaultConfiguration {
         }
     }
 
-    public Configuration getConfiguration(final String env, final String path) {
+    @Override
+    public Map<String, Configuration> getConfiguration() {
+        return this.environments.stream()
+            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
+    }
+
+    Configuration getConfigurationForEnvironment(final String env) {
+        final CompositeConfiguration configuration = new CompositeConfiguration();
+        configuration.addConfiguration(getConfigurationForPath(env, this.vaultProperties.getSecretPath()));
+        this.vaultProperties.getDefaultPath()
+            .ifPresent(path -> configuration.addConfiguration(getConfigurationForPath(env, path)));
+        return configuration;
+    }
+
+    private Configuration getConfigurationForPath(final String env, final String path) {
         final String secret = "%s/%s".formatted(Strings.CS.removeEnd(path, "/"), env);
-        final LogicalResponse response;
+        final LogicalResponse response = readSecret(secret);
+        validateSecretResponse(env, secret, response);
+        return new MapConfiguration(getResponseData(response));
+    }
+
+    private LogicalResponse readSecret(final String secret) {
         try {
             LOG.debug("Loading config from secret {}", secret);
-            response = this.vault.logical().read(secret);
+            return this.vault.logical().read(secret);
         } catch (VaultException e) {
             throw new EnvConfigException("Could not read data from vault.", e);
         }
-        if (null != response && response.getRestResponse().getStatus() != 200
-            && EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)) {
+    }
+
+    private static void validateSecretResponse(final String env, final String secret, final LogicalResponse response) {
+        final boolean missingDefaultSecret = EnvConfigUtils.CONFIG_ENV_DEFAULT.equals(env)
+            && (response == null || response.getRestResponse().getStatus() != 200);
+        if (missingDefaultSecret) {
             throw new EnvConfigException("Could not find the vault secret: %s".formatted(secret));
         }
-        return new MapConfiguration(response.getData());
+    }
+
+    private static Map<String, String> getResponseData(final LogicalResponse response) {
+        return response == null || response.getData() == null ? Map.of() : response.getData();
     }
 
 }

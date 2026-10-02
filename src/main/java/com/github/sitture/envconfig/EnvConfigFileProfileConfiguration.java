@@ -31,13 +31,13 @@ class EnvConfigFileProfileConfiguration extends EnvConfigFileConfiguration imple
     }
 
     @Override
-    public Map<String, Configuration> getConfiguration() {
-        return this.configProperties.getEnvironments().stream()
-            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
+    protected Path getConfigurationDirectoryPath(final String env) {
+        return this.configProperties.getConfigProfilePath(env);
     }
 
     @Override
-    protected Path getConfigurationDirectoryPath(final String env) {
-        return this.configProperties.getConfigProfilePath(env);
+    public Map<String, Configuration> getConfiguration() {
+        return this.configProperties.getEnvironments().stream()
+            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
     }
 }

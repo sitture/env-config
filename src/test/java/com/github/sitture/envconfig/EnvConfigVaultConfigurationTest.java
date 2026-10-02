@@ -13,6 +13,7 @@ import com.github.valfirst.slf4jtest.LoggingEvent;
 import com.github.valfirst.slf4jtest.TestLogger;
 import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import io.github.jopenlibs.vault.VaultException;
+import java.util.Map;
 import java.util.function.Predicate;
 import org.apache.commons.configuration2.Configuration;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +30,8 @@ class EnvConfigVaultConfigurationTest {
         stubSelfLookupSuccess();
         stubReadSecretSuccess();
         final EnvConfigVaultProperties vaultProperties = getMockVaultProperties();
-        final Configuration configuration = getVaultConfiguration(vaultProperties, "default");
+        final Map<String, Configuration> configurationMap = new EnvConfigVaultConfiguration(vaultProperties).getConfiguration();
+        final Configuration configuration = configurationMap.get("default");
         Assertions.assertEquals("value1", configuration.getString("key1"));
         Assertions.assertEquals("value2", configuration.getString("key2"));
     }
@@ -87,7 +89,7 @@ class EnvConfigVaultConfigurationTest {
     }
 
     private Configuration getVaultConfiguration(final EnvConfigVaultProperties vaultProperties, final String env) {
-        return new EnvConfigVaultConfiguration(vaultProperties).getConfiguration(env, vaultProperties.getSecretPath());
+        return new EnvConfigVaultConfiguration(vaultProperties).getConfigurationForEnvironment(env);
     }
 
     private EnvConfigVaultProperties getMockVaultProperties() {
