@@ -65,6 +65,92 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 - overriding bcpkix-jdk18on to address [CVE-2025-8916](https://www.cve.org/CVERecord?id=CVE-2025-8916).
 
+## 2.2.0
+
+### Updated
+
+- Refreshed project dependencies.
+- Bump `com.puppycrawl.tools:checkstyle` from `11.1.0` to `12.3.1`.
+- Bump `org.junit:junit-bom` from `6.0.0` to `6.0.2`.
+- Bump `org.apache.commons:commons-configuration2` from `2.12.0` to `2.13.0`.
+- Bump `org.apache.maven.plugins:maven-source-plugin` from `3.3.1` to `3.4.0`.
+- Bump `org.apache.maven.plugins:maven-jar-plugin` from `3.4.2` to `3.5.0`.
+- Bump `io.github.jopenlibs:vault-java-driver` from `6.2.0` to `6.2.1`.
+- Bump `org.codehaus.mojo:versions-maven-plugin` from `2.19.1` to `2.21.0`.
+- Bump `org.apache.maven.plugins:maven-pmd-plugin` from `3.27.0` to `3.28.0`.
+- Bump `org.apache.maven.plugins:maven-dependency-plugin`.
+- Updates GitHub Actions workflow dependencies:
+  - `actions/checkout` from `v5` to `v6`.
+
+## 2.1.0
+
+### Updated
+
+- Bump `org.junit:junit-bom` from `5.13.4` to `6.0.0` (JUnit 6).
+- Bump `com.puppycrawl.tools:checkstyle` from `11.0.0` to `11.1.0`.
+- Bump `org.apache.maven.plugins:maven-compiler-plugin`.
+- Bump `org.apache.maven.plugins:maven-surefire-plugin` from `3.5.3` to `3.5.4`.
+- Bump `org.apache.maven.plugins:maven-javadoc-plugin` from `3.11.3` to `3.12.0`.
+- Bump `org.assertj:assertj-core` from `3.27.4` to `3.27.5`.
+- Bump `org.codehaus.mojo:versions-maven-plugin` from `2.18.0` to `2.19.0`.
+- Bump `com.github.valfirst:slf4j-test` from `3.0.1` to `3.0.3`.
+- Updates GitHub Actions workflow dependencies:
+  - `actions/setup-java` from `v4` to `v5`.
+
+### Changed
+
+- Applies changes from OpenRewrite Java 17 recipe for better Java language feature usage.
+
+## 2.0.0
+
+### Updated
+
+- Bump minimal required JDK version to 17.
+- Bump `org.apache.maven.plugins:maven-javadoc-plugin` from `3.11.2` to `3.11.3`.
+- Bump `org.junit:junit-bom` from `5.13.2` to `5.13.4`.
+- Bump `org.assertj:assertj-core` from `3.27.3` to `3.27.4`.
+- Bump `org.apache.maven.plugins:maven-gpg-plugin` from `3.2.7` to `3.2.8`.
+- Updates GitHub Actions workflow dependencies:
+  - `actions/checkout` from `v4` to `v5`.
+
+### Changed
+
+- Updates Maven configuration for publishing to Maven Central Repository.
+
+## 1.15.0
+
+### Updated
+
+- Refreshed project dependencies.
+- Bump `com.puppycrawl.tools:checkstyle` from `10.22.0` to `10.26.1`.
+- Bump `org.junit:junit-bom` from `5.12.1` to `5.13.2`.
+- Bump `commons-beanutils:commons-beanutils` from `1.10.1` to `1.11.0`.
+- Bump `org.apache.commons:commons-configuration2` from `2.11.0` to `2.12.0`.
+- Bump `org.apache.maven.plugins:maven-pmd-plugin` from `3.26.0` to `3.27.0`.
+- Bump `uk.org.webcompere:system-stubs-core` and `system-stubs-jupiter` from `2.1.7` to `2.1.8`.
+
+### Fixed
+
+- Adds missing property to fix a Java compiler warning.
+
+## 1.14.0
+
+### Updated
+
+- Refreshed project dependencies.
+- Bump `org.apache.maven.plugins:maven-surefire-plugin` from `3.5.2` to `3.5.3`.
+- Bump `com.puppycrawl.tools:checkstyle` from `10.21.2` to `10.22.0`.
+- Bump `org.slf4j:slf4j-api` from `2.0.16` to `2.0.17`.
+- Bump `org.linguafranca.pwdb:KeePassJava2-jackson` from `2.2.3` to `2.2.4`.
+- Bump `org.wiremock:wiremock-standalone` from `3.10.0` to `3.12.1`.
+- Bump `org.junit:junit-bom` from `5.12.0` to `5.12.1`.
+- Bump `org.apache.maven.plugins:maven-compiler-plugin`.
+- Bump `commons-beanutils:commons-beanutils` from `1.10.0` to `1.10.1`.
+
+### Changed
+
+- Updates kdbx test files to speed up unit tests.
+
 ## 1.13.1
 
 ### Updated
