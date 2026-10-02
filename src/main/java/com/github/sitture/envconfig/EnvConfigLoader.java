@@ -21,15 +21,13 @@ class EnvConfigLoader {
         loadVaultConfiguration(environments);
         loadKeepassConfiguration(environments);
         final String configProfile = this.configProperties.getConfigProfile();
-        final Map<String, Configuration> profileConfigurationMap = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
-        environments.forEach(env -> {
-            if (!configProfile.isEmpty()) {
-                LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
-                this.configuration.addConfiguration(profileConfigurationMap.get(env));
-            }
-            LOG.debug("Loading config from environment directories {}", environments);
-            this.configuration.addConfiguration(fileConfigurationMap.get(env));
-        });
+        if (!configProfile.isEmpty()) {
+            LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
+            final Map<String, Configuration> profileConfigurationMap = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
+            environments.forEach(env -> this.configuration.addConfiguration(profileConfigurationMap.get(env)));
+        }
+        LOG.debug("Loading config from environment directories {}", environments);
+        environments.forEach(env -> this.configuration.addConfiguration(fileConfigurationMap.get(env)));
     }
 
     private void loadVaultConfiguration(final List<String> environments) {

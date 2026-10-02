@@ -48,6 +48,16 @@ class EnvConfigProfileTest {
     }
 
     @Test
+    void testDoesNotLoadProfilesWhenProfileIsNotSet() {
+        // given env is default and profiles path contains only profile subdirectories
+        setEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "config/sample-profiles");
+
+        // then loading skips the empty profile layer and env values still resolve
+        Assertions.assertNull(EnvConfig.get("prof1.two"));
+    }
+
+    @Test
     void testCanGetFromProfileWhenProfileSetAsEnv() {
         // given env is default and prof1.one exists in env properties
         setEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
