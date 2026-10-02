@@ -37,7 +37,7 @@ class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
             : groupName.concat(KEEPASS_DB_FILE_EXTENSION);
         try {
             database = JacksonDatabase.load(new KdbxCreds(keepassProperties.masterKey().getBytes(StandardCharsets.UTF_8)),
-                getKeepassDatabase(databaseFileName));
+                getKeepassDatabaseResource(databaseFileName));
         } catch (IOException e) {
             throw new EnvConfigException("Error opening database!", e);
         }
@@ -45,13 +45,13 @@ class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
 
     @Override
     protected Configuration getConfigurationForEnvironment(final String env) {
-        final String keePassGroupName = !database.getRootGroup().getGroups().isEmpty()
+        final String keepassGroupName = !database.getRootGroup().getGroups().isEmpty()
             ? database.getRootGroup().getGroups().get(0).getName()
             : "Root";
-        return new MapConfiguration(getKeepassEntriesMap(keePassGroupName, env));
+        return new MapConfiguration(getKeepassEntryMap(keepassGroupName, env));
     }
 
-    private InputStream getKeepassDatabase(final String fileName) {
+    private InputStream getKeepassDatabaseResource(final String fileName) {
         final InputStream resource = ClassLoader.getSystemResourceAsStream(fileName);
         if (null == resource) {
             throw new EnvConfigException("Database %s does not exist!".formatted(fileName));
@@ -59,7 +59,7 @@ class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
         return resource;
     }
 
-    private Map<String, String> getKeepassEntriesMap(final String groupName, final String env) {
+    private Map<String, String> getKeepassEntryMap(final String groupName, final String env) {
         final Optional<JacksonGroup> projectGroup = database.getRootGroup().getGroups().stream()
             .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (projectGroup.isEmpty()) {

@@ -46,18 +46,18 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
     }
 
     private void validateToken() throws VaultException {
-        final int validateTokenMaxRetries = this.vaultProperties.getValidateTokenMaxRetries();
-        for (int i = 0; i < validateTokenMaxRetries; i++) {
+        final int maxValidationRetries = this.vaultProperties.getValidateTokenMaxRetries();
+        for (int attempt = 0; attempt < maxValidationRetries; attempt++) {
             try {
                 this.vault.auth().lookupSelf();
                 break;
             } catch (VaultException vaultException) {
-                retryUntilMaxMaxRetries(vaultException, i, validateTokenMaxRetries);
+                retryUntilMaxRetries(vaultException, attempt, maxValidationRetries);
             }
         }
     }
 
-    private static void retryUntilMaxMaxRetries(final VaultException vaultException, final int attempt, final int validateTokenMaxRetries) {
+    private static void retryUntilMaxRetries(final VaultException vaultException, final int attempt, final int maxValidationRetries) {
         final long retryInterval = attempt * 2L;
         logError("An exception occurred validating the vault token, will retry in %s seconds".formatted(retryInterval), vaultException);
         try {
@@ -65,10 +65,9 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
         } catch (InterruptedException ex) {
             logError("InterruptedException thrown whilst waiting to retry validating the vault token", ex);
         }
-        if (attempt == validateTokenMaxRetries - 1) {
-            final String message = "Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token".formatted(validateTokenMaxRetries);
+        if (attempt == maxValidationRetries - 1) {
+            final String message = "Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token".formatted(maxValidationRetries);
             logError(message, vaultException);
-
             throw new EnvConfigException(message, vaultException);
         }
     }

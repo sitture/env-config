@@ -26,12 +26,12 @@ class EnvConfigFileConfiguration extends AbstractEnvConfigConfiguration {
     }
 
     List<File> getConfigFiles(final Path configDirPath) {
-        final File configDirPathFile = configDirPath.toFile();
-        if (!configDirPathFile.exists() || !configDirPathFile.isDirectory()) {
+        final File configDirectory = configDirPath.toFile();
+        if (!configDirectory.exists() || !configDirectory.isDirectory()) {
             throw new EnvConfigException(
                 "'" + configDirPath + "' does not exist or not a valid config directory!");
         }
-        return getConfigProperties(configDirPathFile);
+        return getConfigProperties(configDirectory);
     }
 
     List<File> getConfigProperties(final File configDir) {
