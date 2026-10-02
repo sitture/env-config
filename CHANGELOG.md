@@ -4,6 +4,30 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 2.6.0
+
+### Changed
+
+- Refactored configuration handling by introducing `AbstractEnvConfigConfiguration` to streamline environment
+  configuration handling and reduce code duplication.
+- Improved variable naming throughout the codebase for better clarity:
+  - Renamed `configDir` to `configDirPath` in `EnvConfigProperties` for improved clarity.
+  - Enhanced variable naming in `EnvConfigLoader` and other configuration classes.
+- Streamlined configuration loading and retrieval logic across `EnvConfigLoader` and related classes for improved
+  maintainability.
+- Enhanced `EnvConfigConfiguration` as a functional interface to improve code consistency.
+- Improved error handling in `EnvConfigVaultConfiguration` for better exception management.
+- Streamlined key handling by trimming keys in `EnvConfigKeepassConfiguration` and `EnvConfigVaultConfiguration` for
+  consistency.
+- Replaced `StringUtils` with `Strings` for improved consistency in `EnvConfigVaultConfiguration`.
+- Removed unnecessary whitespace and improved formatting throughout configuration and test files.
+- Reorganized configuration classes with new implementations:
+  - New `EnvConfigFileConfiguration` implementation for file-based configuration.
+  - New `EnvConfigFileProfileConfiguration` for profile-based file configuration.
+  - Renamed `VaultConfiguration` to `EnvConfigVaultConfiguration` for naming consistency.
+  - Renamed `EnvConfigSystemVariables` to `EnvConfigSystemConfiguration` for improved naming.
+- Enhanced test coverage with new test classes for configuration implementations.
+
 ## 2.5.0
 
 ### Updated
