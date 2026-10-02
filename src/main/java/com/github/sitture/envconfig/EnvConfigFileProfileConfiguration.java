@@ -13,15 +13,15 @@ class EnvConfigFileProfileConfiguration extends EnvConfigFileConfiguration {
 
     @Override
     protected List<File> getConfigFiles(final Path configDirPath) {
-        final File configDir = configDirPath.toFile();
+        final File configDirectory = configDirPath.toFile();
         final List<File> files;
-        if (!configDir.exists()) {
+        if (!configDirectory.exists()) {
             files = Collections.emptyList();
-        } else if (!configDir.isDirectory()) {
+        } else if (!configDirectory.isDirectory()) {
             throw new EnvConfigException(
                 "'" + configDirPath + "' does not exist or not a valid config directory!");
         } else {
-            files = getConfigProperties(configDir);
+            files = getConfigProperties(configDirectory);
         }
         return files;
     }
