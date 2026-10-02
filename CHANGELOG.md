@@ -25,7 +25,7 @@ and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
   - New `EnvConfigFileConfiguration` implementation for file-based configuration.
   - New `EnvConfigFileProfileConfiguration` for profile-based file configuration.
   - Renamed `VaultConfiguration` to `EnvConfigVaultConfiguration` for naming consistency.
-  - Renamed `EnvConfigSystemVariables` to `EnvConfigSystemConfiguration` for improved naming.
+  - Renamed `EnvironmentVariables` to `EnvConfigSystemConfiguration` for improved naming.
 - Enhanced test coverage with new test classes for configuration implementations.
 
 ## 2.5.0

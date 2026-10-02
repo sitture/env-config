@@ -1,9 +1,13 @@
 package com.github.sitture.envconfig;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
 import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
@@ -11,6 +15,9 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigProfileTest {
+
+    @TempDir
+    Path tempDir;
 
     @SystemStub
     private final EnvironmentVariables environmentVariables = new EnvironmentVariables();
@@ -45,6 +52,25 @@ class EnvConfigProfileTest {
         setProfile("prof1");
         // then value from profile property takes precedence
         Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.one"));
+    }
+
+    @Test
+    void testCanPreferParentEnvironmentProfileOverEnvironmentFile() throws IOException {
+        final Path configPath = Files.createDirectories(this.tempDir.resolve("config"));
+        final Path profilesPath = Files.createDirectories(this.tempDir.resolve("profiles"));
+        final Path defaultConfigDir = Files.createDirectories(configPath.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+        final Path testConfigDir = Files.createDirectories(configPath.resolve("test"));
+        Files.writeString(defaultConfigDir.resolve("default.properties"), "base.one=default\n");
+        Files.writeString(testConfigDir.resolve("test.properties"), "shared.one=current.env\n");
+        final Path defaultProfileDir = Files.createDirectories(profilesPath.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT).resolve("prof1"));
+        Files.writeString(defaultProfileDir.resolve("prof1.properties"), "shared.one=parent.profile\n");
+
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), configPath.toString());
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), profilesPath.toString());
+        setEnvironment("test");
+        setProfile("prof1");
+
+        Assertions.assertEquals("parent.profile", EnvConfig.get("shared.one"));
     }
 
     @Test
