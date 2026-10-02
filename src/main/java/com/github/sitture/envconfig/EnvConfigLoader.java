@@ -49,7 +49,8 @@ class EnvConfigLoader {
     private void loadKeepassConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigKeepassEnabled()) {
             final EnvConfigKeepassProperties keepassProperties = this.configProperties.getKeepassProperties();
-            LOG.debug("Loading config from keepass {}", keepassProperties.filename());
+            final String groupName = keepassProperties.filename();
+            LOG.debug("Loading config from keepass {}", groupName);
             final EnvConfigKeepassConfiguration entries = new EnvConfigKeepassConfiguration(keepassProperties);
             environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
         }

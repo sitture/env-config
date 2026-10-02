@@ -40,11 +40,11 @@ class EnvConfigProperties {
     }
 
     private List<String> getEnvList() {
-        final List<String> environmentsList = new ArrayList<>();
-        environmentsList.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
-        environmentsList.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
-        Collections.reverse(environmentsList);
-        return environmentsList.stream().distinct().toList();
+        final List<String> envs = new ArrayList<>();
+        envs.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        envs.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
+        Collections.reverse(envs);
+        return envs.stream().distinct().toList();
     }
 
     Path getConfigPath(final String env) {
