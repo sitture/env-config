@@ -13,6 +13,7 @@ import com.github.valfirst.slf4jtest.LoggingEvent;
 import com.github.valfirst.slf4jtest.TestLogger;
 import com.github.valfirst.slf4jtest.TestLoggerFactory;
 import io.github.jopenlibs.vault.VaultException;
+import java.util.Map;
 import java.util.function.Predicate;
 import org.apache.commons.configuration2.Configuration;
 import org.junit.jupiter.api.Assertions;
@@ -22,16 +23,37 @@ import org.slf4j.event.Level;
 
 @SuppressWarnings("PMD.TooManyStaticImports")
 @WireMockTest(httpPort = 8999)
-class VaultConfigurationTest {
+class EnvConfigVaultConfigurationTest {
 
     @Test
     void testCanGetConfigurationMapWithData() {
         stubSelfLookupSuccess();
         stubReadSecretSuccess();
         final EnvConfigVaultProperties vaultProperties = getMockVaultProperties();
-        final Configuration configuration = getVaultConfiguration(vaultProperties, "default");
+        final Map<String, Configuration> configurationMap = new EnvConfigVaultConfiguration(vaultProperties).getConfiguration();
+        final Configuration configuration = configurationMap.get("default");
         Assertions.assertEquals("value1", configuration.getString("key1"));
         Assertions.assertEquals("value2", configuration.getString("key2"));
+    }
+
+    @Test
+    void testCanGetConfigurationMapWithProcessedPropertyKeys() {
+        stubSelfLookupSuccess();
+        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "PROPERTY_ONE": "value1"
+                }
+              }
+            }
+            """)));
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties();
+        final Map<String, Configuration> configurationMap = new EnvConfigVaultConfiguration(vaultProperties).getConfiguration();
+        final Configuration configuration = configurationMap.get("default");
+
+        Assertions.assertEquals("value1", configuration.getString("PROPERTY_ONE"));
+        Assertions.assertEquals("value1", configuration.getString("property.one"));
     }
 
     @Test
@@ -65,7 +87,7 @@ class VaultConfigurationTest {
     void testRetriesWhenSelfLookupFails() {
         stubSelfLookupFailure();
         final EnvConfigVaultProperties vaultProperties = getMockVaultProperties();
-        final TestLogger testLogger = TestLoggerFactory.getTestLogger(VaultConfiguration.class);
+        final TestLogger testLogger = TestLoggerFactory.getTestLogger(EnvConfigVaultConfiguration.class);
 
         final EnvConfigException exception = Assertions.assertThrows(
             EnvConfigException.class, () -> getVaultConfiguration(vaultProperties, "default"));
@@ -87,7 +109,7 @@ class VaultConfigurationTest {
     }
 
     private Configuration getVaultConfiguration(final EnvConfigVaultProperties vaultProperties, final String env) {
-        return new VaultConfiguration(vaultProperties).getConfiguration(env, vaultProperties.getSecretPath());
+        return new EnvConfigVaultConfiguration(vaultProperties).getConfigurationForEnvironment(env);
     }
 
     private EnvConfigVaultProperties getMockVaultProperties() {

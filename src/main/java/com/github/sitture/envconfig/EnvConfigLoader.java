@@ -1,14 +1,9 @@
 package com.github.sitture.envconfig;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
-import org.apache.commons.configuration2.MapConfiguration;
-import org.apache.commons.configuration2.builder.fluent.Configurations;
-import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,50 +15,47 @@ class EnvConfigLoader {
     protected final EnvConfigProperties configProperties = new EnvConfigProperties();
 
     EnvConfigLoader() {
+        final Map<String, Configuration> fileConfigurationMap = new EnvConfigFileConfiguration(this.configProperties).getConfiguration();
+        loadSystemConfiguration(fileConfigurationMap);
         final List<String> environments = this.configProperties.getEnvironments();
+        loadVaultConfiguration(environments);
+        loadKeepassConfiguration(environments);
         final String configProfile = this.configProperties.getConfigProfile();
-        final Map<String, Configuration> envConfiguration = getEnvironmentConfiguration(environments);
-        loadEnvConfigurations(envConfiguration);
-        loadVaultConfigurations(environments);
-        loadKeepassConfigurations(environments);
         if (!configProfile.isEmpty()) {
-            final Map<String, Configuration> profileConfiguration = getEnvironmentProfileConfiguration(environments, configProfile);
             LOG.debug("Loading config from profile {} under environments {}", configProfile, environments);
-            environments.forEach(env -> this.configuration.addConfiguration(profileConfiguration.get(env)));
+            final Map<String, Configuration> profileConfigurationMap = new EnvConfigFileProfileConfiguration(this.configProperties).getConfiguration();
+            environments.forEach(env -> this.configuration.addConfiguration(profileConfigurationMap.get(env)));
         }
         LOG.debug("Loading config from environment directories {}", environments);
-        environments.forEach(env -> this.configuration.addConfiguration(envConfiguration.get(env)));
+        environments.forEach(env -> this.configuration.addConfiguration(fileConfigurationMap.get(env)));
     }
 
-    private void loadVaultConfigurations(final List<String> environments) {
+    private void loadVaultConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigVaultEnabled()) {
             final EnvConfigVaultProperties vaultProperties = this.configProperties.getVaultProperties();
             final String address = vaultProperties.getAddress();
             final String namespace = vaultProperties.getNamespace();
             LOG.debug("Loading config from vault {} namespace {}", address, namespace);
-            final VaultConfiguration entries = new VaultConfiguration(vaultProperties);
-            environments.forEach(env -> {
-                this.configuration.addConfiguration(entries.getConfiguration(env, vaultProperties.getSecretPath()));
-                vaultProperties.getDefaultPath().ifPresent(path -> this.configuration.addConfiguration(entries.getConfiguration(env, path)));
-            });
+            final Map<String, Configuration> vaultConfigurationMap = new EnvConfigVaultConfiguration(this.configProperties).getConfiguration();
+            environments.forEach(env -> this.configuration.addConfiguration(vaultConfigurationMap.get(env)));
         }
     }
 
-    private void loadKeepassConfigurations(final List<String> environments) {
+    private void loadKeepassConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigKeepassEnabled()) {
             final EnvConfigKeepassProperties keepassProperties = this.configProperties.getKeepassProperties();
-            final String groupName = keepassProperties.getFilename();
+            final String groupName = keepassProperties.filename();
             LOG.debug("Loading config from keepass {}", groupName);
-            final KeepassConfiguration entries = new KeepassConfiguration(keepassProperties);
-            environments.forEach(env -> this.configuration.addConfiguration(entries.getConfiguration(env)));
+            final Map<String, Configuration> keepassConfigurationMap = new EnvConfigKeepassConfiguration(this.configProperties).getConfiguration();
+            environments.forEach(env -> this.configuration.addConfiguration(keepassConfigurationMap.get(env)));
         }
     }
 
-    private void loadEnvConfigurations(final Map<String, Configuration> configurationMap) {
-        final EnvironmentVariables variables = new EnvironmentVariables();
+    private void loadSystemConfiguration(final Map<String, Configuration> configurationMap) {
+        final EnvConfigSystemConfiguration systemConfiguration = new EnvConfigSystemConfiguration();
         LOG.debug("Loading config from system.properties");
-        this.configuration.addConfiguration(variables.getSystemConfiguration());
-        final Configuration envOverrides = variables.getEnvironmentConfiguration();
+        this.configuration.addConfiguration(systemConfiguration.getSystemConfiguration());
+        final Configuration envOverrides = systemConfiguration.getEnvironmentConfiguration();
         final Configuration currentEnvironment = configurationMap.get(this.configProperties.getCurrentEnvironment());
         currentEnvironment.getKeys().forEachRemaining(key -> {
             if (envOverrides.containsKey(key)
@@ -83,51 +75,5 @@ class EnvConfigLoader {
         }
         LOG.debug("Loading config from system.env");
         this.configuration.addConfiguration(envOverrides);
-    }
-
-    private Map<String, Configuration> getEnvironmentProfileConfiguration(final List<String> environments, final String configProfile) {
-        final Map<String, Configuration> configurationMap = new HashMap<>();
-        environments.forEach(env -> configurationMap.put(
-            env, getConfiguration(new EnvConfigProfileFileList(this.configProperties.getConfigProfilePath(env, configProfile)))));
-        return configurationMap;
-    }
-
-    private Map<String, Configuration> getEnvironmentConfiguration(final List<String> environments) {
-        final Map<String, Configuration> configurationMap = new HashMap<>();
-        environments.forEach(env -> configurationMap.put(
-            env, getConfiguration(new EnvConfigFileList(this.configProperties.getConfigPath(env)))));
-        return configurationMap;
-    }
-
-    private Configuration getConfiguration(final EnvConfigFileList fileList) {
-        final List<File> files = fileList.listFiles();
-        if (files.isEmpty() && LOG.isDebugEnabled()) {
-            LOG.debug("No property files found under {}", fileList.configPath);
-        }
-        final CompositeConfiguration fileConfiguration = new CompositeConfiguration();
-        files.forEach(file -> fileConfiguration.addConfiguration(getFileConfigurationMap(file)));
-        return fileConfiguration;
-    }
-
-    private Configuration getFileConfigurationMap(final File file) {
-        final Map<String, Object> configurationMap = new HashMap<>();
-        final Configuration properties = getConfigurationProperties(file);
-        properties.getKeys().forEachRemaining(key -> {
-            final Object value = properties.getProperty(key);
-            configurationMap.put(EnvConfigUtils.getProcessedPropertyKey(key), value);
-            configurationMap.put(EnvConfigUtils.getProcessedEnvKey(key), value);
-        });
-        return new MapConfiguration(configurationMap);
-    }
-
-    private Configuration getConfigurationProperties(final File file) {
-        final Configuration configurationProperties;
-        try {
-            LOG.debug("Getting config from {}", file);
-            configurationProperties = new Configurations().properties(file);
-        } catch (ConfigurationException e) {
-            throw new EnvConfigException(e);
-        }
-        return configurationProperties;
     }
 }

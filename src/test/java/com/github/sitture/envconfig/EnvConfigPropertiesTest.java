@@ -5,21 +5,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
 
+@ExtendWith(SystemStubsExtension.class)
 class EnvConfigPropertiesTest {
 
-    @AfterEach
-    void tearDown() {
-        System.clearProperty(EnvConfigKey.CONFIG_PATH.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_PROFILE.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty());
-        System.clearProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty());
-    }
+    @SystemStub
+    private final SystemProperties systemProperties = new SystemProperties();
 
     @Test
     void testCanGetBuildDir() {
@@ -29,31 +26,31 @@ class EnvConfigPropertiesTest {
     @Test
     void testCanGetConfigProfile() {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        System.clearProperty(EnvConfigKey.CONFIG_PROFILE.getProperty());
+        systemProperties.remove(EnvConfigKey.CONFIG_PROFILE.getProperty());
         Assertions.assertEquals("", configProperties.getConfigProfile(), "invalid config-profile!");
-        System.setProperty(EnvConfigKey.CONFIG_PROFILE.getProperty(), "test-profile");
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILE.getProperty(), "test-profile");
         Assertions.assertEquals("test-profile", configProperties.getConfigProfile());
     }
 
     @Test
     void testCanGetEnvironmentsList() {
         // when config.environment isn't specified
-        System.clearProperty(EnvConfigKey.CONFIG_ENV.getProperty());
+        systemProperties.remove(EnvConfigKey.CONFIG_ENV.getProperty());
         Assertions.assertEquals(List.of("default"), new EnvConfigProperties().getEnvironments());
         Assertions.assertEquals("default", new EnvConfigProperties().getCurrentEnvironment());
         // when a single environment is specified
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "test ");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test ");
         Assertions.assertEquals(List.of("test", "default"), new EnvConfigProperties().getEnvironments());
         Assertions.assertEquals("test", new EnvConfigProperties().getCurrentEnvironment());
         // when a multiple environments are specified
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "test , TEST2");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test , TEST2");
         Assertions.assertEquals(List.of("test2", "test", "default"), new EnvConfigProperties().getEnvironments());
         Assertions.assertEquals("test2", new EnvConfigProperties().getCurrentEnvironment());
         // when a default specified in environments
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "DEFAULT,alpha,zen");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "DEFAULT,alpha,zen");
         Assertions.assertEquals(List.of("zen", "alpha", "default"), new EnvConfigProperties().getEnvironments());
         // when only default specified in environments
-        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), "default");
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "default");
         Assertions.assertEquals(List.of("default"), new EnvConfigProperties().getEnvironments());
     }
 
@@ -68,19 +65,29 @@ class EnvConfigPropertiesTest {
     }
 
     @Test
+    void testCanGetConfigProfilePathUsingConfiguredProfile() {
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILE.getProperty(), "profile1");
+        final EnvConfigProperties configProperties = new EnvConfigProperties();
+        Assertions.assertEquals(Path.of(configProperties.getBuildDir() + "/config/test/profile1"),
+            configProperties.getConfigProfilePath("test"), "Incorrect configured config profile path");
+    }
+
+    @Test
     void testExceptionWhenConfigPathDoesNotExist() {
-        System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), "/non/existing/dir");
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), "/non/existing/dir");
+        final ThrowingConfigPath configPath = new ThrowingConfigPath();
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-            () -> new EnvConfigProperties().getConfigPath("env"));
+            configPath::invoke);
         Assertions.assertEquals("'/non/existing/dir' does not exist or not a valid config directory!",
             exception.getMessage());
     }
 
     @Test
     void testExceptionWhenConfigProfilePathDoesNotExist() {
-        System.setProperty(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "/non/existing/dir");
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "/non/existing/dir");
+        final ThrowingConfigProfilePath configProfilePath = new ThrowingConfigProfilePath();
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-            () -> new EnvConfigProperties().getConfigProfilePath("env", "profile"));
+            configProfilePath::invoke);
         Assertions.assertEquals("'/non/existing/dir' does not exist or not a valid config directory!",
             exception.getMessage());
     }
@@ -90,7 +97,7 @@ class EnvConfigPropertiesTest {
         final Path directory = Files.createTempDirectory(Path.of("config"), "sample-dir");
         directory.toFile().deleteOnExit();
         // when config.dir is set to relative path
-        System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Path.of(directory.toAbsolutePath().toString(), "foo"),
             configProperties.getConfigPath("foo"), "Incorrect config path");
@@ -103,7 +110,7 @@ class EnvConfigPropertiesTest {
         final Path directory = Files.createTempDirectory(Path.of(new EnvConfigProperties().getBuildDir()), "sample-dir");
         directory.toFile().deleteOnExit();
         // when config.dir is set to absolute
-        System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Path.of(directory.toString(), "foo"),
             configProperties.getConfigPath("foo"), "Incorrect config path");
@@ -116,7 +123,7 @@ class EnvConfigPropertiesTest {
         final Path directory = Files.createTempDirectory("sample-dir");
         directory.toFile().deleteOnExit();
         // when config.dir is set to absolute
-        System.setProperty(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), directory.toString());
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertEquals(Path.of(directory.toString(), "foo"),
             configProperties.getConfigPath("foo"), "Incorrect config path");
@@ -128,34 +135,34 @@ class EnvConfigPropertiesTest {
     void testCanGetConfigKeepassEnabled() {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
         Assertions.assertFalse(configProperties.isConfigKeepassEnabled(), "Incorrect keepass.enabled");
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), "true");
         Assertions.assertTrue(configProperties.isConfigKeepassEnabled(), "Incorrect keepass.enabled");
     }
 
     @Test
     void testCanGetConfigKeepassFileName() {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
         Assertions.assertEquals(new File(configProperties.getBuildDir()).getName(),
-            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().filename(), "Incorrect keepass.filename path");
     }
 
     @Test
     void testCanGetConfigKeepassFileNameWhenRelative() {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "foobar.kdbx");
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "foobar.kdbx");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
         Assertions.assertEquals("foobar.kdbx",
-            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().filename(), "Incorrect keepass.filename path");
     }
 
     @Test
     void testCanGetConfigKeepassFileNameWhenAbsolute() {
         final EnvConfigProperties configProperties = new EnvConfigProperties();
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "/dir/foobar.kdbx");
-        System.setProperty(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_FILENAME.getProperty(), "/dir/foobar.kdbx");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "foo");
         Assertions.assertEquals("foobar.kdbx",
-            configProperties.getKeepassProperties().getFilename(), "Incorrect keepass.filename path");
+            configProperties.getKeepassProperties().filename(), "Incorrect keepass.filename path");
     }
 
     @Test
@@ -165,6 +172,20 @@ class EnvConfigPropertiesTest {
             configProperties::getKeepassProperties);
         Assertions.assertEquals("Missing required variable '%s'".formatted("env.config.keepass.masterkey"),
             exception.getMessage());
+    }
+
+    private static final class ThrowingConfigPath {
+
+        private void invoke() {
+            new EnvConfigProperties().getConfigPath("env");
+        }
+    }
+
+    private static final class ThrowingConfigProfilePath {
+
+        private void invoke() {
+            new EnvConfigProperties().getConfigProfilePath("env", "profile");
+        }
     }
 
 }

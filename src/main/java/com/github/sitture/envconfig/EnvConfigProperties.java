@@ -9,16 +9,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 class EnvConfigProperties {
 
     private final List<String> environments;
-    private final Path configDir;
+    private final Path configDirPath;
     private final Path configProfilesPath;
 
     EnvConfigProperties() {
-        configDir = getConfigPath();
+        configDirPath = getConfigPath();
         configProfilesPath = getConfigProfilePath();
         environments = getEnvList();
     }
@@ -41,15 +40,15 @@ class EnvConfigProperties {
     }
 
     private List<String> getEnvList() {
-        final List<String> environments = new ArrayList<>();
-        environments.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
-        environments.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
-        Collections.reverse(environments);
-        return environments.stream().distinct().collect(Collectors.toList());
+        final List<String> envs = new ArrayList<>();
+        envs.add(EnvConfigUtils.CONFIG_ENV_DEFAULT);
+        envs.addAll(EnvConfigUtils.getListOfValues(getConfigProperty(EnvConfigKey.CONFIG_ENV, EnvConfigUtils.CONFIG_ENV_DEFAULT).toLowerCase(), EnvConfigUtils.CONFIG_DELIMITER_DEFAULT));
+        Collections.reverse(envs);
+        return envs.stream().distinct().toList();
     }
 
     Path getConfigPath(final String env) {
-        return Path.of(this.configDir.toString(), env);
+        return Path.of(this.configDirPath.toString(), env);
     }
 
     private Path getConfigPath() {
@@ -60,13 +59,17 @@ class EnvConfigProperties {
         return Path.of(this.configProfilesPath.toString(), env, configProfile);
     }
 
+    Path getConfigProfilePath(final String env) {
+        return getConfigProfilePath(env, getConfigProfile());
+    }
+
     private Path getConfigProfilePath() {
-        return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDir.toString())).toAbsolutePath());
+        return getPath(Path.of(getConfigProperty(EnvConfigKey.CONFIG_PROFILES_PATH, this.configDirPath.toString())).toAbsolutePath());
     }
 
     private Path getPath(final Path configPath) {
-        final File configDir = configPath.toFile();
-        if (!configDir.exists() || !configDir.isDirectory()) {
+        final File configDirFile = configPath.toFile();
+        if (!configDirFile.exists() || !configDirFile.isDirectory()) {
             throw new EnvConfigException(
                 "'" + configPath + "' does not exist or not a valid config directory!");
         }

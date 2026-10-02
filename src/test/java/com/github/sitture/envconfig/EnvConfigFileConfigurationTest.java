@@ -1,0 +1,140 @@
+package com.github.sitture.envconfig;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.configuration2.Configuration;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
+import uk.org.webcompere.systemstubs.jupiter.SystemStub;
+import uk.org.webcompere.systemstubs.jupiter.SystemStubsExtension;
+import uk.org.webcompere.systemstubs.properties.SystemProperties;
+
+@ExtendWith(SystemStubsExtension.class)
+class EnvConfigFileConfigurationTest {
+
+    @TempDir
+    Path tempDir;
+
+    @SystemStub
+    private final SystemProperties systemProperties = new SystemProperties();
+
+    @Test
+    void testGetConfigFilesThrowsExceptionWhenDirectoryDoesNotExist() {
+        final Path missingPath = this.tempDir.resolve("missing-dir");
+        final EnvConfigFileConfiguration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties());
+
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+            () -> configuration.getConfigFiles(missingPath));
+
+        Assertions.assertEquals("'" + missingPath + "' does not exist or not a valid config directory!", exception.getMessage());
+    }
+
+    @Test
+    void testGetConfigFilesThrowsExceptionWhenPathIsAFile() throws IOException {
+        final Path filePath = Files.writeString(this.tempDir.resolve("config.properties"), "property.one=value");
+        final EnvConfigFileConfiguration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties());
+
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+            () -> configuration.getConfigFiles(filePath));
+
+        Assertions.assertEquals("'" + filePath + "' does not exist or not a valid config directory!", exception.getMessage());
+    }
+
+    @Test
+    void testGetConfigPropertiesReturnsOnlyPropertiesFiles() throws IOException {
+        Files.writeString(this.tempDir.resolve("included.properties"), "property.one=value");
+        Files.writeString(this.tempDir.resolve("ignored.txt"), "property.one=ignored");
+        Files.createDirectories(this.tempDir.resolve("nested"));
+        Files.writeString(this.tempDir.resolve("nested").resolve("nested.properties"), "property.one=nested");
+
+        final List<File> files = new EnvConfigFileConfiguration(new EnvConfigProperties())
+            .getConfigProperties(this.tempDir.toFile());
+
+        Assertions.assertEquals(1, files.size());
+        Assertions.assertEquals("included.properties", files.get(0).getName());
+    }
+
+    @Test
+    void testGetConfigPropertiesThrowsExceptionWhenNoPropertiesFilesArePresent() {
+        final Path emptyConfigPath = getTestConfigPath("empty-env");
+        final File emptyConfigDir = emptyConfigPath.toFile();
+        final ThrowingGetConfigProperties throwingGetConfigProperties = new ThrowingGetConfigProperties(emptyConfigDir);
+
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+            throwingGetConfigProperties::invoke);
+
+        Assertions.assertTrue(exception.getMessage().startsWith("No property files found under"), exception.getMessage());
+        Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/empty-env'"), exception.getMessage());
+    }
+
+    @Test
+    void testFileConfigurationLoadsNormalizedKeysFromPropertiesFiles() {
+        final Configuration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigurationForEnvironment("test");
+
+        Assertions.assertEquals("test", configuration.getString("property.one"));
+        Assertions.assertEquals("test", configuration.getString("PROPERTY_ONE"));
+        Assertions.assertEquals("test", configuration.getString("property.seven"));
+        Assertions.assertEquals("test", configuration.getString("PROPERTY_SEVEN"));
+    }
+
+    @Test
+    void testFileConfigurationLoadsPropertiesFromAllFilesInDirectory() throws IOException {
+        final Path defaultDir = Files.createDirectories(this.tempDir.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+        Files.writeString(defaultDir.resolve("one.properties"), "property.one=value.one\n");
+        Files.writeString(defaultDir.resolve("two.properties"), "property.two=value.two\n");
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), this.tempDir.toString());
+
+        final Configuration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties())
+            .getConfigurationForEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
+
+        Assertions.assertEquals("value.one", configuration.getString("property.one"));
+        Assertions.assertEquals("value.two", configuration.getString("property.two"));
+    }
+
+    @Test
+    void testFileConfigurationWrapsInvalidPropertiesParsingErrors() throws IOException {
+        final Path defaultDir = Files.createDirectories(this.tempDir.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+        Files.writeString(defaultDir.resolve("broken.properties"), "property.one=\\u00ZZ\n");
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), this.tempDir.toString());
+        final EnvConfigFileConfiguration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties());
+
+        final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
+            () -> configuration.getConfigurationForEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+
+        Assertions.assertNotNull(exception.getCause());
+    }
+
+    @Test
+    void testFileConfigurationBuildsConfigurationForConfiguredEnvironments() {
+        systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), "test,test-env");
+        final Map<String, Configuration> configurationMap = new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfiguration();
+
+        Assertions.assertEquals(3, configurationMap.size());
+        Assertions.assertEquals("default", configurationMap.get("default").getString("property.one"));
+        Assertions.assertEquals("test", configurationMap.get("test").getString("property.one"));
+        Assertions.assertEquals("test-env", configurationMap.get("test-env").getString("property.one"));
+    }
+
+    private Path getTestConfigPath(final String... paths) {
+        Path configPath = Path.of(new EnvConfigProperties().getBuildDir(), "config");
+        for (final String path : paths) {
+            configPath = configPath.resolve(path);
+        }
+        return configPath;
+    }
+
+    private record ThrowingGetConfigProperties(File configDir) {
+
+        private void invoke() {
+            new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigProperties(this.configDir);
+        }
+    }
+}
+
+
