@@ -4,12 +4,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.apache.commons.configuration2.Configuration;
 
-class EnvConfigFileProfileConfiguration extends EnvConfigFileConfiguration implements EnvConfigConfiguration {
+class EnvConfigFileProfileConfiguration extends EnvConfigFileConfiguration {
 
     EnvConfigFileProfileConfiguration(final EnvConfigProperties configProperties) {
         super(configProperties);
@@ -33,11 +29,5 @@ class EnvConfigFileProfileConfiguration extends EnvConfigFileConfiguration imple
     @Override
     protected Path getConfigurationDirectoryPath(final String env) {
         return this.configProperties.getConfigProfilePath(env);
-    }
-
-    @Override
-    public Map<String, Configuration> getConfiguration() {
-        return this.configProperties.getEnvironments().stream()
-            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
     }
 }

@@ -7,8 +7,6 @@ import io.github.jopenlibs.vault.response.LogicalResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
@@ -16,12 +14,11 @@ import org.apache.commons.lang3.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EnvConfigVaultConfiguration implements EnvConfigConfiguration {
+class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(EnvConfigVaultConfiguration.class);
     private final Vault vault;
     private final EnvConfigVaultProperties vaultProperties;
-    private final List<String> environments;
 
     EnvConfigVaultConfiguration(final EnvConfigProperties configProperties) {
         this(configProperties.getVaultProperties(), configProperties.getEnvironments());
@@ -33,8 +30,8 @@ class EnvConfigVaultConfiguration implements EnvConfigConfiguration {
 
     private EnvConfigVaultConfiguration(final EnvConfigVaultProperties vaultProperties,
                                         final List<String> environments) {
+        super(environments);
         this.vaultProperties = vaultProperties;
-        this.environments = environments;
         try {
             final VaultConfig config = new VaultConfig()
                 .address(vaultProperties.getAddress())
@@ -60,13 +57,17 @@ class EnvConfigVaultConfiguration implements EnvConfigConfiguration {
         }
     }
 
+    @SuppressWarnings("PMD.DoNotUseThreads")
     private static void retryUntilMaxMaxRetries(final VaultException vaultException, final int attempt, final int validateTokenMaxRetries) {
         final long retryInterval = attempt * 2L;
         logError("An exception occurred validating the vault token, will retry in %s seconds".formatted(retryInterval), vaultException);
         try {
             TimeUnit.SECONDS.sleep(retryInterval);
         } catch (InterruptedException ex) {
-            logError("InterruptedException thrown whilst waiting to retry validating the vault token", ex);
+            Thread.currentThread().interrupt();
+            final String message = "InterruptedException thrown whilst waiting to retry validating the vault token";
+            logError(message, ex);
+            throw new EnvConfigException(message, ex);
         }
         if (attempt == validateTokenMaxRetries - 1) {
             final String message = "Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token".formatted(validateTokenMaxRetries);
@@ -83,12 +84,7 @@ class EnvConfigVaultConfiguration implements EnvConfigConfiguration {
     }
 
     @Override
-    public Map<String, Configuration> getConfiguration() {
-        return this.environments.stream()
-            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
-    }
-
-    Configuration getConfigurationForEnvironment(final String env) {
+    protected Configuration getConfigurationForEnvironment(final String env) {
         final CompositeConfiguration configuration = new CompositeConfiguration();
         configuration.addConfiguration(getConfigurationForPath(env, this.vaultProperties.getSecretPath()));
         this.vaultProperties.getDefaultPath()

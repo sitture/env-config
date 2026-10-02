@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.linguafranca.pwdb.Database;
@@ -18,11 +16,10 @@ import org.linguafranca.pwdb.kdbx.jackson.JacksonEntry;
 import org.linguafranca.pwdb.kdbx.jackson.JacksonGroup;
 import org.linguafranca.pwdb.kdbx.jackson.JacksonIcon;
 
-class EnvConfigKeepassConfiguration implements EnvConfigConfiguration {
+class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
     private final Database<JacksonDatabase, JacksonGroup, JacksonEntry, JacksonIcon> database;
-    private final List<String> environments;
 
     EnvConfigKeepassConfiguration(final EnvConfigProperties configProperties) {
         this(configProperties.getKeepassProperties(), configProperties.getEnvironments());
@@ -30,7 +27,7 @@ class EnvConfigKeepassConfiguration implements EnvConfigConfiguration {
 
     private EnvConfigKeepassConfiguration(final EnvConfigKeepassProperties keepassProperties,
                                           final List<String> environments) {
-        this.environments = environments;
+        super(environments);
         final String groupName = keepassProperties.filename();
         if (null == groupName || groupName.isBlank()) {
             throw new EnvConfigException("Keepass filename must not be null or blank");
@@ -47,12 +44,7 @@ class EnvConfigKeepassConfiguration implements EnvConfigConfiguration {
     }
 
     @Override
-    public Map<String, Configuration> getConfiguration() {
-        return this.environments.stream()
-            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
-    }
-
-    private Configuration getConfigurationForEnvironment(final String env) {
+    protected Configuration getConfigurationForEnvironment(final String env) {
         final String keePassGroupName = !database.getRootGroup().getGroups().isEmpty()
             ? database.getRootGroup().getGroups().get(0).getName()
             : "Root";

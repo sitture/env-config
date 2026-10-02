@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
@@ -17,12 +15,13 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class EnvConfigFileConfiguration implements EnvConfigConfiguration {
+class EnvConfigFileConfiguration extends AbstractEnvConfigConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(EnvConfigFileConfiguration.class);
     protected final EnvConfigProperties configProperties;
 
     EnvConfigFileConfiguration(final EnvConfigProperties configProperties) {
+        super(configProperties.getEnvironments());
         this.configProperties = configProperties;
     }
 
@@ -44,12 +43,7 @@ class EnvConfigFileConfiguration implements EnvConfigConfiguration {
     }
 
     @Override
-    public Map<String, Configuration> getConfiguration() {
-        return this.configProperties.getEnvironments().stream()
-            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
-    }
-
-    Configuration getConfigurationForEnvironment(final String env) {
+    protected Configuration getConfigurationForEnvironment(final String env) {
         final Path configDirPath = getConfigurationDirectoryPath(env);
         final List<File> files = getConfigFiles(configDirPath);
         if (files.isEmpty() && LOG.isDebugEnabled()) {
