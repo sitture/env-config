@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 2.2.0
+
+### Updated
+
+- Refreshed build, test, and publishing dependencies.
+- Bumped `org.apache.commons:commons-configuration2` from `2.12.0` to `2.13.0`.
+- Bumped `io.github.jopenlibs:vault-java-driver` from `6.2.0` to `6.2.1`.
+- Bumped `org.wiremock:wiremock-standalone` from `3.13.1` to `3.13.2`.
+- Updated build plugins including the Maven dependency, jar, PMD, source, versions, and Checkstyle plugins.
+- Updated GitHub Actions workflows to use `actions/checkout@v6`.
+
 ## 1.13.1
 
 ### Updated
