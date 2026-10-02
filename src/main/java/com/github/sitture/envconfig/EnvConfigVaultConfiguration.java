@@ -57,17 +57,13 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
         }
     }
 
-    @SuppressWarnings("PMD.DoNotUseThreads")
     private static void retryUntilMaxMaxRetries(final VaultException vaultException, final int attempt, final int validateTokenMaxRetries) {
         final long retryInterval = attempt * 2L;
         logError("An exception occurred validating the vault token, will retry in %s seconds".formatted(retryInterval), vaultException);
         try {
             TimeUnit.SECONDS.sleep(retryInterval);
         } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            final String message = "InterruptedException thrown whilst waiting to retry validating the vault token";
-            logError(message, ex);
-            throw new EnvConfigException(message, ex);
+            logError("InterruptedException thrown whilst waiting to retry validating the vault token", ex);
         }
         if (attempt == validateTokenMaxRetries - 1) {
             final String message = "Reached CONFIG_VAULT_VALIDATE_MAX_RETRIES limit (%s) attempting to validate token".formatted(validateTokenMaxRetries);
@@ -87,8 +83,8 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
     protected Configuration getConfigurationForEnvironment(final String env) {
         final CompositeConfiguration configuration = new CompositeConfiguration();
         configuration.addConfiguration(getConfigurationForPath(env, this.vaultProperties.getSecretPath()));
-        this.vaultProperties.getDefaultPath()
-            .ifPresent(path -> configuration.addConfiguration(getConfigurationForPath(env, path)));
+        this.vaultProperties.getDefaultPath().ifPresent(defaultPath ->
+            configuration.addConfiguration(getConfigurationForPath(env, defaultPath)));
         return configuration;
     }
 
