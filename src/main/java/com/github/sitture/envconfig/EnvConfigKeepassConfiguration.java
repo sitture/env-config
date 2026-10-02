@@ -69,8 +69,9 @@ class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
         final Map<String, String> entriesMap = new HashMap<>();
         envGroup.ifPresent(group -> group.getEntries()
             .forEach(entry -> {
-                entriesMap.put(entry.getTitle().trim(), entry.getPassword());
-                entriesMap.put(EnvConfigUtils.getProcessedPropertyKey(entry.getTitle().trim()), entry.getPassword());
+                final String trimmedKey = entry.getTitle().trim();
+                entriesMap.put(trimmedKey, entry.getPassword());
+                entriesMap.put(EnvConfigUtils.getProcessedPropertyKey(trimmedKey), entry.getPassword());
             }));
         return entriesMap;
     }

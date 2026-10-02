@@ -116,8 +116,9 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
         final Map<String, String> responseData = new HashMap<>();
         if (response != null && response.getData() != null) {
             response.getData().forEach((key, value) -> {
-                responseData.put(key, value);
-                responseData.put(EnvConfigUtils.getProcessedPropertyKey(key), value);
+                final String trimmedKey = key.trim();
+                responseData.put(trimmedKey, value);
+                responseData.put(EnvConfigUtils.getProcessedPropertyKey(trimmedKey), value);
             });
         }
         return responseData;
