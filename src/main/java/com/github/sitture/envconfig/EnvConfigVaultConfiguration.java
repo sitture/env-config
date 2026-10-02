@@ -4,6 +4,7 @@ import io.github.jopenlibs.vault.Vault;
 import io.github.jopenlibs.vault.VaultConfig;
 import io.github.jopenlibs.vault.VaultException;
 import io.github.jopenlibs.vault.response.LogicalResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -112,7 +113,14 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
     }
 
     private static Map<String, String> getResponseData(final LogicalResponse response) {
-        return response == null || response.getData() == null ? Map.of() : response.getData();
+        final Map<String, String> responseData = new HashMap<>();
+        if (response != null && response.getData() != null) {
+            response.getData().forEach((key, value) -> {
+                responseData.put(key, value);
+                responseData.put(EnvConfigUtils.getProcessedPropertyKey(key), value);
+            });
+        }
+        return responseData;
     }
 
 }

@@ -37,6 +37,26 @@ class EnvConfigVaultConfigurationTest {
     }
 
     @Test
+    void testCanGetConfigurationMapWithProcessedPropertyKeys() {
+        stubSelfLookupSuccess();
+        stubFor(get("/v1/path/data/to/project/default").willReturn(okJson("""
+            {
+              "data": {
+                "data": {
+                   "PROPERTY_ONE": "value1"
+                }
+              }
+            }
+            """)));
+        final EnvConfigVaultProperties vaultProperties = getMockVaultProperties();
+        final Map<String, Configuration> configurationMap = new EnvConfigVaultConfiguration(vaultProperties).getConfiguration();
+        final Configuration configuration = configurationMap.get("default");
+
+        Assertions.assertEquals("value1", configuration.getString("PROPERTY_ONE"));
+        Assertions.assertEquals("value1", configuration.getString("property.one"));
+    }
+
+    @Test
     void testExceptionWhenSecretNotFound() {
         stubSelfLookupSuccess();
         stubFor(get("/v1/path/data/to/project/default").willReturn(notFound()));
