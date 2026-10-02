@@ -75,8 +75,7 @@ class EnvConfigFileConfigurationTest {
 
     @Test
     void testFileConfigurationLoadsNormalizedKeysFromPropertiesFiles() {
-        final Path testConfigPath = getTestConfigPath("test");
-        final Configuration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfiguration(testConfigPath);
+        final Configuration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfigurationForEnvironment("test");
 
         Assertions.assertEquals("test", configuration.getString("property.one"));
         Assertions.assertEquals("test", configuration.getString("PROPERTY_ONE"));
@@ -86,10 +85,13 @@ class EnvConfigFileConfigurationTest {
 
     @Test
     void testFileConfigurationLoadsPropertiesFromAllFilesInDirectory() throws IOException {
-        Files.writeString(this.tempDir.resolve("one.properties"), "property.one=value.one\n");
-        Files.writeString(this.tempDir.resolve("two.properties"), "property.two=value.two\n");
+        final Path defaultDir = Files.createDirectories(this.tempDir.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+        Files.writeString(defaultDir.resolve("one.properties"), "property.one=value.one\n");
+        Files.writeString(defaultDir.resolve("two.properties"), "property.two=value.two\n");
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), this.tempDir.toString());
 
-        final Configuration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties()).getConfiguration(this.tempDir);
+        final Configuration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties())
+            .getConfigurationForEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
 
         Assertions.assertEquals("value.one", configuration.getString("property.one"));
         Assertions.assertEquals("value.two", configuration.getString("property.two"));
@@ -97,11 +99,13 @@ class EnvConfigFileConfigurationTest {
 
     @Test
     void testFileConfigurationWrapsInvalidPropertiesParsingErrors() throws IOException {
-        Files.writeString(this.tempDir.resolve("broken.properties"), "property.one=\\u00ZZ\n");
+        final Path defaultDir = Files.createDirectories(this.tempDir.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT));
+        Files.writeString(defaultDir.resolve("broken.properties"), "property.one=\\u00ZZ\n");
+        systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), this.tempDir.toString());
         final EnvConfigFileConfiguration configuration = new EnvConfigFileConfiguration(new EnvConfigProperties());
 
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-            () -> configuration.getConfiguration(this.tempDir));
+            () -> configuration.getConfigurationForEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT));
 
         Assertions.assertNotNull(exception.getCause());
     }

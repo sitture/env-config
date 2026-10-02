@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.linguafranca.pwdb.Database;
@@ -15,29 +18,45 @@ import org.linguafranca.pwdb.kdbx.jackson.JacksonEntry;
 import org.linguafranca.pwdb.kdbx.jackson.JacksonGroup;
 import org.linguafranca.pwdb.kdbx.jackson.JacksonIcon;
 
-class EnvConfigKeepassConfiguration {
+class EnvConfigKeepassConfiguration implements EnvConfigConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
     private final Database<JacksonDatabase, JacksonGroup, JacksonEntry, JacksonIcon> database;
+    private final List<String> environments;
 
-    EnvConfigKeepassConfiguration(final EnvConfigKeepassProperties keepassProperties) {
+    EnvConfigKeepassConfiguration(final EnvConfigProperties configProperties) {
+        this(configProperties.getKeepassProperties(), configProperties.getEnvironments());
+    }
+
+    private EnvConfigKeepassConfiguration(final EnvConfigKeepassProperties keepassProperties,
+                                          final List<String> environments) {
+        this.environments = environments;
         final String groupName = keepassProperties.filename();
-        final String keePassGroupName = null != groupName && groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
-            ? groupName.split(KEEPASS_DB_FILE_EXTENSION)[0]
-            : groupName;
+        if (null == groupName || groupName.isBlank()) {
+            throw new EnvConfigException("Keepass filename must not be null or blank");
+        }
+        final String databaseFileName = groupName.endsWith(KEEPASS_DB_FILE_EXTENSION)
+            ? groupName
+            : groupName.concat(KEEPASS_DB_FILE_EXTENSION);
         try {
             database = JacksonDatabase.load(new KdbxCreds(keepassProperties.masterKey().getBytes(StandardCharsets.UTF_8)),
-                getKeepassDatabase(keePassGroupName.concat(KEEPASS_DB_FILE_EXTENSION)));
+                getKeepassDatabase(databaseFileName));
         } catch (IOException e) {
             throw new EnvConfigException("Error opening database!", e);
         }
     }
 
-    public Configuration getConfiguration(final String env) {
+    @Override
+    public Map<String, Configuration> getConfiguration() {
+        return this.environments.stream()
+            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
+    }
+
+    private Configuration getConfigurationForEnvironment(final String env) {
         final String keePassGroupName = !database.getRootGroup().getGroups().isEmpty()
             ? database.getRootGroup().getGroups().get(0).getName()
             : "Root";
-        return new MapConfiguration(getEntriesMap(keePassGroupName, env));
+        return new MapConfiguration(getKeepassEntriesMap(keePassGroupName, env));
     }
 
     private InputStream getKeepassDatabase(final String fileName) {
@@ -48,7 +67,7 @@ class EnvConfigKeepassConfiguration {
         return resource;
     }
 
-    private Map<String, String> getEntriesMap(final String groupName, final String env) {
+    private Map<String, String> getKeepassEntriesMap(final String groupName, final String env) {
         final Optional<JacksonGroup> projectGroup = database.getRootGroup().getGroups().stream()
             .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (projectGroup.isEmpty()) {

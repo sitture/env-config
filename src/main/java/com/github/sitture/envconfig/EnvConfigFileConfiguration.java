@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
@@ -41,7 +43,14 @@ class EnvConfigFileConfiguration implements EnvConfigConfiguration {
         return files;
     }
 
-    Configuration getConfiguration(final Path configDirPath) {
+    @Override
+    public Map<String, Configuration> getConfiguration() {
+        return this.configProperties.getEnvironments().stream()
+            .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));
+    }
+
+    Configuration getConfigurationForEnvironment(final String env) {
+        final Path configDirPath = getConfigurationDirectoryPath(env);
         final List<File> files = getConfigFiles(configDirPath);
         if (files.isEmpty() && LOG.isDebugEnabled()) {
             LOG.debug("No property files found under {}", configDirPath);
@@ -51,12 +60,8 @@ class EnvConfigFileConfiguration implements EnvConfigConfiguration {
         return fileConfiguration;
     }
 
-    @Override
-    public Map<String, Configuration> getConfiguration() {
-        final Map<String, Configuration> configurationMap = new HashMap<>();
-        this.configProperties.getEnvironments().forEach(env -> configurationMap.put(
-            env, getConfiguration(this.configProperties.getConfigPath(env))));
-        return configurationMap;
+    protected Path getConfigurationDirectoryPath(final String env) {
+        return this.configProperties.getConfigPath(env);
     }
 
     private Configuration getFileConfigurationMap(final File file) {

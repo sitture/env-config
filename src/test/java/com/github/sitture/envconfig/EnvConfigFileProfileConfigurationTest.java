@@ -69,11 +69,11 @@ class EnvConfigFileProfileConfigurationTest {
 
     @Test
     void testProfileFileConfigurationThrowsWhenProfileDirectoryContainsNoPropertyFiles() {
-        final Path emptyProfilePath = Path.of(new EnvConfigProperties().getBuildDir(), "config", "default", "empty-profile");
+        systemProperties.set(EnvConfigKey.CONFIG_PROFILE.getProperty(), "empty-profile");
         final EnvConfigFileProfileConfiguration configuration = new EnvConfigFileProfileConfiguration(new EnvConfigProperties());
 
         final EnvConfigException exception = Assertions.assertThrows(EnvConfigException.class,
-            () -> configuration.getConfiguration(emptyProfilePath));
+            () -> configuration.getConfigurationForEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT));
 
         Assertions.assertTrue(exception.getMessage().startsWith("No property files found under"), exception.getMessage());
         Assertions.assertTrue(exception.getMessage().endsWith("/env-config/config/default/empty-profile'"), exception.getMessage());
