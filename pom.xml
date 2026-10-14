@@ -5,7 +5,7 @@
 	<groupId>com.github.sitture</groupId>
 	<artifactId>env-config</artifactId>
 	<packaging>jar</packaging>
-	<version>2.6.0</version>
+	<version>2.7.0</version>
 
 	<name>env-config</name>
 	<description>A simple utility to manage environment configs in Java-based projects by merging *.properties files with environment variables overrides.</description>
@@ -260,8 +260,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.linguafranca.pwdb</groupId>
-			<artifactId>KeePassJava2-jackson</artifactId>
-			<version>2.2.6</version>
+			<artifactId>KeePassJava2.kdbx.database</artifactId>
+			<version>3.1.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>

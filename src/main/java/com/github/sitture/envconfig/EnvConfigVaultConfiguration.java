@@ -46,7 +46,7 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
         }
     }
 
-    private void validateToken() throws VaultException {
+    private void validateToken() {
         final int maxValidationRetries = this.vaultProperties.getValidateTokenMaxRetries();
         for (int attempt = 0; attempt < maxValidationRetries; attempt++) {
             try {
