@@ -33,8 +33,8 @@ class EnvConfigLoader {
     private void loadVaultConfiguration(final List<String> environments) {
         if (this.configProperties.isConfigVaultEnabled()) {
             final EnvConfigVaultProperties vaultProperties = this.configProperties.getVaultProperties();
-            final String address = vaultProperties.getAddress();
-            final String namespace = vaultProperties.getNamespace();
+            final String address = vaultProperties.address();
+            final String namespace = vaultProperties.namespace();
             LOG.debug("Loading config from vault {} namespace {}", address, namespace);
             final Map<String, Configuration> vaultConfigurationMap = new EnvConfigVaultConfiguration(this.configProperties).getConfiguration();
             environments.forEach(env -> this.configuration.addConfiguration(vaultConfigurationMap.get(env)));

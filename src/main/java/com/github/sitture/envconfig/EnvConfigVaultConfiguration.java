@@ -7,6 +7,7 @@ import io.github.jopenlibs.vault.response.LogicalResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.configuration2.CompositeConfiguration;
 import org.apache.commons.configuration2.Configuration;
@@ -35,9 +36,9 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
         this.vaultProperties = vaultProperties;
         try {
             final VaultConfig config = new VaultConfig()
-                .address(vaultProperties.getAddress())
-                .nameSpace(vaultProperties.getNamespace())
-                .token(vaultProperties.getToken())
+                .address(vaultProperties.address())
+                .nameSpace(vaultProperties.namespace())
+                .token(vaultProperties.token())
                 .build();
             this.vault = Vault.create(config);
             validateToken();
@@ -47,7 +48,7 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
     }
 
     private void validateToken() {
-        final int maxValidationRetries = this.vaultProperties.getValidateTokenMaxRetries();
+        final int maxValidationRetries = this.vaultProperties.validateTokenMaxRetries();
         for (int attempt = 0; attempt < maxValidationRetries; attempt++) {
             try {
                 this.vault.auth().lookupSelf();
@@ -82,8 +83,8 @@ class EnvConfigVaultConfiguration extends AbstractEnvConfigConfiguration {
     @Override
     protected Configuration getConfigurationForEnvironment(final String env) {
         final CompositeConfiguration configuration = new CompositeConfiguration();
-        configuration.addConfiguration(getConfigurationForPath(env, this.vaultProperties.getSecretPath()));
-        this.vaultProperties.getDefaultPath().ifPresent(defaultPath ->
+        configuration.addConfiguration(getConfigurationForPath(env, this.vaultProperties.secretPath()));
+        Optional.ofNullable(this.vaultProperties.defaultPath()).ifPresent(defaultPath ->
             configuration.addConfiguration(getConfigurationForPath(env, defaultPath)));
         return configuration;
     }
