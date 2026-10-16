@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.configuration2.Configuration;
 
-abstract class AbstractEnvConfigConfiguration implements EnvConfigConfiguration {
+abstract class AbstractEnvConfigConfiguration {
 
     private final List<String> environments;
 
@@ -14,7 +14,6 @@ abstract class AbstractEnvConfigConfiguration implements EnvConfigConfiguration 
         this.environments = environments;
     }
 
-    @Override
     public Map<String, Configuration> getConfiguration() {
         return this.environments.stream()
             .collect(Collectors.toMap(Function.identity(), this::getConfigurationForEnvironment));

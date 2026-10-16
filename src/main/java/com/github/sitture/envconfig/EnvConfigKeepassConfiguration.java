@@ -1,5 +1,7 @@
 package com.github.sitture.envconfig;
 
+import static org.linguafranca.pwdb.Entry.STANDARD_PROPERTY_NAME_PASSWORD;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -10,16 +12,14 @@ import java.util.Optional;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.MapConfiguration;
 import org.linguafranca.pwdb.Database;
-import org.linguafranca.pwdb.kdbx.KdbxCreds;
-import org.linguafranca.pwdb.kdbx.jackson.JacksonDatabase;
-import org.linguafranca.pwdb.kdbx.jackson.JacksonEntry;
-import org.linguafranca.pwdb.kdbx.jackson.JacksonGroup;
-import org.linguafranca.pwdb.kdbx.jackson.JacksonIcon;
+import org.linguafranca.pwdb.Group;
+import org.linguafranca.pwdb.format.KdbxCredentials;
+import org.linguafranca.pwdb.kdbx.jackson.KdbxDatabase;
 
 class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
 
     private static final String KEEPASS_DB_FILE_EXTENSION = ".kdbx";
-    private final Database<JacksonDatabase, JacksonGroup, JacksonEntry, JacksonIcon> database;
+    private final Database database;
 
     EnvConfigKeepassConfiguration(final EnvConfigProperties configProperties) {
         this(configProperties.getKeepassProperties(), configProperties.getEnvironments());
@@ -36,7 +36,7 @@ class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
             ? groupName
             : groupName.concat(KEEPASS_DB_FILE_EXTENSION);
         try {
-            database = JacksonDatabase.load(new KdbxCreds(keepassProperties.masterKey().getBytes(StandardCharsets.UTF_8)),
+            database = KdbxDatabase.read(new KdbxCredentials(keepassProperties.masterKey().getBytes(StandardCharsets.UTF_8)),
                 getKeepassDatabaseResource(databaseFileName));
         } catch (IOException e) {
             throw new EnvConfigException("Error opening database!", e);
@@ -60,18 +60,18 @@ class EnvConfigKeepassConfiguration extends AbstractEnvConfigConfiguration {
     }
 
     private Map<String, String> getKeepassEntryMap(final String groupName, final String env) {
-        final Optional<JacksonGroup> projectGroup = database.getRootGroup().getGroups().stream()
+        final Optional<Group> projectGroup = database.getRootGroup().getGroups().stream()
             .filter(group -> group.getName().trim().equals(groupName)).findFirst();
         if (projectGroup.isEmpty()) {
             throw new IllegalArgumentException("Group %s not found in the database!".formatted(groupName));
         }
-        final Optional<JacksonGroup> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
+        final Optional<Group> envGroup = projectGroup.get().getGroups().stream().filter(group -> group.getName().trim().equals(env)).findFirst();
         final Map<String, String> entriesMap = new HashMap<>();
         envGroup.ifPresent(group -> group.getEntries()
             .forEach(entry -> {
                 final String trimmedKey = entry.getTitle().trim();
-                entriesMap.put(trimmedKey, entry.getPassword());
-                entriesMap.put(EnvConfigUtils.getProcessedPropertyKey(trimmedKey), entry.getPassword());
+                entriesMap.put(trimmedKey, entry.getProperty(STANDARD_PROPERTY_NAME_PASSWORD));
+                entriesMap.put(EnvConfigUtils.getProcessedPropertyKey(trimmedKey), entry.getProperty(STANDARD_PROPERTY_NAME_PASSWORD));
             }));
         return entriesMap;
     }

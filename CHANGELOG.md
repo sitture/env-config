@@ -4,6 +4,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## 2.7.0
+
+### Updated
+
+- Upgraded KeePass support to `KeePassJava2.kdbx.database` `3.1.0`.
+
+### Changed
+
+- Migrated KeePass configuration loading to the newer KDBX database API and updated password property access.
+- Simplified the configuration abstractions by removing the `EnvConfigConfiguration` interface and consolidating shared
+  base behavior in `AbstractEnvConfigConfiguration`.
+- Kept Vault token validation retries internal while preserving the existing retry behavior.
+
 ## 2.6.0
 
 ### Changed
