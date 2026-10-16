@@ -262,16 +262,6 @@
 			<groupId>org.linguafranca.pwdb</groupId>
 			<artifactId>KeePassJava2.kdbx.database</artifactId>
 			<version>3.1.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-classic</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.linguafranca.pwdb</groupId>
-					<artifactId>util</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.github.jopenlibs</groupId>
