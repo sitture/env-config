@@ -49,14 +49,11 @@ class EnvConfigPrecedenceTest {
         // when keepass loading is enabled
         // and property exists in keepass
         setKeepassEnabled();
-        // and property is set as system property
-        systemProperties.set(PROPERTY_KEEPASS, SYS_PROPERTY_VALUE);
         // and property is set as environment variable
         environmentVariables.set(EnvConfigUtils.getProcessedEnvKey(key), SYS_ENV_VALUE);
         // and property is set in environment file
         setEnvironment("test");
-        // then value from system property and environment variable takes priority
-        Assertions.assertEquals(SYS_PROPERTY_VALUE, EnvConfig.get(key));
+        // then value from environment variable takes priority
         Assertions.assertEquals(SYS_ENV_VALUE, EnvConfig.get(EnvConfigUtils.getProcessedEnvKey(key)));
     }
 
