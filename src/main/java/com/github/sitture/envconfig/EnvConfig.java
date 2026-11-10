@@ -49,7 +49,12 @@ public final class EnvConfig extends EnvConfigLoader {
      * @param property Name of the property to clear
      */
     public static void clear(final String property) {
-        getConfiguration().clearProperty(property);
+        final String normalizedProperty = EnvConfigUtils.getProcessedPropertyKey(property);
+        final String envProperty = EnvConfigUtils.getProcessedEnvKey(normalizedProperty);
+        System.clearProperty(normalizedProperty);
+        System.clearProperty(envProperty);
+        getConfiguration().clearProperty(normalizedProperty);
+        getConfiguration().clearProperty(envProperty);
     }
 
     /**
@@ -59,7 +64,7 @@ public final class EnvConfig extends EnvConfigLoader {
      * @param value    value of the config entry
      */
     public static void set(final String property, final Object value) {
-        getConfiguration().setProperty(property, value);
+        getConfiguration().setProperty(EnvConfigUtils.getProcessedPropertyKey(property), value);
     }
 
     /**
@@ -69,11 +74,12 @@ public final class EnvConfig extends EnvConfigLoader {
      * @param value    value of the config entry
      */
     public static void add(final String property, final Object value) {
-        getConfiguration().addProperty(property, value);
+        getConfiguration().addProperty(EnvConfigUtils.getProcessedPropertyKey(property), value);
     }
 
     private static Optional<String> getProperty(final String property) {
-        return Optional.ofNullable(getConfiguration().getString(property));
+        final String normalizedProperty = EnvConfigUtils.getProcessedPropertyKey(property);
+        return Optional.ofNullable(getConfiguration().getString(normalizedProperty));
     }
 
     /**
@@ -163,7 +169,10 @@ public final class EnvConfig extends EnvConfigLoader {
 
     public static Map<String, Object> asMap() {
         final Map<String, Object> propertiesMap = new TreeMap<>();
-        getConfiguration().getKeys().forEachRemaining(key -> propertiesMap.put(key, get(key)));
+        getConfiguration().getKeys().forEachRemaining(key -> {
+            final String normalizedKey = EnvConfigUtils.getProcessedPropertyKey(key);
+            propertiesMap.put(normalizedKey, get(normalizedKey));
+        });
         return propertiesMap;
     }
 
