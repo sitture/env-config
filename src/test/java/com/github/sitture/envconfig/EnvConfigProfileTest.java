@@ -16,6 +16,8 @@ import uk.org.webcompere.systemstubs.properties.SystemProperties;
 @ExtendWith(SystemStubsExtension.class)
 class EnvConfigProfileTest {
 
+    private static final String PROFILE_ONE = "prof1";
+
     @TempDir
     Path tempDir;
 
@@ -36,7 +38,7 @@ class EnvConfigProfileTest {
         setEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
         // when an existing profile is set
         // and prof1.one also exists with a different value
-        setProfile("prof1");
+        setProfile(PROFILE_ONE);
         // then value from profile property takes precedence
         Assertions.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
     }
@@ -49,7 +51,7 @@ class EnvConfigProfileTest {
         systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "config/sample-profiles");
         // when an existing profile is set
         // and prof1.one also exists with a different value
-        setProfile("prof1");
+        setProfile(PROFILE_ONE);
         // then value from profile property takes precedence
         Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.one"));
     }
@@ -62,13 +64,13 @@ class EnvConfigProfileTest {
         final Path testConfigDir = Files.createDirectories(configPath.resolve("test"));
         Files.writeString(defaultConfigDir.resolve("default.properties"), "base.one=default\n");
         Files.writeString(testConfigDir.resolve("test.properties"), "shared.one=current.env\n");
-        final Path defaultProfileDir = Files.createDirectories(profilesPath.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT).resolve("prof1"));
-        Files.writeString(defaultProfileDir.resolve("prof1.properties"), "shared.one=parent.profile\n");
+        final Path defaultProfileDir = Files.createDirectories(profilesPath.resolve(EnvConfigUtils.CONFIG_ENV_DEFAULT).resolve(PROFILE_ONE));
+        Files.writeString(defaultProfileDir.resolve(PROFILE_ONE + ".properties"), "shared.one=parent.profile\n");
 
         systemProperties.set(EnvConfigKey.CONFIG_PATH.getProperty(), configPath.toString());
         systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), profilesPath.toString());
         setEnvironment("test");
-        setProfile("prof1");
+        setProfile(PROFILE_ONE);
 
         Assertions.assertEquals("parent.profile", EnvConfig.get("shared.one"));
     }
@@ -84,12 +86,30 @@ class EnvConfigProfileTest {
     }
 
     @Test
+    void testEnvironmentProfileTakesPriorityOverDefaultProfile() {
+        // given default and environment profile values for the same key
+        setEnvironment("test");
+        setProfile("prof2");
+        // then the environment profile wins
+        Assertions.assertEquals("test.profile.prof2", EnvConfig.get("property.precedence"));
+    }
+
+    @Test
+    void testDefaultProfileTakesPriorityOverEnvironmentSpecific() {
+        // given default profile and environment-specific values for the same key
+        setEnvironment("test");
+        setProfile(PROFILE_ONE);
+        // then the default profile wins
+        Assertions.assertEquals("default.profile", EnvConfig.get("property.precedence"));
+    }
+
+    @Test
     void testCanGetFromProfileWhenProfileSetAsEnv() {
         // given env is default and prof1.one exists in env properties
         setEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
         // when an existing profile is set
         // and prof1.one also exists with a different value
-        environmentVariables.set("ENV_CONFIG_PROFILE", "prof1");
+        environmentVariables.set("ENV_CONFIG_PROFILE", PROFILE_ONE);
         // then value from profile property takes precedence
         Assertions.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
     }
@@ -100,7 +120,7 @@ class EnvConfigProfileTest {
         setEnvironment("test");
         // when an existing profile is set in default env only
         // and prof1.one also exists with a different value
-        setProfile("prof1");
+        setProfile(PROFILE_ONE);
         // then value from profile property takes precedence
         Assertions.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
     }
@@ -113,7 +133,7 @@ class EnvConfigProfileTest {
         systemProperties.set(EnvConfigKey.CONFIG_PROFILES_PATH.getProperty(), "config/sample-profiles");
         // when an existing profile is set in default env only
         // and prof1.one also exists with a different value
-        setProfile("prof1");
+        setProfile(PROFILE_ONE);
         // then value from profile property takes precedence
         Assertions.assertEquals("profiles.prof1.value", EnvConfig.get("prof1.two"));
     }
@@ -141,12 +161,31 @@ class EnvConfigProfileTest {
     }
 
     @Test
+    void testEnvironmentSpecificTakesPriorityOverDefault() {
+        // given default and environment-specific values for the same key
+        setEnvironment("test");
+        // then the environment-specific value wins
+        Assertions.assertEquals("test", EnvConfig.get("property.precedence"));
+    }
+
+    @Test
+    void testKeepassTakesPriorityOverEnvironmentProfile() {
+        // given keepass and profile entries for the same key
+        setEnvironment("test");
+        setProfile("prof2");
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_ENABLED.getProperty(), true);
+        systemProperties.set(EnvConfigKey.CONFIG_KEEPASS_MASTERKEY.getProperty(), "envconfig");
+        // then keepass wins
+        Assertions.assertEquals("KEEPASS_VALUE", EnvConfig.get("property.keepass"));
+    }
+
+    @Test
     void testCanGetWhenEnvVarAndProfileValuesDifferent() {
         // given env is test and prof1.one exists in default/default.properties
         setEnvironment(EnvConfigUtils.CONFIG_ENV_DEFAULT);
         // when an existing profile exists
         // and prof1.one also exists in profile
-        environmentVariables.set("CONFIG_ENV_PROFILE", "prof1");
+        environmentVariables.set("CONFIG_ENV_PROFILE", PROFILE_ONE);
         // and prof1.one also set as environment variable
         environmentVariables.set("PROF1_ONE", "env.prof1.value");
         // then value from profile property takes precedence
@@ -168,7 +207,7 @@ class EnvConfigProfileTest {
         // given env is test-env with no profiles
         setEnvironment("test,test-env");
         // and test env is set base with non-existing profile
-        setProfile("prof1");
+        setProfile(PROFILE_ONE);
         // then value from profile takes precedence
         Assertions.assertEquals("prof1.value", EnvConfig.get("prof1.one"));
     }

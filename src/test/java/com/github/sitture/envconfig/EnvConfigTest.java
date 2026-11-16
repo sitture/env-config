@@ -101,6 +101,16 @@ class EnvConfigTest {
     }
 
     @Test
+    void testAsMapUsesCanonicalKeysOnly() {
+        System.setProperty(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
+
+        final java.util.Map<String, Object> configEntries = EnvConfig.asMap();
+
+        Assertions.assertEquals("test", configEntries.get("property.seven"));
+        Assertions.assertFalse(configEntries.containsKey("PROPERTY_SEVEN"));
+    }
+
+    @Test
     void testCanGetPropertyFromGetOrThrow() {
         systemProperties.set(EnvConfigKey.CONFIG_ENV.getProperty(), TEST_ENVIRONMENT);
         Assertions.assertEquals("test", EnvConfig.getOrThrow("property.one"));
@@ -276,6 +286,14 @@ class EnvConfigTest {
         // set a new property
         EnvConfig.set("property2", TEST_VALUE);
         Assertions.assertEquals(TEST_VALUE, EnvConfig.get("property2"));
+    }
+
+    @Test
+    void testCanSetPropertyUsingEnvFormat() {
+        EnvConfig.set("PROPERTY_SET_WITH_ENV_FORMAT", TEST_VALUE);
+
+        Assertions.assertEquals(TEST_VALUE, EnvConfig.get("PROPERTY_SET_WITH_ENV_FORMAT"));
+        Assertions.assertEquals(TEST_VALUE, EnvConfig.get("property.set.with.env.format"));
     }
 
     @Test
